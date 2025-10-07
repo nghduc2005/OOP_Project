@@ -1,4 +1,5 @@
 package app.model;
 
-public class Student {
+public class Student extends User{
+
 }

@@ -1,24 +1,24 @@
 package app.dao;
-import java.sql.*;
 
-public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/class_management";
-    private static final String USER = "root"; //nhập username host vào
-    private static final String PASSWORD = "your_password"; //nhập password vào
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.TimeZone;
 
-    static { //khối static, chạy 1 lần khi class nạp
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver"); // nạp driver MySQL
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+ public class DatabaseConnection {
+    private static final String URL = "jdbc:postgresql://trolley.proxy.rlwy.net:50772/railway";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "nXaDReqIxhxnRJALsPnNQdRIWsoFYqoX";
 
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection(URL, USER, PASSWORD); //kết nối DB qua driver với cấu hình
+            TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+
+            Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Kết nối thành công tới Railway PostgreSQL!");
+            return connection;
         } catch (SQLException e) {
-            System.out.println("Kết nối DB thất bại!");
+            System.out.println("Lỗi kết nối CSDL:");
             e.printStackTrace();
             return null;
         }
