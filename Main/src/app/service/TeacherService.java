@@ -1,14 +1,26 @@
 package app.service;
 
 import app.Constant;
+import app.dao.DatabaseConnection;
 import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.model.LoginInterface;
+import app.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class TeacherService implements LoginInterface {
     @Override
     public LoginResponse login(LoginRequest req) {
-        return null;
+        List<HashMap<String, Object>> results = DatabaseConnection.readTable("SELECT user_name, password from teacher");
+        String userName = (String) results.get(0).get("user_name");
+        String password = (String) results.get(0).get("password");
+        if(userName.equals(req.getUsername()) && StringUtil.checkPassword(password, req.getPassword())) {
+            return new LoginResponse("Đăng nhập thành công!", true);
+        }
+        return new LoginResponse("Sai tài khoản hoặc mật khẩu!", false);
     }
 
     @Override
