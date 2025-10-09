@@ -2,9 +2,11 @@ package app.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class LoginPanel extends JPanel {
-    public LoginPanel(){
+    public LoginPanel(MainPanel mainPanel) {
         setLayout(null);
         JLabel titleLabel = new JLabel("Login");
         titleLabel.setBounds(750,150,100,50);
@@ -18,12 +20,16 @@ public class LoginPanel extends JPanel {
         passwordField.setBounds(700,250,150,30);
         JButton loginButton = new JButton("Login");
         loginButton.setBounds(700,300,150,30);
+        loginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                mainPanel.show("dashboard");
+            }
+        });
         add(titleLabel, BorderLayout.NORTH);
         add(usernameLabel, BorderLayout.NORTH);
         add(passwordLabel);
         add(usernameField);
         add(passwordField);
         add(loginButton);
-        setVisible(true);
     }
 }
