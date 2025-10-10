@@ -18,7 +18,6 @@ public class Main {
             MainPanel mainPanel = new MainPanel();
             frame.add(mainPanel);;
             frame.setVisible(true);
-
     }
 }
 

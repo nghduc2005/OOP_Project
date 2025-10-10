@@ -10,4 +10,6 @@ public final class Constant {
     public final static String DB_URL_CONNECT = "jdbc:postgresql://trolley.proxy.rlwy.net:50772/railway";;
     public final static String DB_USER_CONNECT = "postgres";
     public final static String DB_PASSWORD_CONNECT = "nXaDReqIxhxnRJALsPnNQdRIWsoFYqoX";
+
+    public final static String TEACHER_USERNAME = "NVA000001";
 }

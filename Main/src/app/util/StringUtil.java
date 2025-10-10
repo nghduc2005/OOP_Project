@@ -10,7 +10,7 @@ public final class StringUtil {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
-    public String hashPassword(String password) {
+    public static String hashPassword(String password) {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
         return hashedPassword;
     }
