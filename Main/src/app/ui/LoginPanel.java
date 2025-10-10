@@ -1,35 +1,62 @@
 package app.ui;
 
+import app.dto.request.LoginRequest;
+import app.dto.response.LoginResponse;
+import app.service.TeacherService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginPanel extends JPanel {
+    JLabel usernameLabel, passwordLabel, titleLabel;
+    JTextField username;
+    JPasswordField password;
+    JButton loginButton;
+    MainPanel mainPanel;
     public LoginPanel(MainPanel mainPanel) {
+        //Khởi tạo
+        this.mainPanel = mainPanel;
         setLayout(null);
-        JLabel titleLabel = new JLabel("Login");
+        titleLabel = new JLabel("Login");
+        usernameLabel = new JLabel("Username");
+        passwordLabel = new JLabel("password");
+        username = new JTextField();
+        password = new JPasswordField();
+        loginButton = new JButton("Login");
+
+        //Set các size
         titleLabel.setBounds(750,150,100,50);
-        JLabel usernameLabel = new JLabel("Username");
         usernameLabel.setBounds(600,200,100,30);
-        JLabel passwordLabel = new JLabel("password");
         passwordLabel.setBounds(600,250,100,30);
-        JTextField usernameField = new JTextField();
-        usernameField.setBounds(700,200,150,30);
-        JPasswordField passwordField = new JPasswordField();
-        passwordField.setBounds(700,250,150,30);
-        JButton loginButton = new JButton("Login");
+        username.setBounds(700,200,150,30);
+        password.setBounds(700,250,150,30);
         loginButton.setBounds(700,300,150,30);
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mainPanel.show("dashboard");
-            }
-        });
-        add(titleLabel, BorderLayout.NORTH);
-        add(usernameLabel, BorderLayout.NORTH);
+
+        //Add các action
+        loginButton.addActionListener(e->loginSubmit()); //dùng lambda rồi truyền logic theo từng component
+
+        //Add vào panel
+        add(titleLabel);
+        add(usernameLabel);
         add(passwordLabel);
-        add(usernameField);
-        add(passwordField);
+        add(username);
+        add(password);
         add(loginButton);
+
+        //Set các thiết lập cho panel
+    }
+    public void loginSubmit(){
+        String username = this.username.getText();
+        String password = this.password.getPassword().toString();
+        TeacherService  teacherService = new TeacherService();
+        try {
+            LoginResponse response = teacherService.loginRequestValidate(new LoginRequest(username, password));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(0);
+        }
+        mainPanel.show("dashboard");
     }
 }
