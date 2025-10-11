@@ -9,7 +9,9 @@ public class MainPanel extends JPanel {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
         // Test add panel
-        add(new LoginPanel(this), "login");
+        add(new RoleSelectionPanel(this),"Role");
+        add(new LoginPanelTeacher(this), "Log_t");
+        add(new LoginPanelStudent(this), "Log_s");
         add(new DashboardPanel(this), "dashboard");
     }
     //Hiển thị panel ứng với name
