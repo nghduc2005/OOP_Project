@@ -9,11 +9,15 @@ public class DashboardPanel extends JPanel {
     public DashboardPanel(MainPanel mainPanel) {
         JButton dashboardButton = new JButton("Dashboard");
         dashboardButton.setBounds(10, 10, 100, 30);
+        TextFieldComponent textFieldComponent = new TextFieldComponent(15);
+        TextFieldComponent textFieldComponent1 = new TextFieldComponent(15);
+        add(textFieldComponent);
         dashboardButton.addActionListener(new  ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainPanel.show("login");
             }
         });
         add(dashboardButton);
+        add(textFieldComponent1);
     }
 }
