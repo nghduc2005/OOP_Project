@@ -2,10 +2,8 @@ package app;
 
 
 import app.dao.DatabaseConnection;
-import app.ui.ButtonComponent;
 import app.ui.MainFrame;
 import app.ui.MainPanel;
-import app.util.StringUtil;
 
 import java.sql.SQLException;
 

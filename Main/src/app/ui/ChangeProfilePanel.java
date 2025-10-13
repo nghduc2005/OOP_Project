@@ -1,5 +1,8 @@
 package app.ui;
 
+import app.ui.component.ButtonComponent;
+import app.ui.component.TextFieldComponent;
+
 import javax.swing.*;
 import java.awt.*;
 

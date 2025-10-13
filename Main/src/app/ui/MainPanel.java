@@ -9,6 +9,7 @@ public class MainPanel extends JPanel {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
         // Test add panel
+        add(new ClassDetailPanel(this), "ClassDetail");
         add(new RoleSelectionPanel(this),"Role");
         add(new LoginPanelTeacher(this), "Log_t");
         add(new LoginPanelStudent(this), "Log_s");

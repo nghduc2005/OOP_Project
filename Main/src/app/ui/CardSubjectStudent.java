@@ -12,7 +12,7 @@ public class CardSubjectStudent extends JPanel {
 
     public CardSubjectStudent(Subject subject) {
         // Size, Background
-        setPreferredSize(new Dimension(160, 80));
+        setPreferredSize(new Dimension(300, 150));
         setBackground(new Color(150, 150, 150));
         setBorder(new CompoundBorder(
                 new LineBorder(new Color(130, 130, 130), 1, true),
