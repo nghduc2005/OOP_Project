@@ -18,7 +18,6 @@ public class AddSchedule extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5); // Khoảng cách giữa các thành phần
         gbc.fill = GridBagConstraints.HORIZONTAL; // Các thành phần sẽ mở rộng theo chiều ngang
-        gbc.fill = GridBagConstraints.BOTH;
         // --- Hàng 1: Môn học và Phòng ---
         // Nhãn Môn học
         gbc.gridx = 0;
@@ -160,6 +159,7 @@ public class AddSchedule extends JPanel {
 //        mainFrame.add(new AddSchedule());
 //        int W = Toolkit.getDefaultToolkit().getScreenSize().width;
 //        int H = Toolkit.getDefaultToolkit().getScreenSize().height;
+
 //        mainFrame.setVisible(true);
 //    }
 
