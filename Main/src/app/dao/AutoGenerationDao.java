@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class AutoGeneratorDao {
+public class AutoGenerationDao {
 
     public static String generateStudentId() {
         int currentYear = LocalDate.now().getYear() % 100;
