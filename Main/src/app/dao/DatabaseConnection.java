@@ -53,4 +53,21 @@ public class DatabaseConnection {
             return null;
         }
     }
+    public static Boolean insertTable(String queryString) {
+        List<HashMap<String, Object>> results = new ArrayList<>();
+        try(
+                Connection conn = getConnection();
+                Statement stmt = conn.createStatement();
+        ) {
+            String sql = queryString;
+            stmt.executeUpdate(sql);
+            System.out.println("Chèn thành công!");
+            conn.close();
+            return true;
+        } catch (Exception e) {
+            System.out.println("Chèn thất bại!");
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

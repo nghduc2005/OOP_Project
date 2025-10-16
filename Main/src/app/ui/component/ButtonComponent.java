@@ -1,7 +1,6 @@
-package app.ui;
+package app.ui.component;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 
 public class ButtonComponent extends JButton {
