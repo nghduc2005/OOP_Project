@@ -3,6 +3,7 @@ package app.ui;
 import app.model.Subject;
 import app.ui.component.HeaderComponent;
 import app.ui.component.LabelComponent;
+import app.ui.component.TableComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +18,7 @@ public class DashboardPanel extends JPanel {
         headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Thông tin cá nhân"});
         add(headerComponent, BorderLayout.NORTH);
         JPanel centerPanel = centerPanel();
+
         add(centerPanel, BorderLayout.CENTER);
     }
     public JPanel centerPanel() {
@@ -27,22 +29,20 @@ public class DashboardPanel extends JPanel {
         titleLabel = new LabelComponent("Trang chủ", 50);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(titleLabel);
-//        centerPanel.add(cardListPanel());
-//        centerPanel.add(testPanel());
         centerPanel.add(combinePanel());
+
         return centerPanel;
     }
     public JPanel combinePanel() {
         JPanel combinePanel = new JPanel();
-        combinePanel.setLayout(new BoxLayout(combinePanel, BoxLayout.Y_AXIS));
-        combinePanel.add(cardListPanel());
-        combinePanel.add(testPanel());
+        combinePanel.setLayout(new BorderLayout());
+        combinePanel.add(cardListPanel(), BorderLayout.NORTH);
+        combinePanel.add(tableStudent(), BorderLayout.CENTER);
         return combinePanel;
     }
     public JPanel cardListPanel() {
         JPanel cardListPanel = new JPanel();
         cardListPanel.setLayout(new GridBagLayout());
-        cardListPanel.setBackground(Color.GREEN);
         GridBagConstraints c = new GridBagConstraints();
         c.insets = new Insets(5, 5, 5, 5);
         c.anchor = GridBagConstraints.NORTHWEST;
@@ -57,12 +57,15 @@ public class DashboardPanel extends JPanel {
             c.gridx--;
         }
         cardListPanel.setMaximumSize(cardListPanel.getPreferredSize());
+        cardListPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         return cardListPanel;
     }
-    public JPanel testPanel() {
-        JPanel testPanel = new JPanel();
-        testPanel.setSize(200, 200);
-        testPanel.setBackground(Color.RED);
-        return testPanel;
+    public TableComponent tableStudent() {
+        TableComponent table = new TableComponent(
+                new String[]{"STT", "Mã sinh viên", "Họ và tên", "Điểm CC", "Điểm BT", "Điểm GK", "Điểm CK"},
+                new int[]{50, 200, 200, 200, 100, 100, 100}
+        );
+//        tablePanel.add(table);
+        return table;
     }
 }

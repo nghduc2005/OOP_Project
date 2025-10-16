@@ -54,7 +54,6 @@ public class DatabaseConnection {
         }
     }
     public static Boolean insertTable(String queryString) {
-        List<HashMap<String, Object>> results = new ArrayList<>();
         try(
                 Connection conn = getConnection();
                 Statement stmt = conn.createStatement();
@@ -62,10 +61,24 @@ public class DatabaseConnection {
             String sql = queryString;
             stmt.executeUpdate(sql);
             System.out.println("Chèn thành công!");
-            conn.close();
             return true;
         } catch (Exception e) {
             System.out.println("Chèn thất bại!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public static Boolean deleteRecord(String queryString) {
+        try(
+                Connection conn = getConnection();
+                Statement stmt = conn.createStatement();
+        ) {
+            String sql = queryString;
+            stmt.executeUpdate(sql);
+            System.out.println("Xóa thành công!");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Xóa thất bại!");
             e.printStackTrace();
             return false;
         }

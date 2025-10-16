@@ -9,11 +9,11 @@ public class MainPanel extends JPanel {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
         // Test add panel
-        add(new ClassDetailPanel(this), "ClassDetail");
+        add(new DashboardPanel(this), "dashboard");
         add(new RoleSelectionPanel(this),"Role");
         add(new LoginPanelTeacher(this), "Log_t");
         add(new LoginPanelStudent(this), "Log_s");
-        add(new DashboardPanel(this), "dashboard");
+        add(new ClassDetailPanel(this), "ClassDetail");
     }
     //Hiển thị panel ứng với name
     public void show(String title){

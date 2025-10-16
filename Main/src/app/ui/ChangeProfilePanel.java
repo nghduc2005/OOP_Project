@@ -14,7 +14,7 @@ public class ChangeProfilePanel extends JPanel {
     JTextField lastNameInput, firstNameInput, dateOfBirthInput, emailInput, phoneNumberInput;
     JButton changeProfileButton, saveProfileButton;
 
-    ChangeProfilePanel(MainPanel mainPanel) {
+    public ChangeProfilePanel(MainPanel mainPanel) {
         setLayout(new BorderLayout());
         this.mainPanel = mainPanel;
         titleLabel = new JLabel("Change Profile");
