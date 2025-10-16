@@ -1,4 +1,5 @@
 package app.model;
+import java.time.LocalDate;
 
 import app.dto.request.LoginRequest;
 
@@ -18,11 +19,11 @@ public class Student extends User{
                    String email, LocalDate dateOfBirth) {
         super(userName, password);
         this.studentId = studentId;
-        this.lastName = lastName;
-        this.firstName = firstName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.dateOfBirth = dateOfBirth;
+        setLastName(lastName);
+        setFirstName(firstName);
+        setPhoneNumber(phoneNumber);
+        setEmail(email);
+        setDateOfBirth(dateOfBirth);
     }
 
 
