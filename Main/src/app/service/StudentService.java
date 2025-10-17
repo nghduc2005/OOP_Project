@@ -2,14 +2,31 @@ package app.service;
 
 
 import app.Constant;
+import app.dao.DatabaseConnection;
 import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.model.LoginInterface;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class StudentService implements LoginInterface {
     @Override
     public LoginResponse login(LoginRequest req) {
-        return null;
+        List<HashMap<String, Object>> results = DatabaseConnection.readTable(
+                "select username, password from students where username=" + String.format("'%s'", req.getUsername())
+        );
+        if(results==null || results.isEmpty()){
+            return new LoginResponse("Không tồn tại tài khoản trong CSDL!", false);
+        }
+        System.out.println(results.get(0).get("username"));
+        System.out.println(results.get(0).get("password"));
+        String username = (String) results.get(0).get("username");
+        String password = (String) results.get(0).get("password");
+        if(username.equals(req.getUsername()) && password.equals(req.getPassword())) {
+            return new LoginResponse("Đăng nhập thành công!", true);
+        }
+        return new LoginResponse("Sai tài khoản hoặc mật khẩu!", false);
     }
 
     @Override

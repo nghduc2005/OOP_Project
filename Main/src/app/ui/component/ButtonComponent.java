@@ -16,6 +16,6 @@ public class ButtonComponent extends JButton {
 
 // Tuỳ chỉnh margin (đệm)
         setBackground(new Color(252, 249, 234));
-        setSize(textWidth+24, 30);
+        setSize(textWidth+30, 40);
     }
 }

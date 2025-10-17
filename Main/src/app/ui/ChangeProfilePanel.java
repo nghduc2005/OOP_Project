@@ -1,6 +1,7 @@
 package app.ui;
 
 import app.ui.component.ButtonComponent;
+import app.ui.component.HeaderComponent;
 import app.ui.component.TextFieldComponent;
 
 import javax.swing.*;
@@ -101,6 +102,11 @@ public class ChangeProfilePanel extends JPanel {
 
         JPanel outerPanel = new JPanel(new GridBagLayout());
         outerPanel.add(containerPanel, new GridBagConstraints());
+
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Thông tin cá nhân", "Quay " +
+                "lại"},
+                mainPanel);
+        add(headerComponent, BorderLayout.NORTH);
         add(outerPanel, BorderLayout.CENTER);
     }
 }

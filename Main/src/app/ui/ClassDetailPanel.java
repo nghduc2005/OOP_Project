@@ -1,6 +1,8 @@
 package app.ui;
 
+import app.ui.component.HeaderComponent;
 import app.ui.component.LabelComponent;
+import app.ui.component.TableComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +11,15 @@ public class ClassDetailPanel extends JPanel {
     JLabel titleLabel, groupLabel, creditLabel, totalStudentLabel;
     ClassDetailPanel(MainPanel mainPanel) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Thông tin cá nhân", "Quay lại"},
+                mainPanel);
+        add(headerComponent);
         add(classDescriptionPanel("Tên môn học", "Vật lý"));
+        TableComponent table = new TableComponent(
+                new String[]{"Họ và tên", "Điểm CC", "Điểm BT", "Điểm GK", "Điểm CK"},
+                new int[]{300, 200,200, 200, 200}
+        );
+        add(table);
     }
     public JLabel createLabel(String title, String content) {
         JLabel label = new LabelComponent(title+": "+content, 15);

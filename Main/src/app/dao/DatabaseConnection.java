@@ -15,7 +15,7 @@ public class DatabaseConnection {
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 
             Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Kết nối thành công tới Railway PostgreSQL!");
+            System.out.println("Kết nối thành công tới Railway MySQL!");
             return connection;
         } catch (SQLException e) {
             System.out.println("Lỗi kết nối CSDL:");
@@ -45,7 +45,6 @@ public class DatabaseConnection {
                 results.add(row);
             }
             System.out.println("Truy vấn thành công!");
-            conn.close();
             return results;
         } catch (Exception e) {
             System.out.println("Truy vấn thất bại!");

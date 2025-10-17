@@ -7,15 +7,20 @@ import app.ui.component.TableComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class DashboardPanel extends JPanel {
     JPanel header;
     HeaderComponent headerComponent;
     CardSubjectTeacher cardSubjectTeachers;
     LabelComponent titleLabel;
+    MainPanel mainPanel;
     public DashboardPanel(MainPanel mainPanel) {
+        this.mainPanel =mainPanel;
         setLayout(new BorderLayout());
-        headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Thông tin cá nhân"});
+        headerComponent = new HeaderComponent(new String[]{"Đăng xuất", "Trang chủ", "Thông tin cá nhân", "Quay lại"},
+                mainPanel);
         add(headerComponent, BorderLayout.NORTH);
         JPanel centerPanel = centerPanel();
 
@@ -49,6 +54,13 @@ public class DashboardPanel extends JPanel {
         c.gridx = 4; c.gridy = 0;
         for(int i = 1; i <= 7; i++) {
             CardSubjectTeacher cardSubjectTeacher = new CardSubjectTeacher(new Subject("1", "Giải tích", 3), "3");
+            cardSubjectTeacher.setName(String.format("%s", i));
+            cardListPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    mainPanel.show("ClassDetail");
+                }
+            });
             cardListPanel.add(cardSubjectTeacher, c);
             if(i%4==0) {
                 c.gridy++;
@@ -68,4 +80,6 @@ public class DashboardPanel extends JPanel {
 //        tablePanel.add(table);
         return table;
     }
+
+
 }
