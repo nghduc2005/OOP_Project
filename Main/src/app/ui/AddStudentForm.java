@@ -42,7 +42,7 @@ public class AddStudentForm extends JDialog {
     }
 
     private void generateStudentInfo() {
-        generatedStudentId = app.dao.AutoGeneratorDao.getUniqueStudentId();
+        generatedStudentId = app.dao.AutoGenerationDao.getUniqueStudentId();
         generatedUsername = generatedStudentId;
         System.out.println("Generated Student ID from DB: " + generatedStudentId);
     }
