@@ -15,7 +15,7 @@ public class DatabaseConnection {
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
 
             Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Kết nối thành công tới Railway PostgreSQL!");
+            System.out.println("Kết nối thành công tới Railway MySQL!");
             return connection;
         } catch (SQLException e) {
             System.out.println("Lỗi kết nối CSDL:");
@@ -45,7 +45,6 @@ public class DatabaseConnection {
                 results.add(row);
             }
             System.out.println("Truy vấn thành công!");
-            conn.close();
             return results;
         } catch (Exception e) {
             System.out.println("Truy vấn thất bại!");
@@ -54,7 +53,6 @@ public class DatabaseConnection {
         }
     }
     public static Boolean insertTable(String queryString) {
-        List<HashMap<String, Object>> results = new ArrayList<>();
         try(
                 Connection conn = getConnection();
                 Statement stmt = conn.createStatement();
@@ -62,10 +60,24 @@ public class DatabaseConnection {
             String sql = queryString;
             stmt.executeUpdate(sql);
             System.out.println("Chèn thành công!");
-            conn.close();
             return true;
         } catch (Exception e) {
             System.out.println("Chèn thất bại!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public static Boolean deleteRecord(String queryString) {
+        try(
+                Connection conn = getConnection();
+                Statement stmt = conn.createStatement();
+        ) {
+            String sql = queryString;
+            stmt.executeUpdate(sql);
+            System.out.println("Xóa thành công!");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Xóa thất bại!");
             e.printStackTrace();
             return false;
         }

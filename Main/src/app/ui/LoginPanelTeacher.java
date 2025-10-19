@@ -3,6 +3,7 @@ package app.ui;
 import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.service.TeacherService;
+import app.ui.component.ButtonComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,8 +50,9 @@ public class LoginPanelTeacher extends JPanel {
         password.setBounds(W/2-100,H/2-60-y,230,30);
         loginButton.setBounds(W/2-40,H/2-20-y,230-120,30);
         ShowPassword.setBounds(W/2 - 100 +240 , H/2-55-y, 50, 20);
-        forgotPasswordLabel.setBounds(W/2-100+230-90,H/2+10-y,100,30);
+        forgotPasswordLabel.setBounds(W/2-100+160-90,H/2+10-y,100,30);
         registerLabel.setBounds(W/2-100,H/2+10-y,150,30);
+        ButtonComponent returnButton = new ButtonComponent("Back");
 
         //Add các action
         loginButton.addActionListener(e->loginSubmit()); //dùng lambda rồi truyền logic theo từng component
@@ -67,6 +69,8 @@ public class LoginPanelTeacher extends JPanel {
             }
         });
         ShowPassword.addActionListener(e -> show_Password());
+        returnButton.addActionListener(e-> mainPanel.show("Role"));
+
         //Add vào panel
         add(titleLabel);
         add(usernameLabel);
@@ -76,7 +80,8 @@ public class LoginPanelTeacher extends JPanel {
         add(loginButton);
         add(forgotPasswordLabel);
         add(ShowPassword);
-        add(registerLabel);
+        add(returnButton);
+//        add(registerLabel);
         //Set các thiết lập cho panel
 
 
@@ -88,11 +93,13 @@ public class LoginPanelTeacher extends JPanel {
         TeacherService  teacherService = new TeacherService();
         try {
             LoginResponse response = teacherService.loginRequestValidate(new LoginRequest(username, password));
+            if(response.status) {
+                mainPanel.show("dashboard");
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.exit(0);
         }
-        mainPanel.show("dashboard");
     }
     public void updateLater(){
         JOptionPane.showMessageDialog(

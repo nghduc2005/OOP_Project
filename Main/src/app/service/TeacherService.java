@@ -14,10 +14,15 @@ import java.util.List;
 public class TeacherService implements LoginInterface {
     @Override
     public LoginResponse login(LoginRequest req) {
-        List<HashMap<String, Object>> results = DatabaseConnection.readTable("SELECT user_name, password from teacher");
-        String userName = (String) results.get(0).get("user_name");
+        List<HashMap<String, Object>> results = DatabaseConnection.readTable(
+                "SELECT username, password from teachers where username = " + String.format("'%s'", req.getUsername())
+        );
+        if(results==null || results.isEmpty()){
+            return new LoginResponse("Không tồn tại tài khoản trong CSDL!", false);
+        }
+        String username = (String) results.get(0).get("username");
         String password = (String) results.get(0).get("password");
-        if(userName.equals(req.getUsername()) && StringUtil.checkPassword(password, req.getPassword())) {
+        if(username.equals(req.getUsername()) && password.equals(req.getPassword())) {
             return new LoginResponse("Đăng nhập thành công!", true);
         }
         return new LoginResponse("Sai tài khoản hoặc mật khẩu!", false);

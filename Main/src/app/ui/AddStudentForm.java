@@ -1,5 +1,6 @@
 package app.ui;
 
+import app.dao.AutoGenerationDao;
 import app.model.Student;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -42,7 +43,7 @@ public class AddStudentForm extends JDialog {
     }
 
     private void generateStudentInfo() {
-        generatedStudentId = app.dao.AutoGeneratorDao.getUniqueStudentId();
+        generatedStudentId = AutoGenerationDao.getUniqueStudentId();
         generatedUsername = generatedStudentId;
         System.out.println("Generated Student ID from DB: " + generatedStudentId);
     }

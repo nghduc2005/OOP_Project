@@ -3,6 +3,7 @@ package app.ui;
 import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.service.StudentService;
+import app.ui.component.ButtonComponent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +40,7 @@ public class LoginPanelStudent extends JPanel {
         registerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         ShowPassword = new JButton("👁");
         defaultEchoChar = password.getEchoChar();
+        ButtonComponent returnButton = new ButtonComponent("Back");
         //Set các size
         int y=10;
         titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
@@ -49,7 +51,7 @@ public class LoginPanelStudent extends JPanel {
         password.setBounds(W/2-100,H/2-60-y,230,30);
         loginButton.setBounds(W/2-40,H/2-20-y,230-120,30);
         ShowPassword.setBounds(W/2 - 100 +240 , H/2-55-y, 50, 20);
-        forgotPasswordLabel.setBounds(W/2-100+230-90,H/2+10-y,100,30);
+        forgotPasswordLabel.setBounds(W/2-100+160-90,H/2+10-y,100,30);
         registerLabel.setBounds(W/2-100,H/2+10-y,150,30);
 
         //Add các action
@@ -67,6 +69,7 @@ public class LoginPanelStudent extends JPanel {
             }
         });
         ShowPassword.addActionListener(e -> show_Password());
+        returnButton.addActionListener(e-> mainPanel.show("Role"));
         //Add vào panel
         add(titleLabel);
         add(usernameLabel);
@@ -76,7 +79,8 @@ public class LoginPanelStudent extends JPanel {
         add(loginButton);
         add(forgotPasswordLabel);
         add(ShowPassword);
-        add(registerLabel);
+        add(returnButton);
+//        add(registerLabel);
         //Set các thiết lập cho panel
 
     }
@@ -86,13 +90,17 @@ public class LoginPanelStudent extends JPanel {
         StudentService  studentService = new StudentService();
         try {
             LoginResponse response = studentService.loginRequestValidate(new LoginRequest(username, password));
+            System.out.println(response.status);
+            if(response.status) {
+                mainPanel.show("dashboard");
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.exit(0);
         }
-        mainPanel.show("dashboard");
     }
     public void updateLater(){
+
         JOptionPane.showMessageDialog(
                 LoginPanelStudent.this,
                 "Tính năng này đang được phát triển!",
