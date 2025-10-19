@@ -14,10 +14,7 @@ public class SubjectDao {
             return false;
         }
 
-        if (!validateSubject(subject)) {
-            return false;
-        }
-
+        if (!validateSubject(subject)) return false;
         if (isSubjectIdExists(subject.getSubjectId())) {
             System.out.println("Mã môn học đã tồn tại: " + subject.getSubjectId());
             return false;
@@ -34,9 +31,7 @@ public class SubjectDao {
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
-                System.out.println("Thêm môn học thành công: " + subject.getSubjectName());
-            }
+            if (result) System.out.println("Thêm môn học thành công: " + subject.getSubjectName());
             return result;
         } catch (Exception e) {
             System.out.println("Lỗi khi thêm môn học: " + e.getMessage());
@@ -78,9 +73,7 @@ public class SubjectDao {
             if (results != null) {
                 for (HashMap<String, Object> row : results) {
                     Subject subject = mapToSubject(row);
-                    if (subject != null) {
-                        subjects.add(subject);
-                    }
+                    if (subject != null) subjects.add(subject);
                 }
             }
         } catch (Exception e) {
@@ -107,9 +100,7 @@ public class SubjectDao {
             if (results != null) {
                 for (HashMap<String, Object> row : results) {
                     Subject subject = mapToSubject(row);
-                    if (subject != null) {
-                        subjects.add(subject);
-                    }
+                    if (subject != null) subjects.add(subject);
                 }
             }
         } catch (Exception e) {
@@ -125,10 +116,7 @@ public class SubjectDao {
             return false;
         }
 
-        if (!validateSubject(subject)) {
-            return false;
-        }
-
+        if (!validateSubject(subject)) return false;
         if (!isSubjectIdExists(subject.getSubjectId())) {
             System.out.println("Môn học không tồn tại: " + subject.getSubjectId());
             return false;
@@ -145,9 +133,7 @@ public class SubjectDao {
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
-                System.out.println("Cập nhật môn học thành công: " + subject.getSubjectName());
-            }
+            if (result) System.out.println("Cập nhật môn học thành công: " + subject.getSubjectName());
             return result;
         } catch (Exception e) {
             System.out.println("Lỗi khi cập nhật môn học: " + e.getMessage());
@@ -174,9 +160,7 @@ public class SubjectDao {
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
-                System.out.println("Xóa môn học thành công: " + subjectId);
-            }
+            if (result) System.out.println("Xóa môn học thành công: " + subjectId);
             return result;
         } catch (Exception e) {
             System.out.println("Lỗi khi xóa môn học: " + e.getMessage());
@@ -186,9 +170,7 @@ public class SubjectDao {
     }
 
     public static boolean isSubjectIdExists(String subjectId) {
-        if (subjectId == null || subjectId.trim().isEmpty()) {
-            return false;
-        }
+        if (subjectId == null || subjectId.trim().isEmpty()) return false;
 
         String query = String.format(
                 "SELECT COUNT(*) as count FROM subject WHERE subject_id = '%s'",
@@ -200,11 +182,8 @@ public class SubjectDao {
             if (results != null && !results.isEmpty()) {
                 Object countObj = results.get(0).get("count");
                 long count = 0;
-                if (countObj instanceof Integer) {
-                    count = ((Integer) countObj).longValue();
-                } else if (countObj instanceof Long) {
-                    count = (Long) countObj;
-                }
+                if (countObj instanceof Integer) count = ((Integer) countObj).longValue();
+                else if (countObj instanceof Long) count = (Long) countObj;
                 return count > 0;
             }
         } catch (Exception e) {
@@ -215,9 +194,7 @@ public class SubjectDao {
     }
 
     public static List<Subject> searchSubjectByName(String searchTerm) {
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return getAllSubjects();
-        }
+        if (searchTerm == null || searchTerm.trim().isEmpty()) return getAllSubjects();
 
         String query = String.format(
                 "SELECT * FROM subject WHERE LOWER(subject_name) LIKE LOWER('%%%s%%') ORDER BY subject_id",
@@ -230,9 +207,7 @@ public class SubjectDao {
             if (results != null) {
                 for (HashMap<String, Object> row : results) {
                     Subject subject = mapToSubject(row);
-                    if (subject != null) {
-                        subjects.add(subject);
-                    }
+                    if (subject != null) subjects.add(subject);
                 }
             }
         } catch (Exception e) {
@@ -247,29 +222,25 @@ public class SubjectDao {
             System.out.println("Mã môn học không được rỗng!");
             return false;
         }
-
         if (subject.getSubjectName() == null || subject.getSubjectName().trim().isEmpty()) {
             System.out.println("Tên môn học không được rỗng!");
             return false;
         }
-
         if (subject.getCredit() < 1 || subject.getCredit() > 10) {
             System.out.println("Số tín chỉ phải từ 1 đến 10!");
             return false;
         }
-
         return true;
     }
 
     private static Subject mapToSubject(HashMap<String, Object> row) {
         try {
-            String subjectId = (String) row.get("subject_id");
+            Object subjectIdObj = row.get("subject_id");
+            String subjectId = subjectIdObj != null ? subjectIdObj.toString() : "";
             String subjectName = (String) row.get("subject_name");
             Object creditObj = row.get("credit");
-            int credit = creditObj instanceof Integer ? (Integer) creditObj :
-                    Integer.parseInt(creditObj.toString());
+            int credit = creditObj instanceof Integer ? (Integer) creditObj : Integer.parseInt(creditObj.toString());
             String teacherName = (String) row.get("teacher_name");
-
             return new Subject(subjectId, subjectName, credit, teacherName, new double[5]);
         } catch (Exception e) {
             System.out.println("Lỗi khi chuyển đổi dữ liệu môn học: " + e.getMessage());
@@ -279,9 +250,7 @@ public class SubjectDao {
     }
 
     private static String escapeString(String str) {
-        if (str == null) {
-            return "";
-        }
+        if (str == null) return "";
         return str.replace("'", "''");
     }
 }
