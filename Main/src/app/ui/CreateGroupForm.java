@@ -34,7 +34,7 @@ public class CreateGroupForm extends JDialog {
     }
 
     private void generateGroupInfo() {
-        generatedGroupId = app.dao.AutoGeneratorDao.getUniqueGroupId();
+        generatedGroupId = app.dao.AutoGenerationDao.getUniqueGroupId();
         System.out.println("Generated Group ID from DB: " + generatedGroupId);
     }
 
