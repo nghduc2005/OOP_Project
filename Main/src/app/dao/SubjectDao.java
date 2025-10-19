@@ -1,0 +1,287 @@
+package app.dao;
+
+import app.model.Subject;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class SubjectDao {
+
+    public static boolean createSubject(Subject subject) {
+        if (subject == null) {
+            System.out.println("Subject không được null!");
+            return false;
+        }
+
+        if (!validateSubject(subject)) {
+            return false;
+        }
+
+        if (isSubjectIdExists(subject.getSubjectId())) {
+            System.out.println("Mã môn học đã tồn tại: " + subject.getSubjectId());
+            return false;
+        }
+
+        String query = String.format(
+                "INSERT INTO subject (subject_id, subject_name, credit, teacher_name) " +
+                        "VALUES ('%s', '%s', %d, '%s')",
+                escapeString(subject.getSubjectId()),
+                escapeString(subject.getSubjectName()),
+                subject.getCredit(),
+                escapeString(subject.getTeacherName() != null ? subject.getTeacherName() : "")
+        );
+
+        try {
+            boolean result = DatabaseConnection.insertTable(query);
+            if (result) {
+                System.out.println("Thêm môn học thành công: " + subject.getSubjectName());
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi thêm môn học: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Subject getSubjectById(String subjectId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) {
+            System.out.println("Mã môn học không được rỗng!");
+            return null;
+        }
+
+        String query = String.format(
+                "SELECT * FROM subject WHERE subject_id = '%s'",
+                escapeString(subjectId)
+        );
+
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null && !results.isEmpty()) {
+                HashMap<String, Object> row = results.get(0);
+                return mapToSubject(row);
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy thông tin môn học: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<Subject> getAllSubjects() {
+        String query = "SELECT * FROM subject ORDER BY subject_id";
+        List<Subject> subjects = new ArrayList<>();
+
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null) {
+                for (HashMap<String, Object> row : results) {
+                    Subject subject = mapToSubject(row);
+                    if (subject != null) {
+                        subjects.add(subject);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy danh sách môn học: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+
+    public static List<Subject> getSubjectsByTeacher(String teacherName) {
+        if (teacherName == null || teacherName.trim().isEmpty()) {
+            System.out.println("Tên giảng viên không được rỗng!");
+            return new ArrayList<>();
+        }
+
+        String query = String.format(
+                "SELECT * FROM subject WHERE teacher_name = '%s' ORDER BY subject_id",
+                escapeString(teacherName)
+        );
+
+        List<Subject> subjects = new ArrayList<>();
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null) {
+                for (HashMap<String, Object> row : results) {
+                    Subject subject = mapToSubject(row);
+                    if (subject != null) {
+                        subjects.add(subject);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy danh sách môn học của giảng viên: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+
+    public static boolean updateSubject(Subject subject) {
+        if (subject == null) {
+            System.out.println("Subject không được null!");
+            return false;
+        }
+
+        if (!validateSubject(subject)) {
+            return false;
+        }
+
+        if (!isSubjectIdExists(subject.getSubjectId())) {
+            System.out.println("Môn học không tồn tại: " + subject.getSubjectId());
+            return false;
+        }
+
+        String query = String.format(
+                "UPDATE subject SET subject_name = '%s', credit = %d, teacher_name = '%s' " +
+                        "WHERE subject_id = '%s'",
+                escapeString(subject.getSubjectName()),
+                subject.getCredit(),
+                escapeString(subject.getTeacherName() != null ? subject.getTeacherName() : ""),
+                escapeString(subject.getSubjectId())
+        );
+
+        try {
+            boolean result = DatabaseConnection.insertTable(query);
+            if (result) {
+                System.out.println("Cập nhật môn học thành công: " + subject.getSubjectName());
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi cập nhật môn học: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean deleteSubject(String subjectId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) {
+            System.out.println("Mã môn học không được rỗng!");
+            return false;
+        }
+
+        if (!isSubjectIdExists(subjectId)) {
+            System.out.println("Môn học không tồn tại: " + subjectId);
+            return false;
+        }
+
+        String query = String.format(
+                "DELETE FROM subject WHERE subject_id = '%s'",
+                escapeString(subjectId)
+        );
+
+        try {
+            boolean result = DatabaseConnection.insertTable(query);
+            if (result) {
+                System.out.println("Xóa môn học thành công: " + subjectId);
+            }
+            return result;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi xóa môn học: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean isSubjectIdExists(String subjectId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) {
+            return false;
+        }
+
+        String query = String.format(
+                "SELECT COUNT(*) as count FROM subject WHERE subject_id = '%s'",
+                escapeString(subjectId)
+        );
+
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null && !results.isEmpty()) {
+                Object countObj = results.get(0).get("count");
+                long count = 0;
+                if (countObj instanceof Integer) {
+                    count = ((Integer) countObj).longValue();
+                } else if (countObj instanceof Long) {
+                    count = (Long) countObj;
+                }
+                return count > 0;
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi kiểm tra mã môn học: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static List<Subject> searchSubjectByName(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return getAllSubjects();
+        }
+
+        String query = String.format(
+                "SELECT * FROM subject WHERE LOWER(subject_name) LIKE LOWER('%%%s%%') ORDER BY subject_id",
+                escapeString(searchTerm)
+        );
+
+        List<Subject> subjects = new ArrayList<>();
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null) {
+                for (HashMap<String, Object> row : results) {
+                    Subject subject = mapToSubject(row);
+                    if (subject != null) {
+                        subjects.add(subject);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi tìm kiếm môn học: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+
+    private static boolean validateSubject(Subject subject) {
+        if (subject.getSubjectId() == null || subject.getSubjectId().trim().isEmpty()) {
+            System.out.println("Mã môn học không được rỗng!");
+            return false;
+        }
+
+        if (subject.getSubjectName() == null || subject.getSubjectName().trim().isEmpty()) {
+            System.out.println("Tên môn học không được rỗng!");
+            return false;
+        }
+
+        if (subject.getCredit() < 1 || subject.getCredit() > 10) {
+            System.out.println("Số tín chỉ phải từ 1 đến 10!");
+            return false;
+        }
+
+        return true;
+    }
+
+    private static Subject mapToSubject(HashMap<String, Object> row) {
+        try {
+            String subjectId = (String) row.get("subject_id");
+            String subjectName = (String) row.get("subject_name");
+            Object creditObj = row.get("credit");
+            int credit = creditObj instanceof Integer ? (Integer) creditObj :
+                    Integer.parseInt(creditObj.toString());
+            String teacherName = (String) row.get("teacher_name");
+
+            return new Subject(subjectId, subjectName, credit, teacherName, new double[5]);
+        } catch (Exception e) {
+            System.out.println("Lỗi khi chuyển đổi dữ liệu môn học: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String escapeString(String str) {
+        if (str == null) {
+            return "";
+        }
+        return str.replace("'", "''");
+    }
+}

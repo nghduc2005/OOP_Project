@@ -1,7 +1,8 @@
 package app.ui;
 
-import app.dao.AutoGenerationDao;
 import app.model.Group;
+import app.service.GroupService;
+import app.dao.AutoGenerationDao;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
