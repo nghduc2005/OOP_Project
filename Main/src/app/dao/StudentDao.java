@@ -7,15 +7,15 @@ import java.util.List;
 
 public class StudentDao {
 
-    public static Student getStudentById(String studentId) {
-        if (studentId == null || studentId.trim().isEmpty()) {
-            System.out.println("Mã sinh viên không được rỗng!");
+    public static Student getStudentByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            System.out.println("Username không được rỗng!");
             return null;
         }
 
         String query = String.format(
-                "SELECT * FROM students WHERE student_id = '%s'",
-                escapeString(studentId)
+                "SELECT * FROM students WHERE username = '%s'",
+                escapeString(username)
         );
 
         try {
@@ -59,10 +59,12 @@ public class StudentDao {
         }
 
         String fullName = (student.getLastName() + " " + student.getFirstName()).trim();
+        String username = student.getStudentId();
 
         String query = String.format(
-                "INSERT INTO students (student_id, student_name, email, phone) VALUES ('%s', '%s', '%s', '%s')",
-                escapeString(student.getStudentId()),
+                "INSERT INTO students (username, password, fullname, email, phone) VALUES ('%s', '%s', '%s', '%s', '%s')",
+                escapeString(username),
+                escapeString("Pass1234"),
                 escapeString(fullName),
                 escapeString(student.getEmail() != null ? student.getEmail() : ""),
                 escapeString(student.getPhoneNumber() != null ? student.getPhoneNumber() : "")
@@ -71,7 +73,7 @@ public class StudentDao {
         try {
             boolean result = DatabaseConnection.insertTable(query);
             if (result) {
-                System.out.println("Thêm sinh viên thành công: " + fullName);
+                System.out.println("Thêm sinh viên thành công - Username: " + username + ", Họ tên: " + fullName);
             }
             return result;
         } catch (Exception e) {
@@ -88,19 +90,20 @@ public class StudentDao {
         }
 
         String fullName = (student.getLastName() + " " + student.getFirstName()).trim();
+        String username = student.getStudentId();
 
         String query = String.format(
-                "UPDATE students SET student_name = '%s', email = '%s', phone = '%s' WHERE student_id = '%s'",
+                "UPDATE students SET fullname = '%s', email = '%s', phone = '%s' WHERE username = '%s'",
                 escapeString(fullName),
                 escapeString(student.getEmail() != null ? student.getEmail() : ""),
                 escapeString(student.getPhoneNumber() != null ? student.getPhoneNumber() : ""),
-                escapeString(student.getStudentId())
+                escapeString(username)
         );
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
             if (result) {
-                System.out.println("Cập nhật sinh viên thành công: " + fullName);
+                System.out.println("Cập nhật sinh viên thành công - Username: " + username + ", Họ tên: " + fullName);
             }
             return result;
         } catch (Exception e) {
@@ -110,21 +113,21 @@ public class StudentDao {
         }
     }
 
-    public static boolean deleteStudent(String studentId) {
-        if (studentId == null || studentId.trim().isEmpty()) {
-            System.out.println("Mã sinh viên không được rỗng!");
+    public static boolean deleteStudent(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            System.out.println("Username không được rỗng!");
             return false;
         }
 
         String query = String.format(
-                "DELETE FROM students WHERE student_id = '%s'",
-                escapeString(studentId)
+                "DELETE FROM students WHERE username = '%s'",
+                escapeString(username)
         );
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
             if (result) {
-                System.out.println("Xóa sinh viên thành công: " + studentId);
+                System.out.println("Xóa sinh viên thành công - Username: " + username);
             }
             return result;
         } catch (Exception e) {
@@ -136,15 +139,15 @@ public class StudentDao {
 
     public static Student mapToStudent(HashMap<String, Object> row) {
         try {
-            String studentId = (String) row.get("student_id");
-            String studentName = (String) row.get("student_name");
+            String username = (String) row.get("username");
+            String fullname = (String) row.get("fullname");
             String email = (String) row.get("email");
             String phone = (String) row.get("phone");
 
             String firstName = "";
             String lastName = "";
-            if (studentName != null && !studentName.isEmpty()) {
-                String[] nameParts = studentName.trim().split("\\s+");
+            if (fullname != null && !fullname.isEmpty()) {
+                String[] nameParts = fullname.trim().split("\\s+");
                 if (nameParts.length > 0) {
                     lastName = nameParts[0];
                     if (nameParts.length > 1) {
@@ -153,7 +156,7 @@ public class StudentDao {
                 }
             }
 
-            Student student = new Student(studentId, firstName, lastName, email, phone);
+            Student student = new Student(username, firstName, lastName, email, phone);
             return student;
         } catch (Exception e) {
             System.out.println("Lỗi khi chuyển đổi dữ liệu sinh viên: " + e.getMessage());
