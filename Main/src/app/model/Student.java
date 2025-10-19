@@ -1,18 +1,18 @@
 package app.model;
 import java.time.LocalDate;
-
 import app.dto.request.LoginRequest;
 
-public class Student extends User{
+public class Student extends User {
     private String studentId;
-    Student(LoginRequest request){
+
+    public Student(LoginRequest request){
         super(request.getUsername(), request.getPassword());
     }
-    Student(String studentId, LoginRequest request){
+
+    public Student(String studentId, LoginRequest request){
         super(request.getUsername(), request.getPassword());
         this.studentId = studentId;
     }
-
 
     public Student(String studentId, String lastName, String firstName,
                    String userName, String password, String phoneNumber,
@@ -30,17 +30,12 @@ public class Student extends User{
                    String email, String phoneNumber) {
         super("", "");
         this.studentId = studentId;
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
-        this.setEmail(email);
-        this.setPhoneNumber(phoneNumber);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setEmail(email);
+        setPhoneNumber(phoneNumber);
     }
 
-    public String getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
+    public String getStudentId() { return studentId; }
+    public void setStudentId(String studentId) { this.studentId = studentId; }
 }
