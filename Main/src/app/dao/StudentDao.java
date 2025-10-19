@@ -1,7 +1,6 @@
 package app.dao;
 
 import app.model.Student;
-import app.model.Subject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,7 @@ public class StudentDao {
         }
 
         String query = String.format(
-                "SELECT * FROM student WHERE student_id = '%s'",
+                "SELECT * FROM students WHERE student_id = '%s'",
                 escapeString(studentId)
         );
 
@@ -33,7 +32,7 @@ public class StudentDao {
     }
 
     public static List<Student> getAllStudents() {
-        String query = "SELECT * FROM student ORDER BY student_id";
+        String query = "SELECT * FROM students ORDER BY student_id";
         List<Student> students = new ArrayList<>();
 
         try {
@@ -59,18 +58,20 @@ public class StudentDao {
             return false;
         }
 
+        String fullName = (student.getLastName() + " " + student.getFirstName()).trim();
+
         String query = String.format(
-                "INSERT INTO student (student_id, student_name, email, phone) VALUES ('%s', '%s', '%s', '%s')",
+                "INSERT INTO students (student_id, student_name, email, phone) VALUES ('%s', '%s', '%s', '%s')",
                 escapeString(student.getStudentId()),
-                escapeString(student.getStudentName()),
+                escapeString(fullName),
                 escapeString(student.getEmail() != null ? student.getEmail() : ""),
-                escapeString(student.getPhone() != null ? student.getPhone() : "")
+                escapeString(student.getPhoneNumber() != null ? student.getPhoneNumber() : "")
         );
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
             if (result) {
-                System.out.println("Thêm sinh viên thành công: " + student.getStudentName());
+                System.out.println("Thêm sinh viên thành công: " + fullName);
             }
             return result;
         } catch (Exception e) {
@@ -86,18 +87,20 @@ public class StudentDao {
             return false;
         }
 
+        String fullName = (student.getLastName() + " " + student.getFirstName()).trim();
+
         String query = String.format(
-                "UPDATE student SET student_name = '%s', email = '%s', phone = '%s' WHERE student_id = '%s'",
-                escapeString(student.getStudentName()),
+                "UPDATE students SET student_name = '%s', email = '%s', phone = '%s' WHERE student_id = '%s'",
+                escapeString(fullName),
                 escapeString(student.getEmail() != null ? student.getEmail() : ""),
-                escapeString(student.getPhone() != null ? student.getPhone() : ""),
+                escapeString(student.getPhoneNumber() != null ? student.getPhoneNumber() : ""),
                 escapeString(student.getStudentId())
         );
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
             if (result) {
-                System.out.println("Cập nhật sinh viên thành công: " + student.getStudentName());
+                System.out.println("Cập nhật sinh viên thành công: " + fullName);
             }
             return result;
         } catch (Exception e) {
@@ -114,7 +117,7 @@ public class StudentDao {
         }
 
         String query = String.format(
-                "DELETE FROM student WHERE student_id = '%s'",
+                "DELETE FROM students WHERE student_id = '%s'",
                 escapeString(studentId)
         );
 
@@ -138,7 +141,19 @@ public class StudentDao {
             String email = (String) row.get("email");
             String phone = (String) row.get("phone");
 
-            Student student = new Student(studentId, studentName, new ArrayList<>());
+            String firstName = "";
+            String lastName = "";
+            if (studentName != null && !studentName.isEmpty()) {
+                String[] nameParts = studentName.trim().split("\\s+");
+                if (nameParts.length > 0) {
+                    lastName = nameParts[0];
+                    if (nameParts.length > 1) {
+                        firstName = String.join(" ", java.util.Arrays.copyOfRange(nameParts, 1, nameParts.length));
+                    }
+                }
+            }
+
+            Student student = new Student(studentId, firstName, lastName, email, phone);
             return student;
         } catch (Exception e) {
             System.out.println("Lỗi khi chuyển đổi dữ liệu sinh viên: " + e.getMessage());

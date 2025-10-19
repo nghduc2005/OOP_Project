@@ -26,6 +26,15 @@ public class Student extends User{
         setDateOfBirth(dateOfBirth);
     }
 
+    public Student(String studentId, String firstName, String lastName,
+                   String email, String phoneNumber) {
+        super("", "");
+        this.studentId = studentId;
+        this.setFirstName(firstName);
+        this.setLastName(lastName);
+        this.setEmail(email);
+        this.setPhoneNumber(phoneNumber);
+    }
 
     public String getStudentId() {
         return studentId;
