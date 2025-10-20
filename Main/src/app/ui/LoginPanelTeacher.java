@@ -4,7 +4,7 @@ import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.service.TeacherService;
 import app.ui.component.ButtonComponent;
-
+import app.session.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -94,6 +94,10 @@ public class LoginPanelTeacher extends JPanel {
         try {
             LoginResponse response = teacherService.loginRequestValidate(new LoginRequest(username, password));
             if(response.status) {
+                Session.setUsername(username);
+                System.out.println(Session.getUsername());
+                Session.setRole("Teacher");
+                System.out.println(Session.getRole());
                 mainPanel.show("dashboard");
             }
         } catch (Exception e) {

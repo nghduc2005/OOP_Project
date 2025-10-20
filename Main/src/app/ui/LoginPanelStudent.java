@@ -3,6 +3,7 @@ package app.ui;
 import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.service.StudentService;
+import app.session.Session;
 import app.ui.component.ButtonComponent;
 
 import javax.swing.*;
@@ -92,6 +93,10 @@ public class LoginPanelStudent extends JPanel {
             LoginResponse response = studentService.loginRequestValidate(new LoginRequest(username, password));
             System.out.println(response.status);
             if(response.status) {
+                Session.setUsername(username);
+                System.out.println(Session.getUsername());
+                Session.setRole("Student");
+                System.out.println(Session.getRole());
                 mainPanel.show("dashboard");
             }
         } catch (Exception e) {
