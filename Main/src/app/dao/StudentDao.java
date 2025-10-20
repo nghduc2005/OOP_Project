@@ -1,6 +1,11 @@
 package app.dao;
 
 import app.model.Student;
+import app.session.Session;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,27 +88,22 @@ public class StudentDao {
         }
     }
 
-    public static boolean updateStudent(Student student) {
-        if (student == null) {
-            System.out.println("Student không được null!");
-            return false;
-        }
+    public static boolean updateStudent(String full_name, String birthday, String phone, String email) {
 
-        String fullName = (student.getLastName() + " " + student.getFirstName()).trim();
-        String username = student.getStudentId();
 
         String query = String.format(
-                "UPDATE students SET fullname = '%s', email = '%s', phone = '%s' WHERE username = '%s'",
-                escapeString(fullName),
-                escapeString(student.getEmail() != null ? student.getEmail() : ""),
-                escapeString(student.getPhoneNumber() != null ? student.getPhoneNumber() : ""),
-                escapeString(username)
+                "UPDATE students SET fullname = '%s', dateOfBirth = '%s', email = '%s', phone = '%s' WHERE username = '%s'",
+                escapeString(full_name),
+                escapeString(birthday),
+                escapeString(email != null ? email: ""),
+                escapeString(phone != null ? phone : ""),
+                escapeString(Session.getUsername())
         );
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
             if (result) {
-                System.out.println("Cập nhật sinh viên thành công - Username: " + username + ", Họ tên: " + fullName);
+                System.out.println("Cập nhật sinh viên thành công ");
             }
             return result;
         } catch (Exception e) {
@@ -171,25 +171,29 @@ public class StudentDao {
         }
         return str.replace("'", "''");
     }
+    public static String getPasswordByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            System.out.println("Username không được rỗng!");
+            return null;
+        }
 
+        String sql = "SELECT password FROM students WHERE username = ?";
 
-    /**
-     * Collect danh sách các môn học và điểm số của SV từ database.
-     * @param studentId ID của SV cần truy vấn.
-     * @return Một List chứa thông tin môn học và điểm số.
-     */
-    public List<HashMap<String, Object>> findClassAndScoreByStudentId(int studentId) {
-        // subject, group, student_in_group
-        String sqlQuery = "SELECT s.name AS subject_name, sig.score " +
-                "FROM student_in_group sig " +
-                "JOIN `group` g ON sig.group_id = g.id " +
-                "JOIN subject s ON g.subject_id = s.id " +
-                "WHERE sig.student_id = " + studentId;
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        // In SQL command ra để check
-        System.out.println("Executing SQL for Task 1: " + sqlQuery);
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
 
-        // Gọi readTable từ lớp kết nối chung để execute
-        return DatabaseConnection.readTable(sqlQuery);
+            if (rs.next()) {
+                return rs.getString("password");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy mật khẩu: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
+
 }

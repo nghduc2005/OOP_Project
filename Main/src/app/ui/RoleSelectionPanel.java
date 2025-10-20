@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RoleSelectionPanel extends JPanel {
+    boolean I_am_teacher=false, I_am_student=false;
     JButton teacherButton, studentButton;
     MainPanel mainPanel;
     int W = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -24,8 +25,15 @@ public class RoleSelectionPanel extends JPanel {
         studentButton.setBounds(W/2-100, H/2-150+60, 200, 40);
         title.setForeground(Color.RED);
         // sự kiện bấm nút
-        teacherButton.addActionListener(e -> mainPanel.show("Log_t"));
-        studentButton.addActionListener(e -> mainPanel.show("Log_s"));
+        teacherButton.addActionListener(e -> {
+                    I_am_teacher=true;
+                    mainPanel.show("Log_t");
+                }
+        );
+        studentButton.addActionListener(e -> {
+            I_am_student=true;
+            mainPanel.show("Log_s");
+        });
 
         add(title);
         add(teacherButton);

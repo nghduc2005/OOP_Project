@@ -20,6 +20,7 @@ public class MainPanel extends JPanel {
         add(new DashboardPanel(this), "dashboard");
         add(new ClassDetailPanel(this), "ClassDetail");
         add(new ChangeProfilePanel(this), "ChangeProfile");
+        add(new ChangePassword(this), "ChangePassword");
     }
     //Hiển thị panel ứng với name
     public void show(String title){
