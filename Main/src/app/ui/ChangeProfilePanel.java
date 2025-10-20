@@ -1,11 +1,16 @@
 package app.ui;
 
+import app.dao.*;
+import app.model.Student;
+import app.session.Session;
 import app.ui.component.ButtonComponent;
 import app.ui.component.HeaderComponent;
 import app.ui.component.TextFieldComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ChangeProfilePanel extends JPanel {
     MainPanel mainPanel;
@@ -108,5 +113,43 @@ public class ChangeProfilePanel extends JPanel {
                 mainPanel);
         add(headerComponent, BorderLayout.NORTH);
         add(outerPanel, BorderLayout.CENTER);
+
+        // Action ChangeProfile
+        changeProfileButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Change_profile();
+            }
+        });
+    }
+    public void Change_profile(){
+        String fullname = firstNameInput.getText() +" "+ lastNameInput.getText();
+        String birthday = dateOfBirthInput.getText();
+        String phone = phoneNumberInput.getText();
+        String email = emailInput.getText();
+        if (fullname.isBlank() || birthday.isBlank() || phone.isBlank() || email.isBlank()){
+            JOptionPane.showMessageDialog(
+                    ChangeProfilePanel.this,
+                    "Vui lòng nhâp đầy đủ",
+                    "Chú ý",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        }else{
+            boolean result;
+            if(Session.getRole().equals("Teacher")){
+                result = TeacherDao.updateTeacher(fullname,birthday,phone,email);
+            }else{
+                result = StudentDao.updateStudent(fullname,birthday,phone,email);
+            }
+            if ( result ){
+                JOptionPane.showMessageDialog(
+                        ChangeProfilePanel.this,
+                        "Cập nhật thành công",
+                        "Chú ý",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        }
+
     }
 }
