@@ -6,6 +6,7 @@ import app.dao.DatabaseConnection;
 import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.model.LoginInterface;
+import app.dao.StudentDao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,5 +54,16 @@ public class StudentService implements LoginInterface {
             throw new Error("Tài khoản hoặc mật khẩu không hợp lệ!");
         }
         return response;
+    }
+
+    /**
+     * Lấy ds lớp học và điểm cho SV
+     * @param studentId ID của sinh viên.
+     * @return Dữ liệu lớp học và điểm
+     */
+    public List<HashMap<String, Object>> getClassAndScoreForStudent(int studentId) {
+        StudentDao studentDao = new StudentDao();
+        List<HashMap<String, Object>> data = studentDao.findClassAndScoreByStudentId(studentId);
+        return data;
     }
 }

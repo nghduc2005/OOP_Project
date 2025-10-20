@@ -171,4 +171,25 @@ public class StudentDao {
         }
         return str.replace("'", "''");
     }
+
+
+    /**
+     * Collect danh sách các môn học và điểm số của SV từ database.
+     * @param studentId ID của SV cần truy vấn.
+     * @return Một List chứa thông tin môn học và điểm số.
+     */
+    public List<HashMap<String, Object>> findClassAndScoreByStudentId(int studentId) {
+        // subject, group, student_in_group
+        String sqlQuery = "SELECT s.name AS subject_name, sig.score " +
+                "FROM student_in_group sig " +
+                "JOIN `group` g ON sig.group_id = g.id " +
+                "JOIN subject s ON g.subject_id = s.id " +
+                "WHERE sig.student_id = " + studentId;
+
+        // In SQL command ra để check
+        System.out.println("Executing SQL for Task 1: " + sqlQuery);
+
+        // Gọi readTable từ lớp kết nối chung để execute
+        return DatabaseConnection.readTable(sqlQuery);
+    }
 }
