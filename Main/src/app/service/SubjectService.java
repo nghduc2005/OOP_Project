@@ -3,6 +3,8 @@ package app.service;
 import app.dao.SubjectDao;
 import app.model.Subject;
 import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
 
 public class SubjectService {
 
@@ -117,5 +119,89 @@ public class SubjectService {
             }
         }
         return String.format("SUB%05d", maxId + 1);
+    }
+
+
+    /**
+     * Lấy đối tượng Subject hoàn chỉnh (bao gồm cả tên giảng viên và 5 đầu điểm)
+     * để truyền vào SubjectPopup.
+     * @param subjectId Mã môn học.
+     * @param studentId Mã sinh viên.
+     * @return Đối tượng Subject hoặc null nếu không tìm thấy.
+     */
+    public static Subject getSubjectDetails(String subjectId, String studentId) {
+        if (subjectId == null || subjectId.trim().isEmpty() || studentId == null || studentId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã môn học và Mã sinh viên không được rỗng!");
+        }
+
+        // Lấy Tên + Tín chỉ, teacherName sẽ là rỗng
+        Subject subject = SubjectDao.getSubjectById(subjectId);
+        if (subject == null) {
+            return null;
+        }
+
+        // Lấy tên teacher
+        String teacherName = SubjectDao.getTeacherNameBySubjectId(subjectId);
+        subject.setTeacherName(teacherName);
+
+        // Lấy 4 điểm thành phần CC, CK, GK, TH từ Database
+        List<HashMap<String, Object>> gradeResults = SubjectDao.getGradeSubject(subjectId, studentId);
+
+        // Lắp ráp 5 điểm
+        double[] grades = calculateAndSetGrades(gradeResults);
+
+        // Cập nhật điểm vào đối tượng Subject
+        for (int i = 0; i < grades.length; i++) {
+            subject.setGrade(i, grades[i]);
+        }
+
+        return subject;
+    }
+
+
+    // Tính toán + Sắp xếp điểm
+    private static double[] calculateAndSetGrades(List<HashMap<String, Object>> gradeResults) {
+        // Thứ tự điểm trong SubjectPopup: 0: CC, 1: GK, 2: TH, 3: CK, 4: Tổng kết
+        double[] rawGrades = new double[4];
+
+        if (gradeResults == null || gradeResults.isEmpty()) {
+            return new double[5]; // Trả về 0.0 nếu không có điểm
+        }
+
+        // Ánh xạ điểm từ DB vào mảng theo thứ tự của SubjectPopup
+        for (HashMap<String, Object> row : gradeResults) {
+            String type = (String) row.get("grade_type");
+            double score = Double.parseDouble(row.get("score").toString());
+
+            switch (type) {
+                case "CC":
+                    rawGrades[0] = score;
+                    break;
+                case "GK":
+                    rawGrades[1] = score;
+                    break;
+                case "TH":
+                    rawGrades[2] = score;
+                    break;
+                case "CK":
+                    rawGrades[3] = score;
+                    break;
+            }
+        }
+
+        // Tính điểm tổng kết
+        double finalGrade = (rawGrades[0] * 0.10) +
+                (rawGrades[1] * 0.20) +
+                (rawGrades[2] * 0.20) +
+                (rawGrades[3] * 0.50);
+
+        // Tạo mảng 5 phần tử để trả về cho SubjectPopup
+        return new double[]{
+                rawGrades[0],   // 0 chuyên cần
+                rawGrades[1],   // 1 giữa kỳ
+                rawGrades[2],   // 2 thực hành
+                rawGrades[3],   // 3 cuối kỳ
+                finalGrade      // 4 tổng kết
+        };
     }
 }

@@ -21,7 +21,7 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "INSERT INTO subject (subject_id, subject_name, credit, teacher_name) " +
+                "INSERT INTO subjects (subject_id, name, credit, teacher_name) " +
                         "VALUES ('%s', '%s', %d, '%s')",
                 escapeString(subject.getSubjectId()),
                 escapeString(subject.getSubjectName()),
@@ -47,7 +47,7 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "SELECT * FROM subject WHERE subject_id = '%s'",
+                "SELECT * FROM subjects WHERE subject_id = '%s'",
                 escapeString(subjectId)
         );
 
@@ -90,7 +90,7 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "SELECT * FROM subject WHERE teacher_name = '%s' ORDER BY subject_id",
+                "SELECT * FROM subjects WHERE teacher_name = '%s' ORDER BY subject_id",
                 escapeString(teacherName)
         );
 
@@ -123,7 +123,7 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "UPDATE subject SET subject_name = '%s', credit = %d, teacher_name = '%s' " +
+                "UPDATE subjects SET subject_name = '%s', credit = %d, teacher_name = '%s' " +
                         "WHERE subject_id = '%s'",
                 escapeString(subject.getSubjectName()),
                 subject.getCredit(),
@@ -154,7 +154,7 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "DELETE FROM subject WHERE subject_id = '%s'",
+                "DELETE FROM subjects WHERE subject_id = '%s'",
                 escapeString(subjectId)
         );
 
@@ -173,7 +173,7 @@ public class SubjectDao {
         if (subjectId == null || subjectId.trim().isEmpty()) return false;
 
         String query = String.format(
-                "SELECT COUNT(*) as count FROM subject WHERE subject_id = '%s'",
+                "SELECT COUNT(*) as count FROM subjects WHERE subject_id = '%s'",
                 escapeString(subjectId)
         );
 
@@ -197,7 +197,7 @@ public class SubjectDao {
         if (searchTerm == null || searchTerm.trim().isEmpty()) return getAllSubjects();
 
         String query = String.format(
-                "SELECT * FROM subject WHERE LOWER(subject_name) LIKE LOWER('%%%s%%') ORDER BY subject_id",
+                "SELECT * FROM subjects WHERE LOWER(subject_name) LIKE LOWER('%%%s%%') ORDER BY subject_id",
                 escapeString(searchTerm)
         );
 
@@ -237,7 +237,7 @@ public class SubjectDao {
         try {
             Object subjectIdObj = row.get("subject_id");
             String subjectId = subjectIdObj != null ? subjectIdObj.toString() : "";
-            String subjectName = (String) row.get("subject_name");
+            String subjectName = (String) row.get("name");
             Object creditObj = row.get("credit");
             int credit = creditObj instanceof Integer ? (Integer) creditObj : Integer.parseInt(creditObj.toString());
             String teacherName = (String) row.get("teacher_name");
@@ -252,5 +252,60 @@ public class SubjectDao {
     private static String escapeString(String str) {
         if (str == null) return "";
         return str.replace("'", "''");
+    }
+
+    /**
+     * @param subjectId
+     * @param studentId
+     * @return List gồm điểm CC, GK, TH, CK
+     */
+    public static List<HashMap<String, Object>> getGradeSubject(String subjectId, String studentId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) return null;
+
+        String query = String.format(
+                "SELECT grade_type, score FROM grades " +
+                        "WHERE subject_id = '%s' AND student_id = '%s' " +
+                        "AND grade_type IN ('CC', 'GK', 'TH', 'CK')",
+                escapeString(subjectId),
+                escapeString(studentId)
+        );
+
+        try {
+            // Tái sử dụng phương thức đọc bảng đã có
+            return DatabaseConnection.readTable(query);
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy điểm: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * @param subjectId
+     * @return teacher fullname
+     */
+    public static String getTeacherNameBySubjectId(String subjectId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) return "Chưa phân công";
+
+        // Truy vấn
+        String query = String.format(
+                "SELECT t.fullname FROM teachers t " +
+                        "INNER JOIN classes c ON t.teacher_id = c.teacher_id " +
+                        "WHERE c.subject_id = '%s' LIMIT 1",
+                escapeString(subjectId)
+        );
+
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null && !results.isEmpty()) {
+                // Tên GV được lưu trong cột 'fullname'
+                Object fullNameObj = results.get(0).get("fullname");
+                return fullNameObj != null ? fullNameObj.toString() : "Chưa phân công";
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy tên giảng viên: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "Chưa phân công";
     }
 }
