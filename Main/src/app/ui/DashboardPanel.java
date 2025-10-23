@@ -19,7 +19,7 @@ public class DashboardPanel extends JPanel {
     public DashboardPanel(MainPanel mainPanel) {
         this.mainPanel =mainPanel;
         setLayout(new BorderLayout());
-        headerComponent = new HeaderComponent(new String[]{"Đăng xuất", "Trang chủ", "Thông tin cá nhân", "Quay lại"},
+        headerComponent = new HeaderComponent(new String[]{"Đăng xuất", "Trang chủ", "Lịch học", "Thông tin cá nhân", "Quay lại"},
                 mainPanel);
         add(headerComponent, BorderLayout.NORTH);
         JPanel centerPanel = centerPanel();
