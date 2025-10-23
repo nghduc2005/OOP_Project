@@ -149,4 +149,54 @@ public class AutoGenerationDao {
 
         return groupId;
     }
+
+    /**
+     * Tự động tạo ID cho bảng bất kỳ
+     * @param tableName Tên bảng
+     * @param columnName Tên cột ID
+     * @param prefix Prefix của ID (vd: SCH, STU, GRP)
+     * @return ID mới được tạo
+     */
+    public static String autoGenerationId(String tableName, String columnName, String prefix) {
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            if (conn == null) {
+                return generateFallbackId(prefix);
+            }
+
+            String query = String.format(
+                "SELECT %s FROM %s WHERE %s LIKE ? ORDER BY %s DESC LIMIT 1",
+                columnName, tableName, columnName, columnName
+            );
+            
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, prefix + "%");
+
+            ResultSet rs = stmt.executeQuery();
+
+            int nextCounter = 1;
+            if (rs.next()) {
+                String lastId = rs.getString(columnName);
+                if (lastId != null && lastId.startsWith(prefix)) {
+                    String counterStr = lastId.substring(prefix.length());
+                    try {
+                        int lastCounter = Integer.parseInt(counterStr);
+                        nextCounter = lastCounter + 1;
+                    } catch (NumberFormatException e) {
+                        System.err.println("Error parsing counter: " + counterStr);
+                    }
+                }
+            }
+
+            return prefix + String.format("%06d", nextCounter);
+
+        } catch (SQLException e) {
+            System.err.println("Database error in autoGenerationId: " + e.getMessage());
+            return generateFallbackId(prefix);
+        }
+    }
+
+    private static String generateFallbackId(String prefix) {
+        int randomNum = (int)(Math.random() * 900000) + 1;
+        return prefix + String.format("%06d", randomNum);
+    }
 }
