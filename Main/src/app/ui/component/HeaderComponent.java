@@ -32,6 +32,12 @@ public class HeaderComponent extends JPanel {
                         case "Lịch học":
                             mainPanel.show("ScheduleDisplay");
                             break;
+                        case "Đổi mật khẩu":
+                            mainPanel.show("ChangePassword");
+                            break;
+                        case "Chỉnh sửa lớp học":
+                            mainPanel.show("Edit_class");
+                            break;
                         case "Quay lại":
                             mainPanel.back();
                     }

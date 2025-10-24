@@ -82,4 +82,25 @@ public class DatabaseConnection {
             return false;
         }
     }
+    public static Boolean updateRecord(String queryString) {
+        try (
+                Connection conn = getConnection();
+                Statement stmt = conn.createStatement();
+        ) {
+            String sql = queryString;
+            int rowsAffected = stmt.executeUpdate(sql);
+            if (rowsAffected > 0) {
+                System.out.println("Cập nhật thành công! (" + rowsAffected + " dòng bị ảnh hưởng)");
+                return true;
+            } else {
+                System.out.println("Không có dòng nào được cập nhật!");
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Cập nhật thất bại!");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

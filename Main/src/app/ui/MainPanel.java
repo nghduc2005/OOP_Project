@@ -22,6 +22,7 @@ public class MainPanel extends JPanel {
         add(new ChangeProfilePanel(this), "ChangeProfile");
         add(new ChangePassword(this), "ChangePassword");
         add(new ScheduleDisplayPanel(this), "ScheduleDisplay");
+        add(new ClassesPanel(this),"Edit_class");
     }
     //Hiển thị panel ứng với name
     public void show(String title){
@@ -39,4 +40,5 @@ public class MainPanel extends JPanel {
         if (unShowBackCard.contains(previous)) return;
         cardLayout.show(this, previous);
     }
+
 }
