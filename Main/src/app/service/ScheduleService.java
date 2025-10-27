@@ -23,11 +23,11 @@ public class ScheduleService {
      * Tạo lịch học với thông tin đầy đủ
      */
     public static boolean createSchedule(String subjectName, String teacherName,
-                                       String room, String building, LocalDate scheduleDate,
-                                       LocalTime startTime, LocalTime endTime,
-                                       String repeatType, String format, String note, String groupId) {
+                                         String room, String building, LocalDate scheduleDate,
+                                         LocalTime startTime, LocalTime endTime,
+                                         String repeatType, String format, String note, String groupId) {
         Schedule schedule = new Schedule(null, subjectName, teacherName, room, building,
-                                        scheduleDate, startTime, endTime, repeatType, format, note, groupId);
+                scheduleDate, startTime, endTime, repeatType, format, note, groupId);
         return createSchedule(schedule);
     }
 
@@ -141,37 +141,37 @@ public class ScheduleService {
         }
 
         List<Schedule> sameDateSchedules = ScheduleDao.getSchedulesByDate(schedule.getScheduleDate());
-        
+
         for (Schedule existingSchedule : sameDateSchedules) {
             // Skip if comparing with itself
-            if (schedule.getScheduleId() != null && 
-                schedule.getScheduleId().equals(existingSchedule.getScheduleId())) {
+            if (schedule.getScheduleId() != null &&
+                    schedule.getScheduleId().equals(existingSchedule.getScheduleId())) {
                 continue;
             }
 
             // Check if same room and building
             if (schedule.getRoom().equals(existingSchedule.getRoom()) &&
-                schedule.getBuilding().equals(existingSchedule.getBuilding())) {
-                
+                    schedule.getBuilding().equals(existingSchedule.getBuilding())) {
+
                 // Check time overlap
                 if (isTimeOverlap(schedule.getStartTime(), schedule.getEndTime(),
-                                existingSchedule.getStartTime(), existingSchedule.getEndTime())) {
-                    System.out.println("Xung đột lịch học: Phòng " + schedule.getRoom() + 
-                                     " đã có lịch từ " + existingSchedule.getStartTime() + 
-                                     " đến " + existingSchedule.getEndTime());
+                        existingSchedule.getStartTime(), existingSchedule.getEndTime())) {
+                    System.out.println("Xung đột lịch học: Phòng " + schedule.getRoom() +
+                            " đã có lịch từ " + existingSchedule.getStartTime() +
+                            " đến " + existingSchedule.getEndTime());
                     return true;
                 }
             }
         }
-        
+
         return false;
     }
 
     /**
      * Kiểm tra 2 khoảng thời gian có trùng nhau không
      */
-    private static boolean isTimeOverlap(LocalTime start1, LocalTime end1, 
-                                        LocalTime start2, LocalTime end2) {
+    private static boolean isTimeOverlap(LocalTime start1, LocalTime end1,
+                                         LocalTime start2, LocalTime end2) {
         return !start1.isAfter(end2) && !end1.isBefore(start2);
     }
 
@@ -179,9 +179,9 @@ public class ScheduleService {
      * Validate dữ liệu lịch học
      */
     public static boolean validateScheduleData(String subjectName, String teacherName,
-                                              String room, String building,
-                                              LocalDate scheduleDate, LocalTime startTime,
-                                              LocalTime endTime) {
+                                               String room, String building,
+                                               LocalDate scheduleDate, LocalTime startTime,
+                                               LocalTime endTime) {
         if (subjectName == null || subjectName.trim().isEmpty()) {
             System.out.println("Tên môn học không được rỗng!");
             return false;

@@ -34,8 +34,8 @@ public class ScheduleDao {
 
         String query = String.format(
                 "INSERT INTO schedule (schedule_id, subject_name, teacher_name, room, building, " +
-                "schedule_date, start_time, end_time, repeat_type, format, note, group_id) " +
-                "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s)",
+                        "schedule_date, start_time, end_time, repeat_type, format, note, group_id) " +
+                        "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s)",
                 escapeString(schedule.getScheduleId()),
                 escapeString(schedule.getSubjectName()),
                 escapeString(schedule.getTeacherName()),
@@ -156,7 +156,7 @@ public class ScheduleDao {
 
         String query = String.format(
                 "SELECT * FROM schedule WHERE schedule_date BETWEEN '%s' AND '%s' " +
-                "ORDER BY schedule_date, start_time",
+                        "ORDER BY schedule_date, start_time",
                 startDate.toString(),
                 endDate.toString()
         );
@@ -197,9 +197,9 @@ public class ScheduleDao {
 
         String query = String.format(
                 "UPDATE schedule SET subject_name = '%s', teacher_name = '%s', room = '%s', " +
-                "building = '%s', schedule_date = '%s', start_time = '%s', end_time = '%s', " +
-                "repeat_type = '%s', format = '%s', note = '%s', group_id = %s " +
-                "WHERE schedule_id = '%s'",
+                        "building = '%s', schedule_date = '%s', start_time = '%s', end_time = '%s', " +
+                        "repeat_type = '%s', format = '%s', note = '%s', group_id = %s " +
+                        "WHERE schedule_id = '%s'",
                 escapeString(schedule.getSubjectName()),
                 escapeString(schedule.getTeacherName()),
                 escapeString(schedule.getRoom()),
@@ -268,11 +268,11 @@ public class ScheduleDao {
 
         String query = String.format(
                 "SELECT * FROM schedule WHERE " +
-                "LOWER(subject_name) LIKE LOWER('%%%s%%') OR " +
-                "LOWER(teacher_name) LIKE LOWER('%%%s%%') OR " +
-                "LOWER(room) LIKE LOWER('%%%s%%') OR " +
-                "LOWER(building) LIKE LOWER('%%%s%%') " +
-                "ORDER BY schedule_date, start_time",
+                        "LOWER(subject_name) LIKE LOWER('%%%s%%') OR " +
+                        "LOWER(teacher_name) LIKE LOWER('%%%s%%') OR " +
+                        "LOWER(room) LIKE LOWER('%%%s%%') OR " +
+                        "LOWER(building) LIKE LOWER('%%%s%%') " +
+                        "ORDER BY schedule_date, start_time",
                 escapeString(searchTerm),
                 escapeString(searchTerm),
                 escapeString(searchTerm),
@@ -331,8 +331,8 @@ public class ScheduleDao {
             System.out.println("Thời gian kết thúc không được rỗng!");
             return false;
         }
-        if (schedule.getStartTime().isAfter(schedule.getEndTime()) || 
-            schedule.getStartTime().equals(schedule.getEndTime())) {
+        if (schedule.getStartTime().isAfter(schedule.getEndTime()) ||
+                schedule.getStartTime().equals(schedule.getEndTime())) {
             System.out.println("Thời gian bắt đầu phải trước thời gian kết thúc!");
             return false;
         }
@@ -375,7 +375,7 @@ public class ScheduleDao {
             String teacherName = (String) row.get("teacher_name");
             String room = (String) row.get("room");
             String building = (String) row.get("building");
-            
+
             // Parse date
             Object dateObj = row.get("schedule_date");
             LocalDate scheduleDate;
@@ -414,7 +414,7 @@ public class ScheduleDao {
             String groupId = (String) row.get("group_id");
 
             return new Schedule(scheduleId, subjectName, teacherName, room, building,
-                              scheduleDate, startTime, endTime, repeatType, format, note, groupId);
+                    scheduleDate, startTime, endTime, repeatType, format, note, groupId);
         } catch (Exception e) {
             System.out.println("Lỗi khi chuyển đổi dữ liệu lịch học: " + e.getMessage());
             e.printStackTrace();
