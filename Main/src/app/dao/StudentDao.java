@@ -63,24 +63,38 @@ public class StudentDao {
             return false;
         }
 
+        // student_id, username, password, fullname, dateOfBirth, email, phone
+        String sql = "INSERT INTO students (student_id, username, password, fullname, dateOfBirth, email, phone, first_name, last_name) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         String fullName = (student.getLastName() + " " + student.getFirstName()).trim();
-        String username = student.getStudentId();
 
-        String query = String.format(
-                "INSERT INTO students (username, password, fullname, email, phone) VALUES ('%s', '%s', '%s', '%s', '%s')",
-                escapeString(username),
-                escapeString("Pass1234"),
-                escapeString(fullName),
-                escapeString(student.getEmail() != null ? student.getEmail() : ""),
-                escapeString(student.getPhoneNumber() != null ? student.getPhoneNumber() : "")
-        );
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        try {
-            boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
-                System.out.println("Thêm sinh viên thành công - Username: " + username + ", Họ tên: " + fullName);
+            // nếu student_id là số tự tăng, không thì fix sau
+            String sql_fixed = "INSERT INTO students (username, password, fullname, dateOfBirth, email, phone, first_name, last_name) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement stmt_fixed = conn.prepareStatement(sql_fixed);
+
+            stmt_fixed.setString(1, student.getUserName());
+            stmt_fixed.setString(2, student.getPassword());
+            stmt_fixed.setString(3, fullName);
+            stmt_fixed.setObject(4, student.getDateOfBirth());
+            stmt_fixed.setString(5, student.getEmail());
+            stmt_fixed.setString(6, student.getPhoneNumber());
+            stmt_fixed.setString(7, student.getFirstName());
+            stmt_fixed.setString(8, student.getLastName());
+
+            int rowsAffected = stmt_fixed.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Thêm sinh viên thành công - Username: " + student.getUserName());
+                return true;
             }
-            return result;
+            return false;
+
         } catch (Exception e) {
             System.out.println("Lỗi khi thêm sinh viên: " + e.getMessage());
             e.printStackTrace();
@@ -113,23 +127,64 @@ public class StudentDao {
         }
     }
 
+    /**
+     * Cập nhật thông tin sinh viên dựa theo username (dùng cho EditStudent.java)
+     */
+    public static boolean updateStudentByUsername(String username, String full_name, String birthday, String phone, String email) {
+
+        if (username == null || username.trim().isEmpty()) {
+            System.out.println("Username không được rỗng khi cập nhật!");
+            return false;
+        }
+
+        String sql = "UPDATE students SET fullname = ?, dateOfBirth = ?, email = ?, phone = ? WHERE username = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, full_name);
+            stmt.setString(2, birthday.isEmpty() ? null : birthday);
+            stmt.setString(3, email.isEmpty() ? null : email);
+            stmt.setString(4, phone.isEmpty() ? null : phone);
+            stmt.setString(5, username);
+
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Cập nhật sinh viên thành công (by parameter) - Username: " + username);
+                return true;
+            }
+            System.out.println("Không tìm thấy sinh viên để cập nhật (by parameter) - Username: " + username);
+            return false;
+
+        } catch (Exception e) {
+            System.out.println("Lỗi khi cập nhật sinh viên (by parameter): " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static boolean deleteStudent(String username) {
         if (username == null || username.trim().isEmpty()) {
             System.out.println("Username không được rỗng!");
             return false;
         }
 
-        String query = String.format(
-                "DELETE FROM students WHERE username = '%s'",
-                escapeString(username)
-        );
+        String sql = "DELETE FROM students WHERE username = ?";
 
-        try {
-            boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
                 System.out.println("Xóa sinh viên thành công - Username: " + username);
+                return true;
             }
-            return result;
+            System.out.println("Không tìm thấy sinh viên để xóa - Username: " + username);
+            return false;
+
         } catch (Exception e) {
             System.out.println("Lỗi khi xóa sinh viên: " + e.getMessage());
             e.printStackTrace();

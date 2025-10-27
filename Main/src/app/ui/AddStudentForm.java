@@ -253,7 +253,18 @@ public class AddStudentForm extends JDialog {
                     "Tên đăng nhập: " + generatedUsername + "\n" +
                     "Mật khẩu mặc định: " + DEFAULT_PASSWORD);
 
-            return true;
+            boolean success = app.dao.StudentDao.createStudent(result);
+
+            if (success) {
+                showInfo("Tạo thành công!\n" +
+                        "Mã học sinh: (Tự động)\n" +
+                        "Tên đăng nhập: " + generatedUsername + "\n" +
+                        "Mật khẩu mặc định: " + DEFAULT_PASSWORD);
+                return true;
+            } else {
+                showError("Không thể lưu sinh viên vào CSDL! \n(Có thể Tên đăng nhập đã tồn tại)");
+                return false;
+            }
         } catch (Exception ex) {
             showError("Có lỗi xảy ra: " + ex.getMessage());
             return false;
