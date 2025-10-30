@@ -299,7 +299,7 @@ public class ScheduleDisplayPanel extends JPanel {
         }
 
         Integer scheduleId = (Integer) tableModel.getValueAt(selectedRow, 0);
-        Schedule schedule = ScheduleService.getScheduleById(String.valueOf(scheduleId));
+        Schedule schedule = ScheduleService.getScheduleById(scheduleId);
 
         if (schedule != null) {
             Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
