@@ -1,11 +1,15 @@
 package app.ui.component;
 
-import app.ui.MainPanel;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import app.ui.MainPanel;
 
 public class HeaderComponent extends JPanel {
     MainPanel mainPanel;
@@ -31,6 +35,9 @@ public class HeaderComponent extends JPanel {
                             break;
                         case "Lịch học":
                             mainPanel.show("ScheduleDisplay");
+                            break;
+                        case "Quản lý điểm":
+                            mainPanel.show("GradeManagement");
                             break;
                         case "Đổi mật khẩu":
                             mainPanel.show("ChangePassword");
