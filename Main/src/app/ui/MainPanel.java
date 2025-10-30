@@ -1,9 +1,11 @@
 package app.ui;
 
-import javax.smartcardio.Card;
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
+import java.awt.CardLayout;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Set;
+
+import javax.swing.JPanel;
 
 public class MainPanel extends JPanel {
     private CardLayout cardLayout;
@@ -23,6 +25,7 @@ public class MainPanel extends JPanel {
         add(new ChangePassword(this), "ChangePassword");
         add(new ScheduleDisplayPanel(this), "ScheduleDisplay");
         add(new ClassesPanel(this),"Edit_class");
+        add(new GradeManagementPanel(this), "GradeManagement");
     }
     //Hiển thị panel ứng với name
     public void show(String title){
