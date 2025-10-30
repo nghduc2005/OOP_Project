@@ -1,7 +1,7 @@
 package app.model;
 
 public class Grade {
-    private String gradeId;
+    private Integer gradeId;
     private String studentId;
     private String subjectId;
     private String classId;
@@ -23,7 +23,7 @@ public class Grade {
         this.letterGrade = "";
     }
 
-    public Grade(String gradeId, String studentId, String subjectId, String classId,
+    public Grade(Integer gradeId, String studentId, String subjectId, String classId,
                  Double attendanceScore, Double assignmentScore, Double midtermScore,
                  Double finalScore, String semester, String academicYear) {
         this.gradeId = gradeId;
@@ -67,7 +67,7 @@ public class Grade {
     }
 
     // Getters
-    public String getGradeId() { return gradeId; }
+    public Integer getGradeId() { return gradeId; }
     public String getStudentId() { return studentId; }
     public String getSubjectId() { return subjectId; }
     public String getClassId() { return classId; }
@@ -81,7 +81,7 @@ public class Grade {
     public String getAcademicYear() { return academicYear; }
 
     // Setters
-    public void setGradeId(String gradeId) { this.gradeId = gradeId; }
+    public void setGradeId(Integer gradeId) { this.gradeId = gradeId; }
     public void setStudentId(String studentId) { this.studentId = studentId; }
     public void setSubjectId(String subjectId) { this.subjectId = subjectId; }
     public void setClassId(String classId) { this.classId = classId; }
