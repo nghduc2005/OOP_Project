@@ -1,10 +1,10 @@
 package app.dao;
 
-import app.model.Subject;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import app.model.Subject;
 
 public class SubjectDao {
 
@@ -21,12 +21,12 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "INSERT INTO subjects (subject_id, name, credit, teacher_name) " +
-                        "VALUES ('%s', '%s', %d, '%s')",
-                escapeString(subject.getSubjectId()),
+                "INSERT INTO subjects (subject_id, name, credit, test_type) " +
+                        "VALUES (%d, '%s', %d, '%s')",
+                subject.getSubjectId(),
                 escapeString(subject.getSubjectName()),
                 subject.getCredit(),
-                escapeString(subject.getTeacherName() != null ? subject.getTeacherName() : "")
+                escapeString(subject.getTestType() != null ? subject.getTestType() : "")
         );
 
         try {
@@ -40,15 +40,15 @@ public class SubjectDao {
         }
     }
 
-    public static Subject getSubjectById(String subjectId) {
-        if (subjectId == null || subjectId.trim().isEmpty()) {
-            System.out.println("Mã môn học không được rỗng!");
+    public static Subject getSubjectById(Integer subjectId) {
+        if (subjectId == null) {
+            System.out.println("Mã môn học không được null!");
             return null;
         }
 
         String query = String.format(
-                "SELECT * FROM subjects WHERE subject_id = '%s'",
-                escapeString(subjectId)
+                "SELECT * FROM subjects WHERE subject_id = %d",
+                subjectId
         );
 
         try {
@@ -123,12 +123,12 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "UPDATE subjects SET subject_name = '%s', credit = %d, teacher_name = '%s' " +
-                        "WHERE subject_id = '%s'",
+                "UPDATE subjects SET name = '%s', credit = %d, test_type = '%s' " +
+                        "WHERE subject_id = %d",
                 escapeString(subject.getSubjectName()),
                 subject.getCredit(),
-                escapeString(subject.getTeacherName() != null ? subject.getTeacherName() : ""),
-                escapeString(subject.getSubjectId())
+                escapeString(subject.getTestType() != null ? subject.getTestType() : ""),
+                subject.getSubjectId()
         );
 
         try {
@@ -142,9 +142,9 @@ public class SubjectDao {
         }
     }
 
-    public static boolean deleteSubject(String subjectId) {
-        if (subjectId == null || subjectId.trim().isEmpty()) {
-            System.out.println("Mã môn học không được rỗng!");
+    public static boolean deleteSubject(Integer subjectId) {
+        if (subjectId == null) {
+            System.out.println("Mã môn học không được null!");
             return false;
         }
 
@@ -154,8 +154,8 @@ public class SubjectDao {
         }
 
         String query = String.format(
-                "DELETE FROM subjects WHERE subject_id = '%s'",
-                escapeString(subjectId)
+                "DELETE FROM subjects WHERE subject_id = %d",
+                subjectId
         );
 
         try {
@@ -169,12 +169,12 @@ public class SubjectDao {
         }
     }
 
-    public static boolean isSubjectIdExists(String subjectId) {
-        if (subjectId == null || subjectId.trim().isEmpty()) return false;
+    public static boolean isSubjectIdExists(Integer subjectId) {
+        if (subjectId == null) return false;
 
         String query = String.format(
-                "SELECT COUNT(*) as count FROM subjects WHERE subject_id = '%s'",
-                escapeString(subjectId)
+                "SELECT COUNT(*) as count FROM subjects WHERE subject_id = %d",
+                subjectId
         );
 
         try {
@@ -218,8 +218,8 @@ public class SubjectDao {
     }
 
     private static boolean validateSubject(Subject subject) {
-        if (subject.getSubjectId() == null || subject.getSubjectId().trim().isEmpty()) {
-            System.out.println("Mã môn học không được rỗng!");
+        if (subject.getSubjectId() == null) {
+            System.out.println("Mã môn học không được null!");
             return false;
         }
         if (subject.getSubjectName() == null || subject.getSubjectName().trim().isEmpty()) {
@@ -235,13 +235,12 @@ public class SubjectDao {
 
     private static Subject mapToSubject(HashMap<String, Object> row) {
         try {
-            Object subjectIdObj = row.get("subject_id");
-            String subjectId = subjectIdObj != null ? subjectIdObj.toString() : "";
+            Integer subjectId = (Integer) row.get("subject_id");
             String subjectName = (String) row.get("name");
             Object creditObj = row.get("credit");
-            int credit = creditObj instanceof Integer ? (Integer) creditObj : Integer.parseInt(creditObj.toString());
-            String teacherName = (String) row.get("teacher_name");
-            return new Subject(subjectId, subjectName, credit, teacherName, new double[5]);
+            Integer credit = creditObj instanceof Integer ? (Integer) creditObj : Integer.parseInt(creditObj.toString());
+            String testType = (String) row.get("test_type");
+            return new Subject(subjectId, subjectName, credit, testType);
         } catch (Exception e) {
             System.out.println("Lỗi khi chuyển đổi dữ liệu môn học: " + e.getMessage());
             e.printStackTrace();
