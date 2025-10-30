@@ -116,12 +116,12 @@
         /**
          * Xóa điểm
          */
-        public static boolean deleteGrade(String gradeId) {
+        public static boolean deleteGrade(Integer gradeId) {
             String sql = "DELETE FROM grades WHERE grade_id = ?";
     
             try (Connection conn = DatabaseConnection.getConnection();
                  PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, gradeId);
+                pstmt.setInt(1, gradeId);
                 int rowsAffected = pstmt.executeUpdate();
                 return rowsAffected > 0;
             } catch (SQLException e) {
@@ -288,7 +288,7 @@
          */
         private static Grade extractGradeFromResultSet(ResultSet rs) throws SQLException {
             Grade grade = new Grade();
-            grade.setGradeId(String.valueOf(rs.getInt("grade_id")));
+            grade.setGradeId(rs.getInt("grade_id"));
             grade.setStudentId(rs.getString("student_id"));
             grade.setSubjectId(rs.getString("subject_id"));
             grade.setClassId(rs.getString("class_id"));
