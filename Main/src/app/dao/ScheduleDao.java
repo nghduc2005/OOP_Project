@@ -1,287 +1,115 @@
 package app.dao;
 
 import app.model.Schedule;
-import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class ScheduleDao {
 
-    /**
-     * Tạo lịch học mới
-     */
     public static boolean createSchedule(Schedule schedule) {
-        if (schedule == null) {
-            System.out.println("Schedule không được null!");
+        if (schedule == null || !validateSchedule(schedule)) {
             return false;
-        }
-        if (!validateSchedule(schedule)) {
-            return false;
-        }
-        if (schedule.getScheduleId() != null && isScheduleIdExists(schedule.getScheduleId())) {
-            System.out.println("Mã lịch học đã tồn tại: " + schedule.getScheduleId());
-            return false;
-        }
-
-        // Auto-generate ID if not provided
-        if (schedule.getScheduleId() == null || schedule.getScheduleId().trim().isEmpty()) {
-            String newId = AutoGenerationDao.autoGenerationId("schedule", "schedule_id", "SCH");
-            schedule.setScheduleId(newId);
         }
 
         String query = String.format(
-                "INSERT INTO schedule (schedule_id, subject_name, teacher_name, room, building, " +
-                        "schedule_date, start_time, end_time, repeat_type, format, note, group_id) " +
-                        "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s)",
-                escapeString(schedule.getScheduleId()),
-                escapeString(schedule.getSubjectName()),
-                escapeString(schedule.getTeacherName()),
-                escapeString(schedule.getRoom()),
-                escapeString(schedule.getBuilding()),
-                schedule.getScheduleDate().toString(),
-                schedule.getStartTime().toString(),
-                schedule.getEndTime().toString(),
-                escapeString(schedule.getRepeatType()),
-                escapeString(schedule.getFormat()),
-                escapeString(schedule.getNote()),
-                schedule.getGroupId() != null ? "'" + escapeString(schedule.getGroupId()) + "'" : "NULL"
+                "INSERT INTO schedules (study_date, study_shift, total_sessions, learning_method, " +
+                        "classroom, note, subject_id, class_id, start_time) " +
+                        "VALUES ('%s', '%s', %d, '%s', '%s', '%s', %d, %d, '%s')",
+                schedule.getStudyDate(), escapeString(schedule.getStudyShift()), schedule.getTotalSessions(),
+                escapeString(schedule.getLearningMethod()), escapeString(schedule.getClassroom()),
+                escapeString(schedule.getNote()), schedule.getSubjectId(), schedule.getClassId(),
+                schedule.getStartTime() != null ? schedule.getStartTime() : LocalDateTime.now()
         );
 
         try {
-            boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
-                System.out.println("Tạo lịch học thành công: " + schedule.getScheduleId());
-            }
-            return result;
+            return DatabaseConnection.insertTable(query);
         } catch (Exception e) {
-            System.out.println("Lỗi khi tạo lịch học: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    /**
-     * Lấy lịch học theo ID
-     */
-    public static Schedule getScheduleById(String scheduleId) {
-        if (scheduleId == null || scheduleId.trim().isEmpty()) {
-            System.out.println("Mã lịch học không được rỗng!");
-            return null;
-        }
+    public static Schedule getScheduleById(Integer scheduleId) {
+        if (scheduleId == null) return null;
 
-        String query = String.format(
-                "SELECT * FROM schedule WHERE schedule_id = '%s'",
-                escapeString(scheduleId)
-        );
-
+        String query = "SELECT * FROM schedules WHERE schedule_id = " + scheduleId;
         try {
             List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
             if (results != null && !results.isEmpty()) {
                 return mapToSchedule(results.get(0));
             }
         } catch (Exception e) {
-            System.out.println("Lỗi khi lấy thông tin lịch học: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
-    /**
-     * Lấy tất cả lịch học
-     */
     public static List<Schedule> getAllSchedules() {
-        String query = "SELECT * FROM schedule ORDER BY schedule_date, start_time";
-        return getSchedulesByQuery(query);
+        return getSchedulesByQuery("SELECT * FROM schedules ORDER BY study_date, start_time");
     }
 
-    /**
-     * Lấy lịch học theo giảng viên
-     */
-    public static List<Schedule> getSchedulesByTeacher(String teacherName) {
-        if (teacherName == null || teacherName.trim().isEmpty()) {
-            System.out.println("Tên giảng viên không được rỗng!");
-            return new ArrayList<>();
-        }
-
-        String query = String.format(
-                "SELECT * FROM schedule WHERE teacher_name = '%s' ORDER BY schedule_date, start_time",
-                escapeString(teacherName)
-        );
-        return getSchedulesByQuery(query);
-    }
-
-    /**
-     * Lấy lịch học theo môn học
-     */
-    public static List<Schedule> getSchedulesBySubject(String subjectName) {
-        if (subjectName == null || subjectName.trim().isEmpty()) {
-            System.out.println("Tên môn học không được rỗng!");
-            return new ArrayList<>();
-        }
-
-        String query = String.format(
-                "SELECT * FROM schedule WHERE subject_name = '%s' ORDER BY schedule_date, start_time",
-                escapeString(subjectName)
-        );
-        return getSchedulesByQuery(query);
-    }
-
-    /**
-     * Lấy lịch học theo nhóm/lớp
-     */
-    public static List<Schedule> getSchedulesByGroup(String groupId) {
-        if (groupId == null || groupId.trim().isEmpty()) {
-            System.out.println("Mã nhóm không được rỗng!");
-            return new ArrayList<>();
-        }
-
-        String query = String.format(
-                "SELECT * FROM schedule WHERE group_id = '%s' ORDER BY schedule_date, start_time",
-                escapeString(groupId)
-        );
-        return getSchedulesByQuery(query);
-    }
-
-    /**
-     * Lấy lịch học theo khoảng thời gian
-     */
-    public static List<Schedule> getSchedulesByDateRange(LocalDate startDate, LocalDate endDate) {
-        if (startDate == null || endDate == null) {
-            System.out.println("Ngày bắt đầu và kết thúc không được rỗng!");
-            return new ArrayList<>();
-        }
-
-        String query = String.format(
-                "SELECT * FROM schedule WHERE schedule_date BETWEEN '%s' AND '%s' " +
-                        "ORDER BY schedule_date, start_time",
-                startDate.toString(),
-                endDate.toString()
-        );
-        return getSchedulesByQuery(query);
-    }
-
-    /**
-     * Lấy lịch học theo ngày cụ thể
-     */
-    public static List<Schedule> getSchedulesByDate(LocalDate date) {
-        if (date == null) {
-            System.out.println("Ngày không được rỗng!");
-            return new ArrayList<>();
-        }
-
-        String query = String.format(
-                "SELECT * FROM schedule WHERE schedule_date = '%s' ORDER BY start_time",
-                date.toString()
-        );
-        return getSchedulesByQuery(query);
-    }
-
-    /**
-     * Cập nhật lịch học
-     */
     public static boolean updateSchedule(Schedule schedule) {
-        if (schedule == null) {
-            System.out.println("Schedule không được null!");
-            return false;
-        }
-        if (!validateSchedule(schedule)) {
-            return false;
-        }
-        if (!isScheduleIdExists(schedule.getScheduleId())) {
-            System.out.println("Lịch học không tồn tại: " + schedule.getScheduleId());
+        if (schedule == null || schedule.getScheduleId() == null || !validateSchedule(schedule)) {
             return false;
         }
 
         String query = String.format(
-                "UPDATE schedule SET subject_name = '%s', teacher_name = '%s', room = '%s', " +
-                        "building = '%s', schedule_date = '%s', start_time = '%s', end_time = '%s', " +
-                        "repeat_type = '%s', format = '%s', note = '%s', group_id = %s " +
-                        "WHERE schedule_id = '%s'",
-                escapeString(schedule.getSubjectName()),
-                escapeString(schedule.getTeacherName()),
-                escapeString(schedule.getRoom()),
-                escapeString(schedule.getBuilding()),
-                schedule.getScheduleDate().toString(),
-                schedule.getStartTime().toString(),
-                schedule.getEndTime().toString(),
-                escapeString(schedule.getRepeatType()),
-                escapeString(schedule.getFormat()),
-                escapeString(schedule.getNote()),
-                schedule.getGroupId() != null ? "'" + escapeString(schedule.getGroupId()) + "'" : "NULL",
-                escapeString(schedule.getScheduleId())
+                "UPDATE schedules SET study_date='%s', study_shift='%s', total_sessions=%d, " +
+                        "learning_method='%s', classroom='%s', note='%s', subject_id=%d, class_id=%d, start_time='%s' " +
+                        "WHERE schedule_id=%d",
+                schedule.getStudyDate(), escapeString(schedule.getStudyShift()), schedule.getTotalSessions(),
+                escapeString(schedule.getLearningMethod()), escapeString(schedule.getClassroom()),
+                escapeString(schedule.getNote()), schedule.getSubjectId(), schedule.getClassId(),
+                schedule.getStartTime() != null ? schedule.getStartTime() : LocalDateTime.now(),
+                schedule.getScheduleId()
         );
 
         try {
-            boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
-                System.out.println("Cập nhật lịch học thành công: " + schedule.getScheduleId());
-            }
-            return result;
+            return DatabaseConnection.updateRecord(query);
         } catch (Exception e) {
-            System.out.println("Lỗi khi cập nhật lịch học: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    /**
-     * Xóa lịch học
-     */
     public static boolean deleteSchedule(String scheduleId) {
-        if (scheduleId == null || scheduleId.trim().isEmpty()) {
-            System.out.println("Mã lịch học không được rỗng!");
-            return false;
-        }
-        if (!isScheduleIdExists(scheduleId)) {
-            System.out.println("Lịch học không tồn tại: " + scheduleId);
-            return false;
-        }
-
-        String query = String.format(
-                "DELETE FROM schedule WHERE schedule_id = '%s'",
-                escapeString(scheduleId)
-        );
-
-        try {
-            boolean result = DatabaseConnection.deleteRecord(query);
-            if (result) {
-                System.out.println("Xóa lịch học thành công: " + scheduleId);
-            }
-            return result;
-        } catch (Exception e) {
-            System.out.println("Lỗi khi xóa lịch học: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
+        return false;
     }
 
-    /**
-     * Tìm kiếm lịch học
-     */
     public static List<Schedule> searchSchedules(String searchTerm) {
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return getAllSchedules();
         }
-
         String query = String.format(
-                "SELECT * FROM schedule WHERE " +
-                        "LOWER(subject_name) LIKE LOWER('%%%s%%') OR " +
-                        "LOWER(teacher_name) LIKE LOWER('%%%s%%') OR " +
-                        "LOWER(room) LIKE LOWER('%%%s%%') OR " +
-                        "LOWER(building) LIKE LOWER('%%%s%%') " +
-                        "ORDER BY schedule_date, start_time",
-                escapeString(searchTerm),
-                escapeString(searchTerm),
-                escapeString(searchTerm),
-                escapeString(searchTerm)
+                "SELECT * FROM schedules WHERE classroom LIKE '%%%s%%' OR study_shift LIKE '%%%s%%' " +
+                        "OR note LIKE '%%%s%%' ORDER BY study_date",
+                escapeString(searchTerm), escapeString(searchTerm), escapeString(searchTerm)
         );
         return getSchedulesByQuery(query);
     }
 
-    // === Private Helper Methods ===
+    public static List<Schedule> getSchedulesByDateRange(LocalDate startDate, LocalDate endDate) {
+        String query = String.format(
+                "SELECT * FROM schedules WHERE study_date BETWEEN '%s' AND '%s' ORDER BY study_date, start_time",
+                startDate, endDate
+        );
+        return getSchedulesByQuery(query);
+    }
+
+    public static List<Schedule> getSchedulesByDate(LocalDate date) {
+        String query = "SELECT * FROM schedules WHERE study_date = '" + date + "' ORDER BY start_time";
+        return getSchedulesByQuery(query);
+    }
+
+
+    private static boolean validateSchedule(Schedule schedule) {
+        return schedule.getStudyDate() != null && schedule.getStudyShift() != null &&
+                schedule.getClassroom() != null && schedule.getSubjectId() != null &&
+                schedule.getClassId() != null && schedule.getTotalSessions() != null && schedule.getTotalSessions() > 0;
+    }
 
     private static List<Schedule> getSchedulesByQuery(String query) {
         List<Schedule> schedules = new ArrayList<>();
@@ -290,142 +118,47 @@ public class ScheduleDao {
             if (results != null) {
                 for (HashMap<String, Object> row : results) {
                     Schedule schedule = mapToSchedule(row);
-                    if (schedule != null) {
-                        schedules.add(schedule);
-                    }
+                    if (schedule != null) schedules.add(schedule);
                 }
             }
         } catch (Exception e) {
-            System.out.println("Lỗi khi lấy danh sách lịch học: " + e.getMessage());
             e.printStackTrace();
         }
         return schedules;
     }
 
-    private static boolean validateSchedule(Schedule schedule) {
-        if (schedule.getSubjectName() == null || schedule.getSubjectName().trim().isEmpty()) {
-            System.out.println("Tên môn học không được rỗng!");
-            return false;
-        }
-        if (schedule.getTeacherName() == null || schedule.getTeacherName().trim().isEmpty()) {
-            System.out.println("Tên giảng viên không được rỗng!");
-            return false;
-        }
-        if (schedule.getRoom() == null || schedule.getRoom().trim().isEmpty()) {
-            System.out.println("Phòng học không được rỗng!");
-            return false;
-        }
-        if (schedule.getBuilding() == null || schedule.getBuilding().trim().isEmpty()) {
-            System.out.println("Tòa nhà không được rỗng!");
-            return false;
-        }
-        if (schedule.getScheduleDate() == null) {
-            System.out.println("Ngày học không được rỗng!");
-            return false;
-        }
-        if (schedule.getStartTime() == null) {
-            System.out.println("Thời gian bắt đầu không được rỗng!");
-            return false;
-        }
-        if (schedule.getEndTime() == null) {
-            System.out.println("Thời gian kết thúc không được rỗng!");
-            return false;
-        }
-        if (schedule.getStartTime().isAfter(schedule.getEndTime()) ||
-                schedule.getStartTime().equals(schedule.getEndTime())) {
-            System.out.println("Thời gian bắt đầu phải trước thời gian kết thúc!");
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean isScheduleIdExists(String scheduleId) {
-        if (scheduleId == null || scheduleId.trim().isEmpty()) {
-            return false;
-        }
-
-        String query = String.format(
-                "SELECT COUNT(*) as count FROM schedule WHERE schedule_id = '%s'",
-                escapeString(scheduleId)
-        );
-
-        try {
-            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
-            if (results != null && !results.isEmpty()) {
-                Object countObj = results.get(0).get("count");
-                long count = 0;
-                if (countObj instanceof Integer) {
-                    count = ((Integer) countObj).longValue();
-                } else if (countObj instanceof Long) {
-                    count = (Long) countObj;
-                }
-                return count > 0;
-            }
-        } catch (Exception e) {
-            System.out.println("Lỗi khi kiểm tra mã lịch học: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     private static Schedule mapToSchedule(HashMap<String, Object> row) {
         try {
-            String scheduleId = (String) row.get("schedule_id");
-            String subjectName = (String) row.get("subject_name");
-            String teacherName = (String) row.get("teacher_name");
-            String room = (String) row.get("room");
-            String building = (String) row.get("building");
-
-            // Parse date
-            Object dateObj = row.get("schedule_date");
-            LocalDate scheduleDate;
-            if (dateObj instanceof java.sql.Date) {
-                scheduleDate = ((java.sql.Date) dateObj).toLocalDate();
-            } else if (dateObj instanceof String) {
-                scheduleDate = LocalDate.parse((String) dateObj);
-            } else {
-                scheduleDate = LocalDate.now();
-            }
-
-            // Parse time
-            Object startTimeObj = row.get("start_time");
-            LocalTime startTime;
-            if (startTimeObj instanceof java.sql.Time) {
-                startTime = ((java.sql.Time) startTimeObj).toLocalTime();
-            } else if (startTimeObj instanceof String) {
-                startTime = LocalTime.parse((String) startTimeObj);
-            } else {
-                startTime = LocalTime.now();
-            }
-
-            Object endTimeObj = row.get("end_time");
-            LocalTime endTime;
-            if (endTimeObj instanceof java.sql.Time) {
-                endTime = ((java.sql.Time) endTimeObj).toLocalTime();
-            } else if (endTimeObj instanceof String) {
-                endTime = LocalTime.parse((String) endTimeObj);
-            } else {
-                endTime = LocalTime.now();
-            }
-
-            String repeatType = (String) row.get("repeat_type");
-            String format = (String) row.get("format");
+            Integer scheduleId = (Integer) row.get("schedule_id");
+            Object dateObj = row.get("study_date");
+            LocalDate studyDate = dateObj instanceof java.sql.Date ? ((java.sql.Date) dateObj).toLocalDate() : LocalDate.now();
+            String studyShift = (String) row.get("study_shift");
+            Object sessionsObj = row.get("total_sessions");
+            Integer totalSessions = sessionsObj instanceof Integer ? (Integer) sessionsObj :
+                    sessionsObj instanceof Long ? ((Long) sessionsObj).intValue() : 1;
+            String learningMethod = (String) row.get("learning_method");
+            String classroom = (String) row.get("classroom");
             String note = (String) row.get("note");
-            String groupId = (String) row.get("group_id");
+            Object subjectIdObj = row.get("subject_id");
+            Integer subjectId = subjectIdObj instanceof Integer ? (Integer) subjectIdObj :
+                    subjectIdObj instanceof Long ? ((Long) subjectIdObj).intValue() : null;
+            Object classIdObj = row.get("class_id");
+            Integer classId = classIdObj instanceof Integer ? (Integer) classIdObj :
+                    classIdObj instanceof Long ? ((Long) classIdObj).intValue() : null;
+            Object startTimeObj = row.get("start_time");
+            LocalDateTime startTime = startTimeObj instanceof java.sql.Timestamp ?
+                    ((java.sql.Timestamp) startTimeObj).toLocalDateTime() : LocalDateTime.now();
 
-            return new Schedule(scheduleId, subjectName, teacherName, room, building,
-                    scheduleDate, startTime, endTime, repeatType, format, note, groupId);
+            return new Schedule(scheduleId, studyDate, studyShift, totalSessions,
+                    learningMethod, classroom, note, subjectId, classId, startTime);
         } catch (Exception e) {
-            System.out.println("Lỗi khi chuyển đổi dữ liệu lịch học: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
 
     private static String escapeString(String str) {
-        if (str == null) {
-            return "";
-        }
+        if (str == null) return "";
         return str.replace("'", "''");
     }
 }
