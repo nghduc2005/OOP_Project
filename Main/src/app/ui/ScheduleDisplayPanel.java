@@ -36,8 +36,8 @@ public class ScheduleDisplayPanel extends JPanel {
 
     private void initializeComponents() {
         // Table
-        String[] columnNames = {"Mã lịch", "Môn học", "Giảng viên", "Phòng", "Tòa",
-                               "Ngày", "Giờ bắt đầu", "Giờ kết thúc", "Hình thức", "Lặp lại"};
+        String[] columnNames = {"Mã lịch", "Môn học", "Lớp", "Phòng", "Ca học",
+                               "Ngày", "Giờ bắt đầu", "Số buổi", "Hình thức", "Ghi chú"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -179,12 +179,7 @@ public class ScheduleDisplayPanel extends JPanel {
         allButton.addActionListener(e -> loadAllSchedules());
 
         // Action buttons
-        addButton.addActionListener(e -> {
-            if (mainPanel != null) {
-                mainPanel.add(new AddScheduleForm(mainPanel), "AddSchedule");
-                mainPanel.show("AddSchedule");
-            }
-        });
+        addButton.addActionListener(e -> openAddScheduleDialog());
 
         editButton.addActionListener(e -> editSelectedSchedule());
 
@@ -200,15 +195,15 @@ public class ScheduleDisplayPanel extends JPanel {
         for (Schedule schedule : schedules) {
             Object[] rowData = {
                 schedule.getScheduleId(),
-                schedule.getSubjectName(),
-                schedule.getTeacherName(),
-                schedule.getRoom(),
-                schedule.getBuilding(),
-                schedule.getScheduleDate().format(dateFormatter),
-                schedule.getStartTime().format(timeFormatter),
-                schedule.getEndTime().format(timeFormatter),
-                schedule.getFormat(),
-                schedule.getRepeatType()
+                schedule.getSubjectId() != null ? "Môn #" + schedule.getSubjectId() : "",
+                schedule.getClassId() != null ? "Lớp #" + schedule.getClassId() : "",
+                schedule.getClassroom() != null ? schedule.getClassroom() : "",
+                schedule.getStudyShift() != null ? schedule.getStudyShift() : "",
+                schedule.getStudyDate() != null ? schedule.getStudyDate().format(dateFormatter) : "",
+                schedule.getStartTime() != null ? schedule.getStartTime().format(timeFormatter) : "",
+                schedule.getTotalSessions() != null ? schedule.getTotalSessions() + " buổi" : "",
+                schedule.getLearningMethod() != null ? schedule.getLearningMethod() : "",
+                schedule.getNote() != null ? schedule.getNote() : ""
             };
             tableModel.addRow(rowData);
         }
@@ -282,6 +277,17 @@ public class ScheduleDisplayPanel extends JPanel {
         }
     }
 
+    private void openAddScheduleDialog() {
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        AddScheduleDialog dialog = new AddScheduleDialog(parentFrame);
+        dialog.setVisible(true);
+        
+        // Refresh table if schedule was saved
+        if (dialog.isSaved()) {
+            loadAllSchedules();
+        }
+    }
+    
     private void editSelectedSchedule() {
         int selectedRow = scheduleTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -292,12 +298,18 @@ public class ScheduleDisplayPanel extends JPanel {
             return;
         }
 
-        String scheduleId = (String) tableModel.getValueAt(selectedRow, 0);
-        Schedule schedule = ScheduleService.getScheduleById(scheduleId);
+        Integer scheduleId = (Integer) tableModel.getValueAt(selectedRow, 0);
+        Schedule schedule = ScheduleService.getScheduleById(String.valueOf(scheduleId));
 
-        if (schedule != null && mainPanel != null) {
-            mainPanel.add(new EditScheduleForm(mainPanel, schedule), "EditSchedule");
-            mainPanel.show("EditSchedule");
+        if (schedule != null) {
+            Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+            EditScheduleDialog dialog = new EditScheduleDialog(parentFrame, schedule);
+            dialog.setVisible(true);
+            
+            // Refresh table if schedule was updated or deleted
+            if (dialog.isUpdated() || dialog.isDeleted()) {
+                loadAllSchedules();
+            }
         } else {
             JOptionPane.showMessageDialog(this,
                     "Không tìm thấy thông tin lịch học!",
