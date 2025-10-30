@@ -1,263 +1,310 @@
 package app.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import app.model.Student;
-import app.session.Session;
+import app.model.Subject;
 
-public class StudentDao {
+public class SubjectDao {
 
-    public static Student getStudentByUsername(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            System.out.println("Username không được rỗng!");
+    public static boolean createSubject(Subject subject) {
+        if (subject == null) {
+            System.out.println("Subject không được null!");
+            return false;
+        }
+
+        if (!validateSubject(subject)) return false;
+        if (isSubjectIdExists(subject.getSubjectId())) {
+            System.out.println("Mã môn học đã tồn tại: " + subject.getSubjectId());
+            return false;
+        }
+
+        String query = String.format(
+                "INSERT INTO subjects (subject_id, name, credit, test_type) " +
+                        "VALUES (%d, '%s', %d, '%s')",
+                subject.getSubjectId(),
+                escapeString(subject.getSubjectName()),
+                subject.getCredit(),
+                escapeString(subject.getTestType() != null ? subject.getTestType() : "")
+        );
+
+        try {
+            boolean result = DatabaseConnection.insertTable(query);
+            if (result) System.out.println("Thêm môn học thành công: " + subject.getSubjectName());
+            return result;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi thêm môn học: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static Subject getSubjectById(Integer subjectId) {
+        if (subjectId == null) {
+            System.out.println("Mã môn học không được null!");
             return null;
         }
 
         String query = String.format(
-                "SELECT * FROM students WHERE username = '%s'",
-                escapeString(username)
+                "SELECT * FROM subjects WHERE subject_id = %d",
+                subjectId
         );
 
         try {
             List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
             if (results != null && !results.isEmpty()) {
                 HashMap<String, Object> row = results.get(0);
-                return mapToStudent(row);
+                return mapToSubject(row);
             }
         } catch (Exception e) {
-            System.out.println("Lỗi khi lấy thông tin sinh viên: " + e.getMessage());
+            System.out.println("Lỗi khi lấy thông tin môn học: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
 
-    public static List<Student> getAllStudents() {
-        String query = "SELECT * FROM students ORDER BY student_id";
-        List<Student> students = new ArrayList<>();
+    public static List<Subject> getAllSubjects() {
+        String query = "SELECT * FROM subjects ORDER BY subject_id";
+        List<Subject> subjects = new ArrayList<>();
 
         try {
             List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
             if (results != null) {
                 for (HashMap<String, Object> row : results) {
-                    Student student = mapToStudent(row);
-                    if (student != null) {
-                        students.add(student);
-                    }
+                    Subject subject = mapToSubject(row);
+                    if (subject != null) subjects.add(subject);
                 }
             }
         } catch (Exception e) {
-            System.out.println("Lỗi khi lấy danh sách sinh viên: " + e.getMessage());
+            System.out.println("Lỗi khi lấy danh sách môn học: " + e.getMessage());
             e.printStackTrace();
         }
-        return students;
+        return subjects;
     }
 
-    public static boolean createStudent(Student student) {
-        if (student == null) {
-            System.out.println("Student không được null!");
-            return false;
+    public static List<Subject> getSubjectsByTeacher(String teacherName) {
+        if (teacherName == null || teacherName.trim().isEmpty()) {
+            System.out.println("Tên giảng viên không được rỗng!");
+            return new ArrayList<>();
         }
-
-        // student_id, username, password, fullname, dateOfBirth, email, phone
-        String sql = "INSERT INTO students (student_id, username, password, fullname, dateOfBirth, email, phone, first_name, last_name) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        String fullName = (student.getLastName() + " " + student.getFirstName()).trim();
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            // nếu student_id là số tự tăng, không thì fix sau
-            String sql_fixed = "INSERT INTO students (username, password, fullname, dateOfBirth, email, phone, first_name, last_name) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-            PreparedStatement stmt_fixed = conn.prepareStatement(sql_fixed);
-
-            stmt_fixed.setString(1, student.getUserName());
-            stmt_fixed.setString(2, student.getPassword());
-            stmt_fixed.setString(3, fullName);
-            stmt_fixed.setObject(4, student.getDateOfBirth());
-            stmt_fixed.setString(5, student.getEmail());
-            stmt_fixed.setString(6, student.getPhoneNumber());
-            stmt_fixed.setString(7, student.getFirstName());
-            stmt_fixed.setString(8, student.getLastName());
-
-            int rowsAffected = stmt_fixed.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Thêm sinh viên thành công - Username: " + student.getUserName());
-                return true;
-            }
-            return false;
-
-        } catch (Exception e) {
-            System.out.println("Lỗi khi thêm sinh viên: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean updateStudent(String full_name, String birthday, String phone, String email) {
-
 
         String query = String.format(
-                "UPDATE students SET fullname = '%s', dateOfBirth = '%s', email = '%s', phone = '%s' WHERE username = '%s'",
-                escapeString(full_name),
-                escapeString(birthday),
-                escapeString(email != null ? email: ""),
-                escapeString(phone != null ? phone : ""),
-                escapeString(Session.getUsername())
+                "SELECT * FROM subjects WHERE teacher_name = '%s' ORDER BY subject_id",
+                escapeString(teacherName)
+        );
+
+        List<Subject> subjects = new ArrayList<>();
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null) {
+                for (HashMap<String, Object> row : results) {
+                    Subject subject = mapToSubject(row);
+                    if (subject != null) subjects.add(subject);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy danh sách môn học của giảng viên: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+
+    public static boolean updateSubject(Subject subject) {
+        if (subject == null) {
+            System.out.println("Subject không được null!");
+            return false;
+        }
+
+        if (!validateSubject(subject)) return false;
+        if (!isSubjectIdExists(subject.getSubjectId())) {
+            System.out.println("Môn học không tồn tại: " + subject.getSubjectId());
+            return false;
+        }
+
+        String query = String.format(
+                "UPDATE subjects SET name = '%s', credit = %d, test_type = '%s' " +
+                        "WHERE subject_id = %d",
+                escapeString(subject.getSubjectName()),
+                subject.getCredit(),
+                escapeString(subject.getTestType() != null ? subject.getTestType() : ""),
+                subject.getSubjectId()
         );
 
         try {
             boolean result = DatabaseConnection.insertTable(query);
-            if (result) {
-                System.out.println("Cập nhật sinh viên thành công ");
-            }
+            if (result) System.out.println("Cập nhật môn học thành công: " + subject.getSubjectName());
             return result;
         } catch (Exception e) {
-            System.out.println("Lỗi khi cập nhật sinh viên: " + e.getMessage());
+            System.out.println("Lỗi khi cập nhật môn học: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
-    /**
-     * Cập nhật thông tin sinh viên dựa theo username (dùng cho EditStudent.java)
-     */
-    public static boolean updateStudentByUsername(String username, String full_name, String birthday, String phone, String email) {
-
-        if (username == null || username.trim().isEmpty()) {
-            System.out.println("Username không được rỗng khi cập nhật!");
+    public static boolean deleteSubject(Integer subjectId) {
+        if (subjectId == null) {
+            System.out.println("Mã môn học không được null!");
             return false;
         }
 
-        String sql = "UPDATE students SET fullname = ?, dateOfBirth = ?, email = ?, phone = ? WHERE username = ?";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, full_name);
-            stmt.setString(2, birthday.isEmpty() ? null : birthday);
-            stmt.setString(3, email.isEmpty() ? null : email);
-            stmt.setString(4, phone.isEmpty() ? null : phone);
-            stmt.setString(5, username);
-
-            int rowsAffected = stmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Cập nhật sinh viên thành công (by parameter) - Username: " + username);
-                return true;
-            }
-            System.out.println("Không tìm thấy sinh viên để cập nhật (by parameter) - Username: " + username);
-            return false;
-
-        } catch (Exception e) {
-            System.out.println("Lỗi khi cập nhật sinh viên (by parameter): " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean deleteStudent(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            System.out.println("Username không được rỗng!");
+        if (!isSubjectIdExists(subjectId)) {
+            System.out.println("Môn học không tồn tại: " + subjectId);
             return false;
         }
 
-        String sql = "DELETE FROM students WHERE username = ?";
+        String query = String.format(
+                "DELETE FROM subjects WHERE subject_id = %d",
+                subjectId
+        );
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, username);
-            int rowsAffected = stmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                System.out.println("Xóa sinh viên thành công - Username: " + username);
-                return true;
-            }
-            System.out.println("Không tìm thấy sinh viên để xóa - Username: " + username);
-            return false;
-
-        } catch (Exception e) {
-            System.out.println("Lỗi khi xóa sinh viên: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static Student mapToStudent(HashMap<String, Object> row) {
         try {
-            Integer studentId = (Integer) row.get("student_id");
-            String username = (String) row.get("username");
-            String fullname = (String) row.get("fullname");
-            String email = (String) row.get("email");
-            String phone = (String) row.get("phone");
+            boolean result = DatabaseConnection.insertTable(query);
+            if (result) System.out.println("Xóa môn học thành công: " + subjectId);
+            return result;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi xóa môn học: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-            String firstName = "";
-            String lastName = "";
-            
-            // Try to use first_name and last_name from database first
-            Object firstNameObj = row.get("first_name");
-            Object lastNameObj = row.get("last_name");
-            
-            if (firstNameObj != null && lastNameObj != null) {
-                firstName = (String) firstNameObj;
-                lastName = (String) lastNameObj;
-            } else if (fullname != null && !fullname.isEmpty()) {
-                // Fallback to splitting fullname
-                String[] nameParts = fullname.trim().split("\\s+");
-                if (nameParts.length > 0) {
-                    lastName = nameParts[0];
-                    if (nameParts.length > 1) {
-                        firstName = String.join(" ", java.util.Arrays.copyOfRange(nameParts, 1, nameParts.length));
-                    }
+    public static boolean isSubjectIdExists(Integer subjectId) {
+        if (subjectId == null) return false;
+
+        String query = String.format(
+                "SELECT COUNT(*) as count FROM subjects WHERE subject_id = %d",
+                subjectId
+        );
+
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null && !results.isEmpty()) {
+                Object countObj = results.get(0).get("count");
+                long count = 0;
+                if (countObj instanceof Integer) count = ((Integer) countObj).longValue();
+                else if (countObj instanceof Long) count = (Long) countObj;
+                return count > 0;
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi khi kiểm tra mã môn học: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static List<Subject> searchSubjectByName(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) return getAllSubjects();
+
+        String query = String.format(
+                "SELECT * FROM subjects WHERE LOWER(subject_name) LIKE LOWER('%%%s%%') ORDER BY subject_id",
+                escapeString(searchTerm)
+        );
+
+        List<Subject> subjects = new ArrayList<>();
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null) {
+                for (HashMap<String, Object> row : results) {
+                    Subject subject = mapToSubject(row);
+                    if (subject != null) subjects.add(subject);
                 }
             }
-
-            Student student = new Student(studentId, firstName, lastName, email, phone);
-            return student;
         } catch (Exception e) {
-            System.out.println("Lỗi khi chuyển đổi dữ liệu sinh viên: " + e.getMessage());
+            System.out.println("Lỗi khi tìm kiếm môn học: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+
+    private static boolean validateSubject(Subject subject) {
+        if (subject.getSubjectId() == null) {
+            System.out.println("Mã môn học không được null!");
+            return false;
+        }
+        if (subject.getSubjectName() == null || subject.getSubjectName().trim().isEmpty()) {
+            System.out.println("Tên môn học không được rỗng!");
+            return false;
+        }
+        if (subject.getCredit() < 1 || subject.getCredit() > 10) {
+            System.out.println("Số tín chỉ phải từ 1 đến 10!");
+            return false;
+        }
+        return true;
+    }
+
+    private static Subject mapToSubject(HashMap<String, Object> row) {
+        try {
+            Integer subjectId = (Integer) row.get("subject_id");
+            String subjectName = (String) row.get("name");
+            Object creditObj = row.get("credit");
+            Integer credit = creditObj instanceof Integer ? (Integer) creditObj : Integer.parseInt(creditObj.toString());
+            String testType = (String) row.get("test_type");
+            return new Subject(subjectId, subjectName, credit, testType);
+        } catch (Exception e) {
+            System.out.println("Lỗi khi chuyển đổi dữ liệu môn học: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
     }
 
     private static String escapeString(String str) {
-        if (str == null) {
-            return "";
-        }
+        if (str == null) return "";
         return str.replace("'", "''");
     }
-    public static String getPasswordByUsername(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            System.out.println("Username không được rỗng!");
+
+    /**
+     * @param subjectId
+     * @param studentId
+     * @return List gồm điểm CC, GK, TH, CK
+     */
+    public static List<HashMap<String, Object>> getGradeSubject(String subjectId, String studentId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) return null;
+
+        String query = String.format(
+                "SELECT grade_type, score FROM grades " +
+                        "WHERE subject_id = '%s' AND student_id = '%s' " +
+                        "AND grade_type IN ('CC', 'GK', 'TH', 'CK')",
+                escapeString(subjectId),
+                escapeString(studentId)
+        );
+
+        try {
+            // Tái sử dụng phương thức đọc bảng đã có
+            return DatabaseConnection.readTable(query);
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy điểm: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
+    }
 
-        String sql = "SELECT password FROM students WHERE username = ?";
+    /**
+     * @param subjectId
+     * @return teacher fullname
+     */
+    public static String getTeacherNameBySubjectId(String subjectId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) return "Chưa phân công";
 
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        // Truy vấn
+        String query = String.format(
+                "SELECT t.fullname FROM teachers t " +
+                        "INNER JOIN classes c ON t.teacher_id = c.teacher_id " +
+                        "WHERE c.subject_id = '%s' LIMIT 1",
+                escapeString(subjectId)
+        );
 
-            stmt.setString(1, username);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getString("password");
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null && !results.isEmpty()) {
+                // Tên GV được lưu trong cột 'fullname'
+                Object fullNameObj = results.get(0).get("fullname");
+                return fullNameObj != null ? fullNameObj.toString() : "Chưa phân công";
             }
-
         } catch (Exception e) {
-            System.out.println("Lỗi khi lấy mật khẩu: " + e.getMessage());
+            System.out.println("Lỗi khi lấy tên giảng viên: " + e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return "Chưa phân công";
     }
 }
