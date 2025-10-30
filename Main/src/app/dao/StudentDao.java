@@ -1,14 +1,14 @@
 package app.dao;
 
-import app.model.Student;
-import app.session.Session;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import app.model.Student;
+import app.session.Session;
 
 public class StudentDao {
 
@@ -194,6 +194,7 @@ public class StudentDao {
 
     public static Student mapToStudent(HashMap<String, Object> row) {
         try {
+            Integer studentId = (Integer) row.get("student_id");
             String username = (String) row.get("username");
             String fullname = (String) row.get("fullname");
             String email = (String) row.get("email");
@@ -201,7 +202,16 @@ public class StudentDao {
 
             String firstName = "";
             String lastName = "";
-            if (fullname != null && !fullname.isEmpty()) {
+            
+            // Try to use first_name and last_name from database first
+            Object firstNameObj = row.get("first_name");
+            Object lastNameObj = row.get("last_name");
+            
+            if (firstNameObj != null && lastNameObj != null) {
+                firstName = (String) firstNameObj;
+                lastName = (String) lastNameObj;
+            } else if (fullname != null && !fullname.isEmpty()) {
+                // Fallback to splitting fullname
                 String[] nameParts = fullname.trim().split("\\s+");
                 if (nameParts.length > 0) {
                     lastName = nameParts[0];
@@ -211,7 +221,7 @@ public class StudentDao {
                 }
             }
 
-            Student student = new Student(username, firstName, lastName, email, phone);
+            Student student = new Student(studentId, firstName, lastName, email, phone);
             return student;
         } catch (Exception e) {
             System.out.println("Lỗi khi chuyển đổi dữ liệu sinh viên: " + e.getMessage());
