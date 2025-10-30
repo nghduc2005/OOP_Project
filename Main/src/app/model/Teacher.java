@@ -1,16 +1,17 @@
 package app.model;
 
-import app.dto.request.LoginRequest;
 import java.time.LocalDate;
 
+import app.dto.request.LoginRequest;
+
 public class Teacher extends User{
-    private String teacherId;
+    private Integer teacherId;
     
     public Teacher(LoginRequest request){
         super(request.getUsername(), request.getPassword());
     }
 
-    public Teacher(String teacherId, String lastName, String firstName,
+    public Teacher(Integer teacherId, String lastName, String firstName,
                    String userName, String password, String phoneNumber,
                    String email, LocalDate dateOfBirth) {
         super(userName, password);
@@ -22,11 +23,11 @@ public class Teacher extends User{
         setDateOfBirth(dateOfBirth);
     }
 
-    public String getTeacherId() { 
+    public Integer getTeacherId() { 
         return teacherId; 
     }
     
-    public void setTeacherId(String teacherId) { 
+    public void setTeacherId(Integer teacherId) { 
         this.teacherId = teacherId; 
     }
 }
