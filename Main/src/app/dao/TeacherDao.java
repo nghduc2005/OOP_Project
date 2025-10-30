@@ -1,9 +1,5 @@
 package app.dao;
 
-import app.model.Student;
-import app.model.Teacher;
-import app.session.Session;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +7,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import app.model.Teacher;
+import app.session.Session;
 
 public class TeacherDao {
     private static String escapeString(String str) {
@@ -73,7 +72,7 @@ public class TeacherDao {
      * Lấy tất cả giảng viên từ database
      */
     public static List<Teacher> getAllTeachers() {
-        String query = "SELECT * FROM teacher ORDER BY teacher_id";
+        String query = "SELECT * FROM teachers ORDER BY teacher_id";
         List<Teacher> teachers = new ArrayList<>();
 
         try {
@@ -98,13 +97,35 @@ public class TeacherDao {
      */
     private static Teacher mapToTeacher(HashMap<String, Object> row) {
         try {
-            String teacherId = (String) row.get("teacher_id");
-            String lastName = (String) row.get("last_name");
-            String firstName = (String) row.get("first_name");
+            Integer teacherId = (Integer) row.get("teacher_id");
             String userName = (String) row.get("username");
             String password = (String) row.get("password");
             String phoneNumber = (String) row.get("phone_number");
             String email = (String) row.get("email");
+            
+            String firstName = "";
+            String lastName = "";
+            
+            // Try to use first_name and last_name from database first
+            Object firstNameObj = row.get("first_name");
+            Object lastNameObj = row.get("last_name");
+            
+            if (firstNameObj != null && lastNameObj != null) {
+                firstName = (String) firstNameObj;
+                lastName = (String) lastNameObj;
+            } else {
+                // Fallback to splitting fullname if first/last names not available
+                String fullname = (String) row.get("fullname");
+                if (fullname != null && !fullname.isEmpty()) {
+                    String[] nameParts = fullname.trim().split("\\s+");
+                    if (nameParts.length > 0) {
+                        lastName = nameParts[0];
+                        if (nameParts.length > 1) {
+                            firstName = String.join(" ", java.util.Arrays.copyOfRange(nameParts, 1, nameParts.length));
+                        }
+                    }
+                }
+            }
             
             // Parse date of birth
             Object dobObj = row.get("date_of_birth");
