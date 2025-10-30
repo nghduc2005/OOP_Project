@@ -103,7 +103,7 @@
                 pstmt.setDouble(4, grade.getFinalScore());
                 pstmt.setDouble(5, grade.getTotalScore());
                 pstmt.setString(6, grade.getLetterGrade());
-                pstmt.setString(7, grade.getGradeId());
+                pstmt.setInt(7, grade.getGradeId());
     
                 int rowsAffected = pstmt.executeUpdate();
                 return rowsAffected > 0;
