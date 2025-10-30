@@ -1,12 +1,24 @@
 package app.dao;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.TimeZone;
+
 import app.Constant;
 
-import java.sql.*;
-import java.util.*;
-
 public class DatabaseConnection {
-    private static final String URL = Constant.DB_URL_CONNECT;
+    private static final String URL = Constant.DB_URL_CONNECT + 
+        "?connectTimeout=30000" +      // 30 giây timeout
+        "&socketTimeout=30000" +       // 30 giây socket timeout
+        "&autoReconnect=true" +        // Auto reconnect
+        "&maxReconnects=3";            // Thử reconnect 3 lần
     private static final String USER = Constant.DB_USER_CONNECT;
     private static final String PASSWORD = Constant.DB_PASSWORD_CONNECT;
 
