@@ -1,20 +1,21 @@
 package app.model;
 import java.time.LocalDate;
+
 import app.dto.request.LoginRequest;
 
 public class Student extends User {
-    private String studentId;
+    private Integer studentId;
 
     public Student(LoginRequest request){
         super(request.getUsername(), request.getPassword());
     }
 
-    public Student(String studentId, LoginRequest request){
+    public Student(Integer studentId, LoginRequest request){
         super(request.getUsername(), request.getPassword());
         this.studentId = studentId;
     }
 
-    public Student(String studentId, String lastName, String firstName,
+    public Student(Integer studentId, String lastName, String firstName,
                    String userName, String password, String phoneNumber,
                    String email, LocalDate dateOfBirth) {
         super(userName, password);
@@ -26,7 +27,7 @@ public class Student extends User {
         setDateOfBirth(dateOfBirth);
     }
 
-    public Student(String studentId, String firstName, String lastName,
+    public Student(Integer studentId, String firstName, String lastName,
                    String email, String phoneNumber) {
         super("", "");
         this.studentId = studentId;
@@ -36,6 +37,6 @@ public class Student extends User {
         setPhoneNumber(phoneNumber);
     }
 
-    public String getStudentId() { return studentId; }
-    public void setStudentId(String studentId) { this.studentId = studentId; }
+    public Integer getStudentId() { return studentId; }
+    public void setStudentId(Integer studentId) { this.studentId = studentId; }
 }
