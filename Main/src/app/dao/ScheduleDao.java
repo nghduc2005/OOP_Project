@@ -83,12 +83,39 @@ public class ScheduleDao {
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
             return getAllSchedules();
         }
-        String query = String.format(
+        
+        // Try enhanced search with JOINs first, fallback to basic search if tables don't exist
+        try {
+            String enhancedQuery = String.format(
+                    "SELECT DISTINCT s.* FROM schedules s " +
+                    "LEFT JOIN subjects sub ON s.subject_id = sub.subject_id " +
+                    "LEFT JOIN classes c ON s.class_id = c.class_id " +
+                    "WHERE s.classroom LIKE '%%%s%%' " +
+                    "OR s.study_shift LIKE '%%%s%%' " +
+                    "OR s.note LIKE '%%%s%%' " +
+                    "OR s.study_date LIKE '%%%s%%' " +
+                    "OR sub.name LIKE '%%%s%%' " +
+                    "OR c.subject_name LIKE '%%%s%%' " +
+                    "ORDER BY s.study_date, s.start_time",
+                    escapeString(searchTerm), escapeString(searchTerm), escapeString(searchTerm),
+                    escapeString(searchTerm), escapeString(searchTerm), escapeString(searchTerm)
+            );
+            
+            List<Schedule> results = getSchedulesByQuery(enhancedQuery);
+            if (results != null && !results.isEmpty()) {
+                return results;
+            }
+        } catch (Exception e) {
+            System.out.println("Enhanced search failed, falling back to basic search: " + e.getMessage());
+        }
+        
+        // Fallback to basic search if enhanced search fails
+        String basicQuery = String.format(
                 "SELECT * FROM schedules WHERE classroom LIKE '%%%s%%' OR study_shift LIKE '%%%s%%' " +
                         "OR note LIKE '%%%s%%' ORDER BY study_date",
                 escapeString(searchTerm), escapeString(searchTerm), escapeString(searchTerm)
         );
-        return getSchedulesByQuery(query);
+        return getSchedulesByQuery(basicQuery);
     }
 
     public static List<Schedule> getSchedulesByDateRange(LocalDate startDate, LocalDate endDate) {
@@ -102,6 +129,88 @@ public class ScheduleDao {
     public static List<Schedule> getSchedulesByDate(LocalDate date) {
         String query = "SELECT * FROM schedules WHERE study_date = '" + date + "' ORDER BY start_time";
         return getSchedulesByQuery(query);
+    }
+
+    /**
+     * Tìm kiếm lịch theo tên môn học
+     */
+    public static List<Schedule> searchSchedulesBySubject(String subjectName) {
+        if (subjectName == null || subjectName.trim().isEmpty()) {
+            return getAllSchedules();
+        }
+        String query = String.format(
+                "SELECT DISTINCT s.* FROM schedules s " +
+                "LEFT JOIN subjects sub ON s.subject_id = sub.subject_id " +
+                "LEFT JOIN classes c ON s.class_id = c.class_id " +
+                "WHERE sub.name LIKE '%%%s%%' OR c.subject_name LIKE '%%%s%%' " +
+                "ORDER BY s.study_date, s.start_time",
+                escapeString(subjectName), escapeString(subjectName)
+        );
+        return getSchedulesByQuery(query);
+    }
+
+    /**
+     * Tìm kiếm lịch theo mã lớp hoặc tên lớp
+     */
+    public static List<Schedule> searchSchedulesByClass(String className) {
+        if (className == null || className.trim().isEmpty()) {
+            return getAllSchedules();
+        }
+        String query = String.format(
+                "SELECT DISTINCT s.* FROM schedules s " +
+                "LEFT JOIN classes c ON s.class_id = c.class_id " +
+                "WHERE s.class_id LIKE '%%%s%%' OR c.subject_name LIKE '%%%s%%' " +
+                "ORDER BY s.study_date, s.start_time",
+                escapeString(className), escapeString(className)
+        );
+        return getSchedulesByQuery(query);
+    }
+
+    /**
+     * Tìm kiếm lịch theo ngày (hỗ trợ nhiều format)
+     */
+    public static List<Schedule> searchSchedulesByDate(String dateSearch) {
+        if (dateSearch == null || dateSearch.trim().isEmpty()) {
+            return getAllSchedules();
+        }
+        
+        // Hỗ trợ tìm kiếm theo năm (2024), tháng-năm (12-2024), hoặc ngày đầy đủ
+        String query = String.format(
+                "SELECT * FROM schedules WHERE study_date LIKE '%%%s%%' " +
+                "ORDER BY study_date, start_time",
+                escapeString(dateSearch)
+        );
+        return getSchedulesByQuery(query);
+    }
+
+    /**
+     * Tìm kiếm nâng cao với nhiều tiêu chí
+     */
+    public static List<Schedule> advancedSearch(String subjectName, String className, String classroom, String date) {
+        StringBuilder queryBuilder = new StringBuilder("SELECT DISTINCT s.* FROM schedules s ");
+        queryBuilder.append("LEFT JOIN subjects sub ON s.subject_id = sub.subject_id ");
+        queryBuilder.append("LEFT JOIN classes c ON s.class_id = c.class_id WHERE 1=1 ");
+        
+        if (subjectName != null && !subjectName.trim().isEmpty()) {
+            queryBuilder.append(String.format("AND (sub.name LIKE '%%%s%%' OR c.subject_name LIKE '%%%s%%') ", 
+                    escapeString(subjectName), escapeString(subjectName)));
+        }
+        
+        if (className != null && !className.trim().isEmpty()) {
+            queryBuilder.append(String.format("AND s.class_id LIKE '%%%s%%' ", escapeString(className)));
+        }
+        
+        if (classroom != null && !classroom.trim().isEmpty()) {
+            queryBuilder.append(String.format("AND s.classroom LIKE '%%%s%%' ", escapeString(classroom)));
+        }
+        
+        if (date != null && !date.trim().isEmpty()) {
+            queryBuilder.append(String.format("AND s.study_date LIKE '%%%s%%' ", escapeString(date)));
+        }
+        
+        queryBuilder.append("ORDER BY s.study_date, s.start_time");
+        
+        return getSchedulesByQuery(queryBuilder.toString());
     }
 
 

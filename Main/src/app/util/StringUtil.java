@@ -1,6 +1,6 @@
 package app.util;
 
-// import org.mindrot.jbcrypt.BCrypt; // BCrypt library not available
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;

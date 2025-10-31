@@ -25,6 +25,15 @@ public class ScheduleDisplayPanel extends JPanel {
     private JButton monthButton;
     private JButton allButton;
     private JLabel statusLabel;
+    
+    // Advanced search components
+    private JComboBox<String> searchTypeComboBox;
+    private JButton advancedSearchButton;
+    private JTextField subjectField;
+    private JTextField classField;
+    private JTextField classroomField;
+    private JTextField dateField;
+    private JDialog advancedSearchDialog;
 
     public ScheduleDisplayPanel(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
@@ -55,6 +64,13 @@ public class ScheduleDisplayPanel extends JPanel {
         searchField = new JTextField(20);
         searchButton = new JButton("Tìm kiếm");
         searchButton.setFocusPainted(false);
+        
+        // Advanced search components
+        searchTypeComboBox = new JComboBox<>(new String[]{
+            "Tìm kiếm chung", "Theo môn học", "Theo lớp", "Theo phòng", "Theo ngày"
+        });
+        advancedSearchButton = new JButton("Tìm kiếm nâng cao");
+        advancedSearchButton.setFocusPainted(false);
 
         // Filter buttons
         todayButton = new JButton("Hôm nay");
@@ -98,9 +114,12 @@ public class ScheduleDisplayPanel extends JPanel {
         // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
-        searchPanel.add(new JLabel("Tìm kiếm:"));
+        searchPanel.add(new JLabel("Loại tìm kiếm:"));
+        searchPanel.add(searchTypeComboBox);
+        searchPanel.add(new JLabel("Từ khóa:"));
         searchPanel.add(searchField);
         searchPanel.add(searchButton);
+        searchPanel.add(advancedSearchButton);
 
         headerPanel.add(titleLabel, BorderLayout.WEST);
         headerPanel.add(searchPanel, BorderLayout.EAST);
@@ -171,6 +190,9 @@ public class ScheduleDisplayPanel extends JPanel {
 
         // Search field enter key
         searchField.addActionListener(e -> searchSchedules());
+        
+        // Advanced search button
+        advancedSearchButton.addActionListener(e -> openAdvancedSearchDialog());
 
         // Filter buttons
         todayButton.addActionListener(e -> loadTodaySchedules());
@@ -265,15 +287,58 @@ public class ScheduleDisplayPanel extends JPanel {
 
     private void searchSchedules() {
         String searchTerm = searchField.getText().trim();
+        String searchType = (String) searchTypeComboBox.getSelectedItem();
+        
         try {
-            List<Schedule> schedules = ScheduleService.searchSchedules(searchTerm);
+            List<Schedule> schedules;
+            
+            if (searchTerm.isEmpty()) {
+                schedules = ScheduleService.getAllSchedules();
+            } else {
+                switch (searchType) {
+                    case "Theo môn học":
+                        schedules = ScheduleService.searchSchedulesBySubject(searchTerm);
+                        break;
+                    case "Theo lớp":
+                        schedules = ScheduleService.searchSchedulesByClass(searchTerm);
+                        break;
+                    case "Theo phòng":
+                        schedules = ScheduleService.searchSchedules(searchTerm); // Tìm theo phòng (logic cũ)
+                        break;
+                    case "Theo ngày":
+                        schedules = ScheduleService.searchSchedulesByDate(searchTerm);
+                        break;
+                    default: // "Tìm kiếm chung"
+                        schedules = ScheduleService.searchSchedules(searchTerm);
+                        break;
+                }
+            }
+            
             loadSchedules(schedules);
             resetButtonHighlight();
+            updateStatusLabel(schedules.size());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this,
-                    "Không thể tìm kiếm lịch học: " + e.getMessage(),
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
+            System.err.println("Search error: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Show user-friendly error message
+            String errorMsg = "Không thể tìm kiếm lịch học";
+            if (e.getMessage() != null && e.getMessage().contains("SQL")) {
+                errorMsg += ". Có vấn đề với cơ sở dữ liệu.";
+            } else {
+                errorMsg += ": " + e.getMessage();
+            }
+            
+            JOptionPane.showMessageDialog(this, errorMsg, "Lỗi", JOptionPane.ERROR_MESSAGE);
+            
+            // Fallback: load all schedules
+            try {
+                List<Schedule> allSchedules = ScheduleService.getAllSchedules();
+                loadSchedules(allSchedules);
+                resetButtonHighlight();
+            } catch (Exception fallbackError) {
+                System.err.println("Fallback also failed: " + fallbackError.getMessage());
+            }
         }
     }
 
@@ -344,5 +409,169 @@ public class ScheduleDisplayPanel extends JPanel {
 
     public void refreshTable() {
         loadAllSchedules();
+    }
+    
+    /**
+     * Mở dialog tìm kiếm nâng cao
+     */
+    private void openAdvancedSearchDialog() {
+        if (advancedSearchDialog == null) {
+            createAdvancedSearchDialog();
+        }
+        
+        // Reset fields
+        subjectField.setText("");
+        classField.setText("");
+        classroomField.setText("");
+        dateField.setText("");
+        
+        advancedSearchDialog.setVisible(true);
+    }
+    
+    /**
+     * Tạo dialog tìm kiếm nâng cao
+     */
+    private void createAdvancedSearchDialog() {
+        Frame parentFrame = (Frame) SwingUtilities.getWindowAncestor(this);
+        advancedSearchDialog = new JDialog(parentFrame, "Tìm kiếm nâng cao", true);
+        advancedSearchDialog.setLayout(new BorderLayout());
+        
+        // Main panel
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        
+        // Subject field
+        gbc.gridx = 0; gbc.gridy = 0;
+        mainPanel.add(new JLabel("Tên môn học:"), gbc);
+        gbc.gridx = 1;
+        subjectField = new JTextField(20);
+        mainPanel.add(subjectField, gbc);
+        
+        // Class field
+        gbc.gridx = 0; gbc.gridy = 1;
+        mainPanel.add(new JLabel("Mã lớp:"), gbc);
+        gbc.gridx = 1;
+        classField = new JTextField(20);
+        mainPanel.add(classField, gbc);
+        
+        // Classroom field
+        gbc.gridx = 0; gbc.gridy = 2;
+        mainPanel.add(new JLabel("Phòng học:"), gbc);
+        gbc.gridx = 1;
+        classroomField = new JTextField(20);
+        mainPanel.add(classroomField, gbc);
+        
+        // Date field
+        gbc.gridx = 0; gbc.gridy = 3;
+        mainPanel.add(new JLabel("Ngày (YYYY-MM-DD):"), gbc);
+        gbc.gridx = 1;
+        dateField = new JTextField(20);
+        mainPanel.add(dateField, gbc);
+        
+        // Help text
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
+        JLabel helpLabel = new JLabel("<html><i>Gợi ý: Có thể để trống các trường không cần tìm.<br>" +
+                "Ngày có thể tìm theo năm (2024), tháng-năm (10-2024), hoặc đầy đủ (2024-10-31)</i></html>");
+        helpLabel.setFont(new Font("Arial", Font.ITALIC, 11));
+        helpLabel.setForeground(Color.GRAY);
+        mainPanel.add(helpLabel, gbc);
+        
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton searchBtn = new JButton("Tìm kiếm");
+        JButton clearBtn = new JButton("Xóa");
+        JButton cancelBtn = new JButton("Hủy");
+        
+        searchBtn.addActionListener(e -> performAdvancedSearch());
+        clearBtn.addActionListener(e -> {
+            subjectField.setText("");
+            classField.setText("");
+            classroomField.setText("");
+            dateField.setText("");
+        });
+        cancelBtn.addActionListener(e -> advancedSearchDialog.setVisible(false));
+        
+        buttonPanel.add(searchBtn);
+        buttonPanel.add(clearBtn);
+        buttonPanel.add(cancelBtn);
+        
+        advancedSearchDialog.add(mainPanel, BorderLayout.CENTER);
+        advancedSearchDialog.add(buttonPanel, BorderLayout.SOUTH);
+        
+        advancedSearchDialog.setSize(400, 300);
+        advancedSearchDialog.setLocationRelativeTo(this);
+    }
+    
+    /**
+     * Thực hiện tìm kiếm nâng cao
+     */
+    private void performAdvancedSearch() {
+        try {
+            String subject = subjectField.getText().trim();
+            String classId = classField.getText().trim();
+            String classroom = classroomField.getText().trim();
+            String date = dateField.getText().trim();
+            
+            // Validate at least one field is filled
+            if (subject.isEmpty() && classId.isEmpty() && classroom.isEmpty() && date.isEmpty()) {
+                JOptionPane.showMessageDialog(advancedSearchDialog,
+                        "Vui lòng nhập ít nhất một tiêu chí tìm kiếm!",
+                        "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // Validate date format if provided
+            if (!date.isEmpty()) {
+                if (!isValidDateFormat(date)) {
+                    JOptionPane.showMessageDialog(advancedSearchDialog,
+                            "Định dạng ngày không hợp lệ! Sử dụng: YYYY, MM-YYYY, hoặc YYYY-MM-DD",
+                            "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            
+            List<Schedule> schedules = ScheduleService.advancedSearch(
+                subject.isEmpty() ? null : subject,
+                classId.isEmpty() ? null : classId,
+                classroom.isEmpty() ? null : classroom,
+                date.isEmpty() ? null : date
+            );
+            
+            loadSchedules(schedules);
+            resetButtonHighlight();
+            updateStatusLabel(schedules.size());
+            
+            advancedSearchDialog.setVisible(false);
+            
+            String message = schedules.size() > 0 
+                ? "Tìm thấy " + schedules.size() + " kết quả phù hợp!"
+                : "Không tìm thấy kết quả nào phù hợp với tiêu chí tìm kiếm.";
+                
+            JOptionPane.showMessageDialog(this, message, "Kết quả tìm kiếm", JOptionPane.INFORMATION_MESSAGE);
+                    
+        } catch (Exception e) {
+            System.err.println("Advanced search error: " + e.getMessage());
+            e.printStackTrace();
+            
+            JOptionPane.showMessageDialog(advancedSearchDialog,
+                    "Lỗi khi tìm kiếm: " + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    /**
+     * Validate date format
+     */
+    private boolean isValidDateFormat(String date) {
+        // Accept formats: YYYY, MM-YYYY, YYYY-MM-DD
+        return date.matches("^\\d{4}$") ||                    // 2024
+               date.matches("^\\d{1,2}-\\d{4}$") ||           // 12-2024
+               date.matches("^\\d{4}-\\d{1,2}-\\d{1,2}$");    // 2024-12-31
     }
 }
