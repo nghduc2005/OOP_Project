@@ -1,42 +1,55 @@
 package app.model;
 
 public class Subject {
-    private String subjectId;
+    private Integer subjectId;
     private String subjectName;
-    private int credit;
-    private String teacherName;
-    private double[] grades;
+    private Integer credit;
+    private String testType;
 
-    public Subject(String subjectId, String subjectName, int credit) {
+    public Subject() {}
+    
+    public Subject(Integer subjectId, String subjectName, Integer credit) {
         this.subjectId = subjectId;
         this.subjectName = subjectName;
         this.credit = credit;
-        this.teacherName = "";
-        this.grades = new double[5];
     }
 
-    public Subject(String subjectId, String subjectName, int credit, String teacherName, double[] grades) {
+    public Subject(Integer subjectId, String subjectName, Integer credit, String testType) {
         this.subjectId = subjectId;
         this.subjectName = subjectName;
         this.credit = credit;
-        this.teacherName = teacherName != null ? teacherName : "";
-        this.grades = grades != null ? grades.clone() : new double[5];
+        this.testType = testType;
     }
 
-    public String getSubjectId() { return subjectId; }
-    public String getSubjectName() { return subjectName; }
-    public int getCredit() { return credit; }
-    public String getTeacherName() { return teacherName; }
-    public double getGrade(int index) {
-        return (index >= 0 && index < grades.length) ? grades[index] : 0.0;
+    public Integer getSubjectId() { 
+        return subjectId; 
     }
-
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName != null ? teacherName : "";
+    
+    public void setSubjectId(Integer subjectId) {
+        this.subjectId = subjectId;
     }
-    public void setGrade(int index, double grade) {
-        if (index >= 0 && index < grades.length) {
-            grades[index] = grade;
-        }
+    
+    public String getSubjectName() { 
+        return subjectName; 
+    }
+    
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
+    }
+    
+    public Integer getCredit() { 
+        return credit; 
+    }
+    
+    public void setCredit(Integer credit) {
+        this.credit = credit;
+    }
+    
+    public String getTestType() {
+        return testType;
+    }
+    
+    public void setTestType(String testType) {
+        this.testType = testType;
     }
 }
