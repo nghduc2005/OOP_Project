@@ -22,6 +22,17 @@ public class DatabaseConnection {
     private static final String USER = Constant.DB_USER_CONNECT;
     private static final String PASSWORD = Constant.DB_PASSWORD_CONNECT;
 
+    // Load MySQL driver khi class được load
+    static {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            System.out.println("MySQL JDBC Driver loaded successfully!");
+        } catch (ClassNotFoundException e) {
+            System.err.println("MySQL JDBC Driver not found!");
+            e.printStackTrace();
+        }
+    }
+
     public static Connection getConnection() {
         try {
             TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
