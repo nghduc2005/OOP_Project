@@ -1,10 +1,13 @@
 package app.ui;
 
+import app.dao.SubjectDao;
 import app.model.Subject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
 
 public class SubjectPopup extends JDialog {
 
@@ -25,12 +28,14 @@ public class SubjectPopup extends JDialog {
     private static final String[] GRADE_WEIGHTS = {"10%", "20%", "20%", "50%", "100%"};
 
     private Subject subject;
+    private String studentId;  // Thêm studentId để lấy điểm
     private JTable gradesTable;
     private DefaultTableModel tableModel;
 
-    public SubjectPopup(JFrame parent, Subject subject) {
+    public SubjectPopup(JFrame parent, Subject subject, String studentId) {
         super(parent, "Thông tin môn học", true);
         this.subject = subject;
+        this.studentId = studentId;
         initializeComponents();
         setupLayout();
         setupDialog();
@@ -291,8 +296,8 @@ public class SubjectPopup extends JDialog {
     }
 
 
-    public static void showSubjectDetails(JFrame parent, Subject subject) {
-        SwingUtilities.invokeLater(() -> new SubjectPopup(parent, subject).setVisible(true));
+    public static void showSubjectDetails(JFrame parent, Subject subject, String studentId) {
+        SwingUtilities.invokeLater(() -> new SubjectPopup(parent, subject, studentId).setVisible(true));
     }
 
 

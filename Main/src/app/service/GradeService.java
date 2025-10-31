@@ -139,7 +139,13 @@ public class GradeService {
      * Xóa điểm
      */
     public static boolean deleteGrade(String gradeId) {
-        return GradeDao.deleteGrade(gradeId);
+        try {
+            Integer gradeIdInt = Integer.parseInt(gradeId);
+            return GradeDao.deleteGrade(gradeIdInt);
+        } catch (NumberFormatException e) {
+            System.out.println("ID điểm không hợp lệ: " + gradeId);
+            return false;
+        }
     }
 
     /**

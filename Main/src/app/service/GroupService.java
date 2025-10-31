@@ -1,11 +1,10 @@
 package app.service;
 
+import java.util.List;
+
 import app.dao.GroupDao;
-import app.dao.SubjectDao;
 import app.model.Group;
 import app.model.Student;
-import app.model.Subject;
-import java.util.List;
 
 public class GroupService {
 
@@ -13,10 +12,6 @@ public class GroupService {
                                       String teacherName, int maxStudents) {
         validateGroupInput(groupId, groupName, subjectName, teacherName, maxStudents);
 
-        Subject subject = SubjectDao.getSubjectById(Integer.parseInt(subjectName));
-        if (subject == null) {
-            System.out.println("⚠ Cảnh báo: Môn học chưa tồn tại trong hệ thống: " + subjectName);
-        }
 
         Group group = new Group(groupId, groupName, subjectName, teacherName, maxStudents);
         boolean result = GroupDao.createGroup(group);

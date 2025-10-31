@@ -10,7 +10,7 @@ public class ClassDao {
             return false;
         }
 
-        if (isClassIdExists(String.valueOf(cl.getClass_id()))) {
+        if (isClassIdExists(String.valueOf(cl.getClassId()))) {
             System.out.println("Class ID đã tồn tại, không thể thêm mới!");
             return false;
         }
@@ -18,9 +18,9 @@ public class ClassDao {
         String query = String.format(
                 "INSERT INTO classes (class_id, total_student, subject_name, maxnumberstudent) " +
                         "VALUES ('%s', '%s', '%s', '%s')",
-                escapeString(String.valueOf(cl.getClass_id())),
-                escapeString(String.valueOf(cl.getTotal_student())),
-                escapeString(String.valueOf(cl.getSubject_name())),
+                escapeString(String.valueOf(cl.getClassId())),
+                escapeString(String.valueOf(cl.getTotalStudent())),
+                escapeString(String.valueOf(cl.getSubjectName())),
                 escapeString(String.valueOf(cl.getMaxNumberStudent()))
         );
 
@@ -43,14 +43,14 @@ public class ClassDao {
     // ✅ HÀM SỬA LỚP HỌC
     public static boolean updateClass(Classes cl) {
         // 1️⃣ Kiểm tra dữ liệu đầu vào
-        if (cl == null || cl.getClass_id() == null) {
+        if (cl == null || cl.getClassId() == null) {
             System.out.println("Dữ liệu lớp học không hợp lệ!");
             return false;
         }
 
         // 2️⃣ Kiểm tra lớp có tồn tại không
-        if (!isClassIdExists(String.valueOf(cl.getClass_id()))) {
-            System.out.println("Không tìm thấy lớp có mã: " + cl.getClass_id());
+        if (!isClassIdExists(String.valueOf(cl.getClassId()))) {
+            System.out.println("Không tìm thấy lớp có mã: " + cl.getClassId());
             return false;
         }
 
@@ -58,10 +58,10 @@ public class ClassDao {
         String query = String.format(
                 "UPDATE classes SET total_student = '%s', subject_name = '%s', maxnumberstudent = '%s' " +
                         "WHERE class_id = '%s'",
-                escapeString(String.valueOf(cl.getTotal_student())),
-                escapeString(String.valueOf(cl.getSubject_name())),
+                escapeString(String.valueOf(cl.getTotalStudent())),
+                escapeString(String.valueOf(cl.getSubjectName())),
                 escapeString(String.valueOf(cl.getMaxNumberStudent())),
-                escapeString(String.valueOf(cl.getClass_id()))
+                escapeString(String.valueOf(cl.getClassId()))
         );
 
         // 4️⃣ Thực thi truy vấn

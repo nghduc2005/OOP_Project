@@ -5,6 +5,8 @@ public class Subject {
     private String subjectName;
     private Integer credit;
     private String testType;
+    private String teacherName;
+    private double[] grades = new double[5]; // 0: CC, 1: GK, 2: TH, 3: CK, 4: Tổng kết
 
     public Subject() {}
     
@@ -52,6 +54,35 @@ public class Subject {
     public void setTestType(String testType) {
         this.testType = testType;
     }
-
-
+    
+    public String getTeacherName() {
+        return teacherName;
+    }
+    
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+    
+    public double getGrade(int index) {
+        if (index >= 0 && index < grades.length) {
+            return grades[index];
+        }
+        return 0.0;
+    }
+    
+    public void setGrade(int index, double grade) {
+        if (index >= 0 && index < grades.length) {
+            grades[index] = grade;
+        }
+    }
+    
+    public double[] getGrades() {
+        return grades;
+    }
+    
+    public void setGrades(double[] grades) {
+        if (grades != null && grades.length == this.grades.length) {
+            System.arraycopy(grades, 0, this.grades, 0, grades.length);
+        }
+    }
 }
