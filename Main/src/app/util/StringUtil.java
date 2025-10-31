@@ -1,12 +1,9 @@
 package app.util;
 
-import org.mindrot.jbcrypt.BCrypt;
+// import org.mindrot.jbcrypt.BCrypt; // BCrypt library not available
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 
 public final class StringUtil {
     //Chỉ dùng method không tạo instance

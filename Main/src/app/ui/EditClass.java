@@ -100,12 +100,15 @@ public class EditClass extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        Classes cl = new Classes(id,count,name,Integer.parseInt(max));
-
-        boolean success = ClassDao.updateClass(cl);
-        if(success)
-            JOptionPane.showMessageDialog(this, "Sửa lớp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        else
-            JOptionPane.showMessageDialog(this, "Có lỗi khi sửa lớp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            Classes cl = new Classes(Integer.parseInt(id), Integer.parseInt(count), name, Integer.parseInt(max));
+            boolean success = ClassDao.updateClass(cl);
+            if(success)
+                JOptionPane.showMessageDialog(this, "Sửa lớp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            else
+                JOptionPane.showMessageDialog(this, "Có lỗi khi sửa lớp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

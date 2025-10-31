@@ -296,8 +296,8 @@ public class SubjectPopup extends JDialog {
     }
 
 
-    public static void showSubjectDetails(JFrame parent, Subject subject) {
-        SwingUtilities.invokeLater(() -> new SubjectPopup(parent, subject).setVisible(true));
+    public static void showSubjectDetails(JFrame parent, Subject subject, String studentId) {
+        SwingUtilities.invokeLater(() -> new SubjectPopup(parent, subject, studentId).setVisible(true));
     }
 
 

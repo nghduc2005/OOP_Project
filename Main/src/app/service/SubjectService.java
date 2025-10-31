@@ -10,7 +10,8 @@ public class SubjectService {
 
     public static boolean createSubject(String subjectId, String subjectName, int credit, String teacherName) {
         validateSubjectInput(subjectId, subjectName, credit);
-        Subject subject = new Subject(subjectId, subjectName, credit);
+        Integer subjectIdInt = parseSubjectId(subjectId);
+        Subject subject = new Subject(subjectIdInt, subjectName, credit);
         if (teacherName != null && !teacherName.trim().isEmpty()) {
             subject.setTeacherName(teacherName);
         }
@@ -25,11 +26,12 @@ public class SubjectService {
 
     public static boolean updateSubject(String subjectId, String subjectName, int credit, String teacherName) {
         validateSubjectInput(subjectId, subjectName, credit);
-        Subject existingSubject = SubjectDao.getSubjectById(subjectId);
+        Integer subjectIdInt = parseSubjectId(subjectId);
+        Subject existingSubject = SubjectDao.getSubjectById(subjectIdInt);
         if (existingSubject == null) {
             throw new IllegalArgumentException("Môn học không tồn tại: " + subjectId);
         }
-        Subject subject = new Subject(subjectId, subjectName, credit);
+        Subject subject = new Subject(subjectIdInt, subjectName, credit);
         if (teacherName != null && !teacherName.trim().isEmpty()) {
             subject.setTeacherName(teacherName);
         }
@@ -46,11 +48,12 @@ public class SubjectService {
         if (subjectId == null || subjectId.trim().isEmpty()) {
             throw new IllegalArgumentException("Mã môn học không được rỗng!");
         }
-        Subject existingSubject = SubjectDao.getSubjectById(subjectId);
+        Integer subjectIdInt = parseSubjectId(subjectId);
+        Subject existingSubject = SubjectDao.getSubjectById(subjectIdInt);
         if (existingSubject == null) {
             throw new IllegalArgumentException("Môn học không tồn tại: " + subjectId);
         }
-        boolean result = SubjectDao.deleteSubject(subjectId);
+        boolean result = SubjectDao.deleteSubject(subjectIdInt);
         if (result) {
             System.out.println("✓ Xóa môn học thành công!");
         } else {
@@ -63,7 +66,8 @@ public class SubjectService {
         if (subjectId == null || subjectId.trim().isEmpty()) {
             throw new IllegalArgumentException("Mã môn học không được rỗng!");
         }
-        return SubjectDao.getSubjectById(subjectId);
+        Integer subjectIdInt = parseSubjectId(subjectId);
+        return SubjectDao.getSubjectById(subjectIdInt);
     }
 
     public static List<Subject> getAllSubjects() {
@@ -82,7 +86,8 @@ public class SubjectService {
     }
 
     public static boolean isSubjectExists(String subjectId) {
-        return SubjectDao.isSubjectIdExists(subjectId);
+        Integer subjectIdInt = parseSubjectId(subjectId);
+        return SubjectDao.isSubjectIdExists(subjectIdInt);
     }
 
     private static void validateSubjectInput(String subjectId, String subjectName, int credit) {
@@ -107,18 +112,12 @@ public class SubjectService {
         List<Subject> allSubjects = SubjectDao.getAllSubjects();
         int maxId = 0;
         for (Subject subject : allSubjects) {
-            String id = subject.getSubjectId();
-            if (id.startsWith("SUB")) {
-                try {
-                    int num = Integer.parseInt(id.substring(3));
-                    if (num > maxId) {
-                        maxId = num;
-                    }
-                } catch (NumberFormatException e) {
-                }
+            Integer id = subject.getSubjectId();
+            if (id != null && id > maxId) {
+                maxId = id;
             }
         }
-        return String.format("SUB%05d", maxId + 1);
+        return String.valueOf(maxId + 1);
     }
 
 
@@ -135,7 +134,8 @@ public class SubjectService {
         }
 
         // Lấy Tên + Tín chỉ, teacherName sẽ là rỗng
-        Subject subject = SubjectDao.getSubjectById(subjectId);
+        Integer subjectIdInt = parseSubjectId(subjectId);
+        Subject subject = SubjectDao.getSubjectById(subjectIdInt);
         if (subject == null) {
             return null;
         }
@@ -203,5 +203,20 @@ public class SubjectService {
                 rawGrades[3],   // 3 cuối kỳ
                 finalGrade      // 4 tổng kết
         };
+    }
+    
+    /**
+     * Parse String subjectId to Integer
+     */
+    private static Integer parseSubjectId(String subjectId) {
+        if (subjectId == null || subjectId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Mã môn học không được rỗng!");
+        }
+        
+        try {
+            return Integer.parseInt(subjectId.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Mã môn học phải là số nguyên hợp lệ: " + subjectId);
+        }
     }
 }

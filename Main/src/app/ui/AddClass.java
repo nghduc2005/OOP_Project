@@ -98,12 +98,16 @@ public class AddClass extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin lớp học!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        Classes cl = new Classes(classId,totalStudent,subjectName,Integer.parseInt(maxStudent));
-
-        boolean success = ClassDao.CreateClass(cl);
-        if(success)
-            JOptionPane.showMessageDialog(this, "Thêm lớp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        else
-            JOptionPane.showMessageDialog(this, "Có lỗi khi thêm lớp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            Classes cl = new Classes(Integer.parseInt(classId), Integer.parseInt(totalStudent), subjectName, Integer.parseInt(maxStudent));
+            boolean success = ClassDao.CreateClass(cl);
+            if(success) {
+                JOptionPane.showMessageDialog(this, "Thêm lớp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm lớp thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
