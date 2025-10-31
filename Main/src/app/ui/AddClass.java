@@ -98,7 +98,8 @@ public class AddClass extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin lớp học!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        Classes cl = new Classes(classId,totalStudent,subjectName,Integer.parseInt(maxStudent));
+        Classes cl = new Classes(Integer.parseInt(classId),Integer.parseInt(totalStudent),subjectName,
+                Integer.parseInt(maxStudent));
 
         boolean success = ClassDao.CreateClass(cl);
         if(success)

@@ -25,7 +25,7 @@ public class SubjectService {
 
     public static boolean updateSubject(String subjectId, String subjectName, int credit, String teacherName) {
         validateSubjectInput(subjectId, subjectName, credit);
-        Subject existingSubject = SubjectDao.getSubjectById(subjectId);
+        Subject existingSubject = SubjectDao.getSubjectById(Integer.parseInt(subjectId));
         if (existingSubject == null) {
             throw new IllegalArgumentException("Môn học không tồn tại: " + subjectId);
         }
@@ -46,11 +46,11 @@ public class SubjectService {
         if (subjectId == null || subjectId.trim().isEmpty()) {
             throw new IllegalArgumentException("Mã môn học không được rỗng!");
         }
-        Subject existingSubject = SubjectDao.getSubjectById(subjectId);
+        Subject existingSubject = SubjectDao.getSubjectById(Integer.parseInt(subjectId));
         if (existingSubject == null) {
             throw new IllegalArgumentException("Môn học không tồn tại: " + subjectId);
         }
-        boolean result = SubjectDao.deleteSubject(subjectId);
+        boolean result = SubjectDao.deleteSubject(Integer.parseInt(subjectId));
         if (result) {
             System.out.println("✓ Xóa môn học thành công!");
         } else {
@@ -63,7 +63,7 @@ public class SubjectService {
         if (subjectId == null || subjectId.trim().isEmpty()) {
             throw new IllegalArgumentException("Mã môn học không được rỗng!");
         }
-        return SubjectDao.getSubjectById(subjectId);
+        return SubjectDao.getSubjectById(Integer.parseInt(subjectId));
     }
 
     public static List<Subject> getAllSubjects() {
@@ -82,7 +82,7 @@ public class SubjectService {
     }
 
     public static boolean isSubjectExists(String subjectId) {
-        return SubjectDao.isSubjectIdExists(subjectId);
+        return SubjectDao.isSubjectIdExists(Integer.parseInt(subjectId));
     }
 
     private static void validateSubjectInput(String subjectId, String subjectName, int credit) {
@@ -135,7 +135,7 @@ public class SubjectService {
         }
 
         // Lấy Tên + Tín chỉ, teacherName sẽ là rỗng
-        Subject subject = SubjectDao.getSubjectById(subjectId);
+        Subject subject = SubjectDao.getSubjectById(Integer.parseInt(subjectId));
         if (subject == null) {
             return null;
         }

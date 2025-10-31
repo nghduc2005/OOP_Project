@@ -100,7 +100,7 @@ public class EditClass extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        Classes cl = new Classes(id,count,name,Integer.parseInt(max));
+        Classes cl = new Classes(Integer.parseInt(id),Integer.parseInt(count),name,Integer.parseInt(max));
 
         boolean success = ClassDao.updateClass(cl);
         if(success)

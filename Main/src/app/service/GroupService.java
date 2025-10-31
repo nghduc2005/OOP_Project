@@ -13,7 +13,7 @@ public class GroupService {
                                       String teacherName, int maxStudents) {
         validateGroupInput(groupId, groupName, subjectName, teacherName, maxStudents);
 
-        Subject subject = SubjectDao.getSubjectById(subjectName);
+        Subject subject = SubjectDao.getSubjectById(Integer.parseInt(subjectName));
         if (subject == null) {
             System.out.println("⚠ Cảnh báo: Môn học chưa tồn tại trong hệ thống: " + subjectName);
         }

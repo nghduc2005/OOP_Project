@@ -15,7 +15,7 @@ public class SubjectDao {
         }
 
         if (!validateSubject(subject)) return false;
-        if (isSubjectIdExists(subject.getSubjectId())) {
+        if (isSubjectIdExists(Integer.parseInt(subject.getSubjectId()))) {
             System.out.println("Mã môn học đã tồn tại: " + subject.getSubjectId());
             return false;
         }
@@ -117,7 +117,7 @@ public class SubjectDao {
         }
 
         if (!validateSubject(subject)) return false;
-        if (!isSubjectIdExists(subject.getSubjectId())) {
+        if (!isSubjectIdExists(Integer.parseInt(subject.getSubjectId()))) {
             System.out.println("Môn học không tồn tại: " + subject.getSubjectId());
             return false;
         }
@@ -127,7 +127,7 @@ public class SubjectDao {
                         "WHERE subject_id = %d",
                 escapeString(subject.getSubjectName()),
                 subject.getCredit(),
-                escapeString(subject.getTestType() != null ? subject.getTestType() : ""),
+                escapeString(Integer.parseInt(subject.getTestType()) != null ? subject.getTestType() : ""),
                 subject.getSubjectId()
         );
 

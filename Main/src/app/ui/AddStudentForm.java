@@ -238,7 +238,7 @@ public class AddStudentForm extends JDialog {
             String firstName = nameParts.length > 1 ? nameParts[1] : fullName;
 
             result = new Student(
-                    generatedStudentId,
+                    Integer.parseInt(generatedStudentId),
                     lastName,
                     firstName,
                     generatedUsername,

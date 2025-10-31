@@ -53,7 +53,7 @@ public class DashboardPanel extends JPanel {
         c.anchor = GridBagConstraints.NORTHWEST;
         c.gridx = 4; c.gridy = 0;
         for(int i = 1; i <= 7; i++) {
-            CardSubjectTeacher cardSubjectTeacher = new CardSubjectTeacher(new Subject("1", "Giải tích", 3), "3");
+            CardSubjectTeacher cardSubjectTeacher = new CardSubjectTeacher(new Subject(1, "Giải tích", 3), "3");
             cardSubjectTeacher.setName(String.format("%s", i));
             cardListPanel.addMouseListener(new MouseAdapter() {
                 @Override
