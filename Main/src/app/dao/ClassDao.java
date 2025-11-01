@@ -16,8 +16,8 @@ public class ClassDao {
         }
 
         String query = String.format(
-                "INSERT INTO classes (class_id, total_student, subject_name, maxnumberstudent) " +
-                        "VALUES ('%s', '%s', '%s', '%s')",
+                "INSERT INTO classes (teacher_id, class_id, total_student, subject_name, maxnumberstudent) " +
+                        "VALUES (1 ,'%s', '%s', '%s', '%s')",
                 escapeString(String.valueOf(cl.getClassId())),
                 escapeString(String.valueOf(cl.getTotalStudent())),
                 escapeString(String.valueOf(cl.getSubjectName())),

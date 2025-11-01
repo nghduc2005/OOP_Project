@@ -64,7 +64,7 @@ public class ClassesPanel extends JPanel {
         deleteButton.addActionListener(e -> openDeleteClass());
     }
     private void openAddClass() {
-        mainPanel.add(new AddClass(mainPanel), "add_class");
+        mainPanel.add(new AddClass(mainPanel, new JDialog()), "add_class");
         mainPanel.show("add_class");
     }
     private void openEditClass(){
