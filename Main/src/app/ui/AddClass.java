@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.HashMap;
 
 public class AddClass extends JPanel {
-    private JTextField classIdInput, totalStudentInput, maxStudentInput, subjectNameInput;
+    private JTextField classIdInput, totalStudentInput, maxStudentInput;
     private JComboBox<String> subjectCombox;
 
     private JButton addButton;
@@ -100,7 +100,7 @@ public class AddClass extends JPanel {
         String classId = classIdInput.getText().trim();
         String totalStudent = totalStudentInput.getText().trim();
         String maxStudent = maxStudentInput.getText().trim();
-        String subjectName = subjectNameInput.getText().trim();
+        String subjectName = subjectCombox.getSelectedItem().toString().trim();;
 
         if (classId.isEmpty() || totalStudent.isEmpty() || maxStudent.isEmpty() || subjectName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin lớp học!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
