@@ -21,7 +21,7 @@ public class DashboardPanel extends JPanel {
     public DashboardPanel(MainPanel mainPanel) {
         this.mainPanel =mainPanel;
         setLayout(new BorderLayout());
-        headerComponent = new HeaderComponent(new String[]{ "Trang chủ", "Lịch học", "Thông tin cá nhân","Chỉnh sửa lớp học", "Đổi mật khẩu","Đăng xuất","Quay lại"},
+        headerComponent = new HeaderComponent(new String[]{ "Trang chủ", "Lịch học", "Thông tin cá nhân", "Đổi mật khẩu","Đăng xuất","Quay lại"},
                 mainPanel);
         add(headerComponent, BorderLayout.NORTH);
         JPanel centerPanel = centerPanel();
@@ -51,10 +51,6 @@ public class DashboardPanel extends JPanel {
         JPanel cardListPanel = new JPanel();
         cardListPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // căn giữa + spacing
         cardListPanel.setOpaque(false);
-//        GridBagConstraints c = new GridBagConstraints();
-//        c.insets = new Insets(5, 5, 5, 5);
-//        c.anchor = GridBagConstraints.NORTHWEST;
-//        c.gridx = 4; c.gridy = 0;
         String query = "SELECT * from classes where teacher_id = 1";
         List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
         int i=1;
