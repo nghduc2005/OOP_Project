@@ -1,6 +1,6 @@
 package app.ui;
 
-import java.awt.CardLayout;
+import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Set;
@@ -20,13 +20,12 @@ public class MainPanel extends JPanel {
         add(new LoginPanelTeacher(this), "Log_t");
         add(new LoginPanelStudent(this), "Log_s");
         add(new DashboardPanel(this), "dashboard");
-        add(new ClassDetailPanel(this), "ClassDetail");
         add(new ChangeProfilePanel(this), "ChangeProfile");
         add(new ChangePassword(this), "ChangePassword");
         add(new ScheduleDisplayPanel(this), "ScheduleDisplay");
-        add(new ClassesPanel(this),"Edit_class");
         add(new GradeManagementPanel(this), "GradeManagement");
     }
+
     //Hiển thị panel ứng với name
     public void show(String title){
         if (deque.isEmpty() || (!deque.peek().equals(title) && !unShowBackCard.contains(title))) {
@@ -43,5 +42,15 @@ public class MainPanel extends JPanel {
         if (unShowBackCard.contains(previous)) return;
         cardLayout.show(this, previous);
     }
+    public boolean hasCard(String name) {
+        for (Component comp : getComponents()) {
+            if (name.equals(this.getLayout().toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 }

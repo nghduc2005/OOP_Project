@@ -1,30 +1,28 @@
 package app.ui;
 
 import app.dao.ClassDao;
+import app.dao.DatabaseConnection;
 import app.model.Classes;
-import app.ui.component.HeaderComponent;
 import app.ui.component.ButtonComponent;
 import app.ui.component.TextFieldComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.HashMap;
 
 public class AddClass extends JPanel {
     private JTextField classIdInput, totalStudentInput, maxStudentInput, subjectNameInput;
+    private JComboBox<String> subjectCombox;
+
     private JButton addButton;
     private MainPanel mainPanel;
-
-    public AddClass(MainPanel mainPanel) {
+    private JDialog dialog;
+    public AddClass(MainPanel mainPanel, JDialog dialog) {
         this.mainPanel = mainPanel;
+        this.dialog =dialog;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
-
-        // ===== HEADER =====
-        HeaderComponent headerComponent = new HeaderComponent(
-                new String[]{"Trang chủ", "Chỉnh sửa lớp học", "Quay lại"},
-                mainPanel
-        );
-        add(headerComponent, BorderLayout.NORTH);
 
         // ===== TIÊU ĐỀ =====
         JLabel titleLabel = new JLabel("Thêm lớp học mới");
@@ -41,12 +39,22 @@ public class AddClass extends JPanel {
         classIdInput = new TextFieldComponent(15);
         totalStudentInput = new TextFieldComponent(15);
         maxStudentInput = new TextFieldComponent(15);
-        subjectNameInput = new TextFieldComponent(15);
 
         classIdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         totalStudentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         maxStudentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         subjectNameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        // Query subjects from DB
+        subjectCombox = new JComboBox<>();
+
+        String subjectQuery = "SELECT subject_id, name FROM subjects";
+        List<HashMap<String, Object>> subjectData = DatabaseConnection.readTable(subjectQuery);
+        for (HashMap<String, Object> row : subjectData) {
+            String name = row.get("name").toString();
+            int id = Integer.parseInt(row.get("subject_id").toString());
+            subjectCombox.addItem(name);
+        }
 
         // ===== NÚT =====
         addButton = new ButtonComponent("Thêm lớp");
@@ -67,7 +75,7 @@ public class AddClass extends JPanel {
         gbc.gridx = 0; gbc.gridy = 2; formPanel.add(maxStudentLabel, gbc);
         gbc.gridx = 1; formPanel.add(maxStudentInput, gbc);
         gbc.gridx = 0; gbc.gridy = 3; formPanel.add(subjectNameLabel, gbc);
-        gbc.gridx = 1; formPanel.add(subjectNameInput, gbc);
+        gbc.gridx = 1; formPanel.add(subjectCombox, gbc);
 
         // ===== GỘP TẤT CẢ VÀO MỘT CONTAINER =====
         JPanel containerPanel = new JPanel();
@@ -93,7 +101,7 @@ public class AddClass extends JPanel {
         String totalStudent = totalStudentInput.getText().trim();
         String maxStudent = maxStudentInput.getText().trim();
         String subjectName = subjectNameInput.getText().trim();
-
+        System.out.println(classId + " " + totalStudent + " " + maxStudent + " " + subjectName);
         if (classId.isEmpty() || totalStudent.isEmpty() || maxStudent.isEmpty() || subjectName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin lớp học!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
@@ -103,6 +111,11 @@ public class AddClass extends JPanel {
             boolean success = ClassDao.CreateClass(cl);
             if(success) {
                 JOptionPane.showMessageDialog(this, "Thêm lớp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                dialog.dispose(); // đóng popup
+
+                // Reload dashboard panel
+                mainPanel.show("Dashboard");
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm lớp thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }

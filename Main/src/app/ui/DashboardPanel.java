@@ -4,11 +4,13 @@ import app.model.Subject;
 import app.ui.component.HeaderComponent;
 import app.ui.component.LabelComponent;
 import app.ui.component.TableComponent;
-
+import app.dao.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.List;
 
 public class DashboardPanel extends JPanel {
     JPanel header;
@@ -17,9 +19,9 @@ public class DashboardPanel extends JPanel {
     LabelComponent titleLabel;
     MainPanel mainPanel;
     public DashboardPanel(MainPanel mainPanel) {
-        this.mainPanel =mainPanel;
+        this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
-        headerComponent = new HeaderComponent(new String[]{ "Trang chủ", "Lịch học", "Thông tin cá nhân","Chỉnh sửa lớp học", "Đổi mật khẩu","Đăng xuất","Quay lại"},
+        headerComponent = new HeaderComponent(new String[]{ "Trang chủ", "Lịch học", "Thông tin cá nhân", "Đổi mật khẩu","Đăng xuất","Quay lại"},
                 mainPanel);
         add(headerComponent, BorderLayout.NORTH);
         JPanel centerPanel = centerPanel();
@@ -41,33 +43,73 @@ public class DashboardPanel extends JPanel {
     public JPanel combinePanel() {
         JPanel combinePanel = new JPanel();
         combinePanel.setLayout(new BorderLayout());
-        combinePanel.add(cardListPanel(), BorderLayout.NORTH);
-        combinePanel.add(tableStudent(), BorderLayout.CENTER);
+        JScrollPane scrollPanel = new JScrollPane(cardListPanel(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        combinePanel.add(scrollPanel, BorderLayout.CENTER);
+//        combinePanel.add(tableStudent(), BorderLayout.CENTER);
         return combinePanel;
     }
     public JPanel cardListPanel() {
         JPanel cardListPanel = new JPanel();
-        cardListPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 5, 5);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx = 4; c.gridy = 0;
-        for(int i = 1; i <= 7; i++) {
-            CardSubjectTeacher cardSubjectTeacher = new CardSubjectTeacher(new Subject(1, "Giải tích", 3), "3");
-            cardSubjectTeacher.setName(String.format("%s", i));
-            cardListPanel.addMouseListener(new MouseAdapter() {
+        cardListPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // căn giữa + spacing
+        cardListPanel.setOpaque(false);
+        String query = "SELECT * from classes where teacher_id = 1";
+        List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+        int i=1;
+        for (HashMap<String, Object> row : results) {
+            int classId = Integer.parseInt(row.get("class_id").toString());
+            int subjectId = (int) row.get("subject_id");
+            String subjectName = row.get("subject_name").toString();
+            int credit =(int) row.get("credit"); // có thể NULL
+            CardSubjectTeacher card = new CardSubjectTeacher(new Subject(subjectId , subjectName, (int) row.get("credit")), Integer.toString(i));
+            card.setName(String.format("%s", classId));
+            card.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    mainPanel.show("ClassDetail");
+                    String nameofclass = "ClassDetailPanel_"+String.valueOf(classId);
+                    boolean isHascard = mainPanel.hasCard(nameofclass);
+                    if( !isHascard ){
+                        ClassDetailPanel c = new ClassDetailPanel(mainPanel,subjectName,credit,classId);
+                        mainPanel.add(c, nameofclass);
+                    }
+                    mainPanel.show(nameofclass);
                 }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                }
+
             });
-            cardListPanel.add(cardSubjectTeacher, c);
-            if(i%4==0) {
-                c.gridy++;
-                c.gridx = 4;
-            }
-            c.gridx--;
+            cardListPanel.add(card);
+            i++;
         }
+        JButton addclass = new JButton("+");
+        addclass.setFont(new Font("Arial", Font.BOLD, 50));
+        addclass.setBackground(new Color(150,150,150));
+        addclass.setPreferredSize(new Dimension(100, 100));
+        addclass.setForeground(Color.WHITE);
+
+            cardListPanel.add(addclass);
+        addclass.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Tạo popup dialog chứa AddClass JPanel
+                JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(DashboardPanel.this),
+                        "Thêm lớp",
+                        true);
+
+                AddClass addClassPanel = new AddClass(mainPanel, dialog);
+
+                dialog.setContentPane(addClassPanel);
+                dialog.pack();
+                dialog.setSize(500, 450);
+                dialog.setLocationRelativeTo(DashboardPanel.this);
+                dialog.setVisible(true);
+            }
+        });
+        int height = 300 * results.size()/6;
+        cardListPanel.setPreferredSize(new Dimension(600, height));
         cardListPanel.setMaximumSize(cardListPanel.getPreferredSize());
         cardListPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         return cardListPanel;

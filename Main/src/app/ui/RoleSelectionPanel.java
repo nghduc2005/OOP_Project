@@ -14,12 +14,12 @@ public class RoleSelectionPanel extends JPanel {
         this.mainPanel = mainPanel;
         setLayout(null);
 
-        JLabel title = new JLabel("You are : ");
+        JLabel title = new JLabel("Chọn hình thức đăng nhập : ");
         title.setFont(new Font("Arial", Font.BOLD, 18));
         title.setBounds(W/2-150, H/2-200, 300, 50);
 
-        teacherButton = new JButton("Teacher");
-        studentButton = new JButton("Student");
+        teacherButton = new JButton("Giáo viên");
+        studentButton = new JButton("Học sinh");
 
         teacherButton.setBounds(W/2-100, H/2-150, 200, 40);
         studentButton.setBounds(W/2-100, H/2-150+60, 200, 40);
