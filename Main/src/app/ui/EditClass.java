@@ -1,29 +1,29 @@
 package app.ui;
 
 import app.dao.ClassDao;
+import app.dao.DatabaseConnection;
 import app.model.Classes;
+import app.session.Session;
 import app.ui.component.HeaderComponent;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
 
 public class EditClass extends JPanel {
-    private JTextField classIdField, classNameField, studentCountField, maxStudentField;
+    private JTextField   studentCountField, maxStudentField;
     private JButton updateButton;
+    private JComboBox<String> subjectCombox;
     private MainPanel mainPanel;
-
-    public EditClass(MainPanel mainPanel) {
+    private Dialog dialog;
+    private int classid;
+    public EditClass(MainPanel mainPanel, Dialog dialog,int classid) {
+        this.classid = classid;
         this.mainPanel = mainPanel;
+        this.dialog = dialog;
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
-
-        // ====== HEADER ======
-        HeaderComponent headerComponent = new HeaderComponent(
-                new String[]{"Trang chủ", "Chỉnh sửa lớp học", "Quay lại"},
-                mainPanel
-        );
-        add(headerComponent, BorderLayout.NORTH);
-
         // ====== PANEL CHÍNH ======
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridBagLayout());
@@ -34,7 +34,7 @@ public class EditClass extends JPanel {
 
         // ====== TIÊU ĐỀ ======
         JLabel titleLabel = new JLabel("Chỉnh sửa thông tin lớp học");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         gbc.gridx = 0;
@@ -46,11 +46,18 @@ public class EditClass extends JPanel {
         gbc.anchor = GridBagConstraints.WEST;
 
         // ====== NHÃN + Ô NHẬP ======
-        JLabel idLabel = new JLabel("Mã lớp học:");
-        classIdField = new JTextField(20);
 
         JLabel nameLabel = new JLabel("Tên môn học:");
-        classNameField = new JTextField(20);
+        subjectCombox = new JComboBox<>();
+
+        String subjectQuery = "SELECT subject_id, name FROM subjects";
+        List<HashMap<String, Object>> subjectData = DatabaseConnection.readTable(subjectQuery);
+        for (HashMap<String, Object> row : subjectData) {
+            String name = row.get("name").toString();
+            int id = Integer.parseInt(row.get("subject_id").toString());
+            subjectCombox.addItem(name);
+        }
+
 
         JLabel studentCountLabel = new JLabel("Số học sinh hiện tại:");
         studentCountField = new JTextField(20);
@@ -58,11 +65,8 @@ public class EditClass extends JPanel {
         JLabel maxStudentLabel = new JLabel("Số học sinh tối đa:");
         maxStudentField = new JTextField(20);
 
-        gbc.gridy = 1; gbc.gridx = 0; formPanel.add(idLabel, gbc);
-        gbc.gridx = 1; formPanel.add(classIdField, gbc);
-
         gbc.gridy = 2; gbc.gridx = 0; formPanel.add(nameLabel, gbc);
-        gbc.gridx = 1; formPanel.add(classNameField, gbc);
+        gbc.gridx = 1; formPanel.add(subjectCombox, gbc);
 
         gbc.gridy = 3; gbc.gridx = 0; formPanel.add(studentCountLabel, gbc);
         gbc.gridx = 1; formPanel.add(studentCountField, gbc);
@@ -91,20 +95,22 @@ public class EditClass extends JPanel {
     }
 
     private void updateClass() {
-        String id = classIdField.getText().trim();
-        String name = classNameField.getText().trim();
+        String id = String.valueOf(classid);
+        String name = subjectCombox.getSelectedItem().toString().trim();
         String count = studentCountField.getText().trim();
         String max = maxStudentField.getText().trim();
 
-        if (id.isEmpty() || name.isEmpty() || count.isEmpty() || max.isEmpty()) {
+        if ( name.isEmpty() || count.isEmpty() || max.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
             Classes cl = new Classes(Integer.parseInt(id), Integer.parseInt(count), name, Integer.parseInt(max));
             boolean success = ClassDao.updateClass(cl);
-            if(success)
+            if(success) {
                 JOptionPane.showMessageDialog(this, "Sửa lớp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                dialog.dispose();
+            }
             else
                 JOptionPane.showMessageDialog(this, "Có lỗi khi sửa lớp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         } catch (NumberFormatException e) {

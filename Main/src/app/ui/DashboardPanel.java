@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,10 +51,10 @@ public class DashboardPanel extends JPanel {
         JPanel cardListPanel = new JPanel();
         cardListPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // căn giữa + spacing
         cardListPanel.setOpaque(false);
-        GridBagConstraints c = new GridBagConstraints();
-        c.insets = new Insets(5, 5, 5, 5);
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.gridx = 4; c.gridy = 0;
+//        GridBagConstraints c = new GridBagConstraints();
+//        c.insets = new Insets(5, 5, 5, 5);
+//        c.anchor = GridBagConstraints.NORTHWEST;
+//        c.gridx = 4; c.gridy = 0;
         String query = "SELECT * from classes where teacher_id = 1";
         List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
         int i=1;
@@ -64,16 +63,27 @@ public class DashboardPanel extends JPanel {
             int subjectId = (int) row.get("subject_id");
             String subjectName = row.get("subject_name").toString();
             int credit =(int) row.get("credit"); // có thể NULL
-            CardSubjectTeacher cardSubjectTeacher = new CardSubjectTeacher(new Subject(subjectId , subjectName, (int) row.get("credit")), Integer.toString(i));
-            cardSubjectTeacher.setName(String.format("%s", i));
-            cardListPanel.addMouseListener(new MouseAdapter() {
+            CardSubjectTeacher card = new CardSubjectTeacher(new Subject(subjectId , subjectName, (int) row.get("credit")), Integer.toString(i));
+            card.setName(String.format("%s", classId));
+            card.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    mainPanel.show("ClassDetail");
+                    String nameofclass = "ClassDetailPanel_"+String.valueOf(classId);
+                    boolean isHascard = mainPanel.hasCard(nameofclass);
+                    if( !isHascard ){
+                        ClassDetailPanel c = new ClassDetailPanel(mainPanel,subjectName,credit,classId);
+                        mainPanel.add(c, nameofclass);
+                    }
+                    mainPanel.show(nameofclass);
                 }
-            });
-            cardListPanel.add(cardSubjectTeacher);
 
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    card.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                }
+
+            });
+            cardListPanel.add(card);
             i++;
         }
         JButton addclass = new JButton("+");
