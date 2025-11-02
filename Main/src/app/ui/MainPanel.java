@@ -5,7 +5,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Set;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class MainPanel extends JPanel {
     private CardLayout cardLayout;

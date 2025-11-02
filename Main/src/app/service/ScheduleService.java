@@ -64,4 +64,32 @@ public class ScheduleService {
     public static List<Schedule> searchSchedules(String searchTerm) {
         return ScheduleDao.searchSchedules(searchTerm);
     }
+
+    /**
+     * Tìm kiếm lịch theo tên môn học
+     */
+    public static List<Schedule> searchSchedulesBySubject(String subjectName) {
+        return ScheduleDao.searchSchedulesBySubject(subjectName);
+    }
+
+    /**
+     * Tìm kiếm lịch theo tên lớp
+     */
+    public static List<Schedule> searchSchedulesByClass(String className) {
+        return ScheduleDao.searchSchedulesByClass(className);
+    }
+
+    /**
+     * Tìm kiếm lịch theo ngày
+     */
+    public static List<Schedule> searchSchedulesByDate(String dateSearch) {
+        return ScheduleDao.searchSchedulesByDate(dateSearch);
+    }
+
+    /**
+     * Tìm kiếm nâng cao với nhiều tiêu chí
+     */
+    public static List<Schedule> advancedSearch(String subjectName, String className, String classroom, String date) {
+        return ScheduleDao.advancedSearch(subjectName, className, classroom, date);
+    }
 }
