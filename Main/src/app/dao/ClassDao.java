@@ -40,21 +40,21 @@ public class ClassDao {
         }
     }
 
-    // ✅ HÀM SỬA LỚP HỌC
+    //  HÀM SỬA LỚP HỌC
     public static boolean updateClass(Classes cl) {
-        // 1️⃣ Kiểm tra dữ liệu đầu vào
+        //  Kiểm tra dữ liệu đầu vào
         if (cl == null || cl.getClassId() == null) {
             System.out.println("Dữ liệu lớp học không hợp lệ!");
             return false;
         }
 
-        // 2️⃣ Kiểm tra lớp có tồn tại không
+        // Kiểm tra lớp có tồn tại không
         if (!isClassIdExists(String.valueOf(cl.getClassId()))) {
             System.out.println("Không tìm thấy lớp có mã: " + cl.getClassId());
             return false;
         }
 
-        // 3️⃣ Câu truy vấn SQL UPDATE
+        //  Câu truy vấn SQL UPDATE
         String query = String.format(
                 "UPDATE classes SET total_student = '%s', subject_name = '%s', maxnumberstudent = '%s' " +
                         "WHERE class_id = '%s'",
@@ -64,7 +64,7 @@ public class ClassDao {
                 escapeString(String.valueOf(cl.getClassId()))
         );
 
-        // 4️⃣ Thực thi truy vấn
+        //  Thực thi truy vấn
         try {
             boolean result = DatabaseConnection.updateRecord(query);
             if (result) {
@@ -81,7 +81,7 @@ public class ClassDao {
         }
     }
 
-    // ✅ HÀM KIỂM TRA CLASS_ID
+    //HÀM KIỂM TRA CLASS_ID
     private static boolean isClassIdExists(String classId) {
         if (classId == null || classId.trim().isEmpty()) {
             return false;
@@ -112,7 +112,7 @@ public class ClassDao {
         return false;
     }
 
-    // ✅ HÀM XÓA LỚP
+    // HÀM XÓA LỚP
     public static boolean deleteClass(String classId) {
         if (classId == null || classId.trim().isEmpty()) {
             System.out.println("Mã lớp không hợp lệ!");
@@ -145,7 +145,7 @@ public class ClassDao {
         }
     }
 
-    // ✅ HÀM XỬ LÝ CHUỖI AN TOÀN
+    // HÀM XỬ LÝ CHUỖI AN TOÀN
     private static String escapeString(String str) {
         if (str == null) return "";
         return str.replace("'", "''");
