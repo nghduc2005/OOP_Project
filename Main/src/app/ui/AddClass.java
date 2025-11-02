@@ -14,6 +14,7 @@ import java.util.HashMap;
 public class AddClass extends JPanel {
     private JTextField classIdInput, totalStudentInput, maxStudentInput, subjectNameInput;
     private JComboBox<String> subjectCombox;
+
     private JButton addButton;
     private MainPanel mainPanel;
     private JDialog dialog;
