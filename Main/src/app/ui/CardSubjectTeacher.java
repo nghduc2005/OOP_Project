@@ -1,5 +1,6 @@
 package app.ui;
 
+import app.dao.DatabaseConnection;
 import app.model.Subject;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -32,6 +33,8 @@ public class CardSubjectTeacher extends JPanel {
 
         btnClose.addActionListener(e -> {
             Container parent = this.getParent();
+            String query = "delete from classes where class_id = " + groupName;
+            DatabaseConnection.deleteRecord(query);
             parent.remove(this);
             parent.revalidate();
             parent.repaint();

@@ -15,7 +15,7 @@ public class Main {
 
             //Kết nối thành công, mở giao diện chính
             MainFrame frame = new MainFrame();
-            AddStudentForm addStudentForm = new AddStudentForm(frame);
+//            AddStudentForm addStudentForm = new AddStudentForm(frame);
             MainPanel mainPanel = new MainPanel();
             frame.add(mainPanel);
             frame.setVisible(true);

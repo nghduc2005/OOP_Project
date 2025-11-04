@@ -1,5 +1,6 @@
 package app.ui;
 
+import app.model.Student;
 import app.model.Subject;
 import app.ui.component.HeaderComponent;
 import app.ui.component.LabelComponent;
@@ -7,6 +8,8 @@ import app.ui.component.TableComponent;
 import app.dao.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -18,6 +21,8 @@ public class DashboardPanel extends JPanel {
     CardSubjectTeacher cardSubjectTeachers;
     LabelComponent titleLabel;
     MainPanel mainPanel;
+    JButton addStudent, deleteStudent;
+    //Trang chủ
     public DashboardPanel(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
@@ -36,6 +41,30 @@ public class DashboardPanel extends JPanel {
         titleLabel = new LabelComponent("Trang chủ", 50);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(titleLabel);
+        addStudent = new JButton("Thêm học sinh");
+        addStudent.setAlignmentX(Component.CENTER_ALIGNMENT);
+        addStudent.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Tạo popup dialog chứa AddClass JPanel
+                java.awt.Window w = SwingUtilities.getWindowAncestor(DashboardPanel.this);
+                JFrame owner = (w instanceof JFrame) ? (JFrame) w : null; // an toàn nếu không phải JFrame
+                AddStudentForm addStudentForm = new AddStudentForm(owner);
+                Student s= addStudentForm.showAddStudentDialog(owner);
+                if (s != null) {
+                    // reload bảng hoặc addRow như bạn đang làmg
+                    mainPanel.reloadDashboard();
+                }
+//                dialog.setContentPane(ec);
+//                dialog.pack();
+//                dialog.setSize(500, 450);
+//                dialog.setLocationRelativeTo(ClassDetailPanel.this);
+//                dialog.setVisible(true);
+            }
+        });
+        deleteStudent = new JButton("Xóa học sinh");
+
+        centerPanel.add(addStudent);
         centerPanel.add(combinePanel());
 
         return centerPanel;
@@ -53,15 +82,16 @@ public class DashboardPanel extends JPanel {
         JPanel cardListPanel = new JPanel();
         cardListPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // căn giữa + spacing
         cardListPanel.setOpaque(false);
-        String query = "SELECT * from classes where teacher_id = 1";
+        String query = "SELECT * from classes where teacher_id = 1 order by class_id";
         List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
-        int i=1;
         for (HashMap<String, Object> row : results) {
             int classId = Integer.parseInt(row.get("class_id").toString());
             int subjectId = (int) row.get("subject_id");
             String subjectName = row.get("subject_name").toString();
             int credit =(int) row.get("credit"); // có thể NULL
-            CardSubjectTeacher card = new CardSubjectTeacher(new Subject(subjectId , subjectName, (int) row.get("credit")), Integer.toString(i));
+            int maxStudent = (int) row.get("maxnumberstudent");
+            CardSubjectTeacher card = new CardSubjectTeacher(new Subject(subjectId , subjectName, (int) row.get(
+                    "credit")), Integer.toString(classId));
             card.setName(String.format("%s", classId));
             card.addMouseListener(new MouseAdapter() {
                 @Override
@@ -69,7 +99,7 @@ public class DashboardPanel extends JPanel {
                     String nameofclass = "ClassDetailPanel_"+String.valueOf(classId);
                     boolean isHascard = mainPanel.hasCard(nameofclass);
                     if( !isHascard ){
-                        ClassDetailPanel c = new ClassDetailPanel(mainPanel,subjectName,credit,classId);
+                        ClassDetailPanel c = new ClassDetailPanel(mainPanel, classId);
                         mainPanel.add(c, nameofclass);
                     }
                     mainPanel.show(nameofclass);
@@ -82,7 +112,6 @@ public class DashboardPanel extends JPanel {
 
             });
             cardListPanel.add(card);
-            i++;
         }
         JButton addclass = new JButton("+");
         addclass.setFont(new Font("Arial", Font.BOLD, 50));
@@ -122,6 +151,4 @@ public class DashboardPanel extends JPanel {
 //        tablePanel.add(table);
         return table;
     }
-
-
 }

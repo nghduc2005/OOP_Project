@@ -12,6 +12,7 @@ public class Schedule {
     private String classroom;
     private String note;
     private Integer subjectId;
+    private String subjectName;
     private Integer classId;
     private LocalDateTime startTime;
 
@@ -20,10 +21,9 @@ public class Schedule {
         this.note = "";
     }
 
-    public Schedule(Integer scheduleId, LocalDate studyDate, String studyShift,
+    public Schedule(LocalDate studyDate, String studyShift,
                    Integer totalSessions, String learningMethod, String classroom,
-                   String note, Integer subjectId, Integer classId, LocalDateTime startTime) {
-        this.scheduleId = scheduleId;
+                   String note, Integer subjectId, Integer classId, LocalDateTime startTime, String subjectName) {
         this.studyDate = studyDate;
         this.studyShift = studyShift;
         this.totalSessions = totalSessions;
@@ -33,8 +33,23 @@ public class Schedule {
         this.subjectId = subjectId;
         this.classId = classId;
         this.startTime = startTime;
+        this.subjectName = subjectName;
     }
-
+    public Schedule(Integer scheduleId, LocalDate studyDate, String studyShift,
+                    Integer totalSessions, String learningMethod, String classroom,
+                    String note, Integer subjectId, Integer classId, LocalDateTime startTime, String subjectName) {
+        this.studyDate = studyDate;
+        this.studyShift = studyShift;
+        this.totalSessions = totalSessions;
+        this.learningMethod = learningMethod != null ? learningMethod : "Offline";
+        this.classroom = classroom;
+        this.note = note != null ? note : "";
+        this.subjectId = subjectId;
+        this.classId = classId;
+        this.startTime = startTime;
+        this.subjectName = subjectName;
+        this.scheduleId = scheduleId;
+    }
     // Getters
     public Integer getScheduleId() { return scheduleId; }
     public LocalDate getStudyDate() { return studyDate; }
@@ -46,6 +61,7 @@ public class Schedule {
     public Integer getSubjectId() { return subjectId; }
     public Integer getClassId() { return classId; }
     public LocalDateTime getStartTime() { return startTime; }
+    public String getSubjectName() { return subjectName; }
 
     // Setters
     public void setScheduleId(Integer scheduleId) { this.scheduleId = scheduleId; }
@@ -58,6 +74,7 @@ public class Schedule {
     public void setSubjectId(Integer subjectId) { this.subjectId = subjectId; }
     public void setClassId(Integer classId) { this.classId = classId; }
     public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
+    public void setSubjectName(String subjectName) { this.subjectName = subjectName; }
 
     @Override
     public String toString() {

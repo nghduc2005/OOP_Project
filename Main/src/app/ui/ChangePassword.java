@@ -20,7 +20,9 @@ public class ChangePassword extends JPanel {
         setLayout(new BorderLayout());
 
         // ===== HEADER =====
-        String[] navItems = {"Trang chủ", "Đăng xuất"};
+        String[] navItems = {"Trang chủ", "Lịch học", "Thông tin cá " +
+                "nhân", "Đổi mật khẩu",
+                "Đăng xuất", "Quay lại"};
         HeaderComponent header = new HeaderComponent(navItems, mainPanel);
         add(header, BorderLayout.NORTH);
 

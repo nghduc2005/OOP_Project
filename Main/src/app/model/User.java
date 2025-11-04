@@ -5,6 +5,7 @@ import java.time.LocalDate;
 abstract class User {
     protected String lastName;
     protected String firstName;
+    protected String fullName;
     protected String userName;
     protected String password;
     protected String phoneNumber;
@@ -17,6 +18,7 @@ abstract class User {
         this.password = "";
         this.phoneNumber = "";
         this.email = "";
+        this.fullName = "";
         this.dateOfBirth = null;
     }
     User(String userName, String password) {
@@ -25,6 +27,7 @@ abstract class User {
     }
 
     public String getLastName() { return lastName; }
+    public String getFullName() { return fullName; }
     public String getFirstName() { return firstName; }
     public String getUserName() { return userName; }
     public String getPassword() { return password; }
@@ -40,6 +43,7 @@ abstract class User {
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
     public void setEmail(String email) { this.email = email; }
     public void setDateOfBirth(LocalDate dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 }
 
 

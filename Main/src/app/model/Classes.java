@@ -8,16 +8,16 @@ public class Classes {
     private Integer maxNumberStudent;
     private Integer subjectId;
     private String scheduleId;
-    
+    private Integer credit;
     public Classes() {}
     
-    public Classes(Integer classId, Integer totalStudent, String subjectName, Integer maxNumberStudent) {
-        this.classId = classId;
-        this.totalStudent = totalStudent;
+    public Classes(String subjectName, Integer maxNumberStudent, Integer subjectId, Integer credit) {
         this.subjectName = subjectName;
         this.maxNumberStudent = maxNumberStudent;
+        this.subjectId = subjectId;
+        this.credit = credit;
     }
-    
+
     public Classes(Integer classId, Integer teacherId, Integer totalStudent, 
                    String subjectName, Integer maxNumberStudent, Integer subjectId, String scheduleId) {
         this.classId = classId;
@@ -35,6 +35,13 @@ public class Classes {
 
     public void setClassId(Integer classId) {
         this.classId = classId;
+    }
+
+    public Integer getCredit() {
+        return credit;
+    }
+    public void setCredit(Integer credit) {
+        this.credit = credit;
     }
 
     public Integer getTeacherId() {
@@ -83,5 +90,9 @@ public class Classes {
 
     public void setScheduleId(String scheduleId) {
         this.scheduleId = scheduleId;
+    }
+    @Override
+    public String toString() {
+        return subjectName + "-" + classId;
     }
 }

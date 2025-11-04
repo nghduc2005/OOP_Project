@@ -9,6 +9,8 @@ import javax.swing.*;
 
 public class MainPanel extends JPanel {
     private CardLayout cardLayout;
+    private DashboardPanel dashboardPanel;
+    private ClassDetailPanel classDetailPanel;
     Set<String> unShowBackCard = Set.of("", "Role", "Log_t", "Log_s");
     Deque<String> deque = new ArrayDeque<>();
     public MainPanel(){
@@ -16,16 +18,28 @@ public class MainPanel extends JPanel {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
         // Test add panel
+        dashboardPanel = new DashboardPanel(this);
         add(new RoleSelectionPanel(this),"Role");
         add(new LoginPanelTeacher(this), "Log_t");
         add(new LoginPanelStudent(this), "Log_s");
-        add(new DashboardPanel(this), "dashboard");
+        add(dashboardPanel, "dashboard");
+        add(new ScheduleDisplayPanel(this), "Schedule");
         add(new ChangeProfilePanel(this), "ChangeProfile");
         add(new ChangePassword(this), "ChangePassword");
         add(new ScheduleDisplayPanel(this), "ScheduleDisplay");
         add(new GradeManagementPanel(this), "GradeManagement");
     }
-
+    public void reloadDashboard() {
+        remove(dashboardPanel);
+        DashboardPanel newPanel = new DashboardPanel(this);
+        add(newPanel, "dashboard");
+        cardLayout.show(this, "dashboard");
+    }
+    public void reloaClassDetails(ClassDetailPanel classDetailPanel, int classId) {
+        ClassDetailPanel newPanel = new ClassDetailPanel(this, classId);
+        add(newPanel, "ClassDetailPanel_"+String.valueOf(classId));
+        cardLayout.show(this, "ClassDetailPanel_"+String.valueOf(classId));
+    }
     //Hiển thị panel ứng với name
     public void show(String title){
         if (deque.isEmpty() || (!deque.peek().equals(title) && !unShowBackCard.contains(title))) {
@@ -40,7 +54,11 @@ public class MainPanel extends JPanel {
         if (deque.isEmpty()) return;
         String previous = deque.peek();
         if (unShowBackCard.contains(previous)) return;
-        cardLayout.show(this, previous);
+        if(previous=="dashboard"){
+            reloadDashboard();
+        } else {
+            cardLayout.show(this, previous);
+        }
     }
     public boolean hasCard(String name) {
         for (Component comp : getComponents()) {

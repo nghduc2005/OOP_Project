@@ -108,8 +108,10 @@ public class ChangeProfilePanel extends JPanel {
         JPanel outerPanel = new JPanel(new GridBagLayout());
         outerPanel.add(containerPanel, new GridBagConstraints());
 
-        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Thông tin cá nhân", "Quay " +
-                "lại"},
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học", "Thông tin cá " +
+                "nhân", "Đổi mật khẩu",
+                "Đăng " +
+                "xuất", "Quay lại"},
                 mainPanel);
         add(headerComponent, BorderLayout.NORTH);
         add(outerPanel, BorderLayout.CENTER);

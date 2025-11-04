@@ -1,7 +1,9 @@
 package app.ui;
 
+import app.dao.ScheduleDao;
 import app.model.Schedule;
 import app.service.ScheduleService;
+import app.ui.component.HeaderComponent;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +20,7 @@ public class ScheduleDisplayPanel extends JPanel {
     private JTextField searchField;
     private JButton searchButton;
     private JButton addButton;
+    private JButton deleteButton;
     private JButton editButton;
     private JButton refreshButton;
     private JButton todayButton;
@@ -36,8 +39,8 @@ public class ScheduleDisplayPanel extends JPanel {
 
     private void initializeComponents() {
         // Table
-        String[] columnNames = {"Mã lịch", "Môn học", "Giảng viên", "Phòng", "Tòa",
-                               "Ngày", "Giờ bắt đầu", "Giờ kết thúc", "Hình thức", "Lặp lại"};
+        String[] columnNames = {"Mã lịch", "Môn học", "Phòng",
+                               "Ngày", "Giờ bắt đầu", "Số tiết" ,"Hình thức", "Ghi chú"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -74,6 +77,12 @@ public class ScheduleDisplayPanel extends JPanel {
         editButton.setFocusPainted(false);
         editButton.setEnabled(false);
 
+        deleteButton = new JButton("Xóa lịch");
+        deleteButton.setBackground(Color.RED);
+        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setFocusPainted(false);
+        deleteButton.setEnabled(false);
+
         refreshButton = new JButton("Làm mới");
         refreshButton.setFocusPainted(false);
 
@@ -84,11 +93,20 @@ public class ScheduleDisplayPanel extends JPanel {
 
     private void layoutComponents() {
         setLayout(new BorderLayout(10, 10));
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+//        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học","Thông tin cá nhân",
+                "Đổi " +
+                "mật" +
+                " khẩu",
+                "Đăng " +
+                "xuất",
+                "Quay lại"},
+                mainPanel);
 
         // Header Panel
         JPanel headerPanel = new JPanel(new BorderLayout(10, 10));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         headerPanel.setBackground(Color.WHITE);
 
         JLabel titleLabel = new JLabel("Quản Lý Lịch Học");
@@ -116,8 +134,11 @@ public class ScheduleDisplayPanel extends JPanel {
 
         // Table Panel
         JScrollPane scrollPane = new JScrollPane(scheduleTable);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
-
+//        scrollPane.setBorder());
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20),
+                BorderFactory.createLineBorder(new Color(200, 200,
+                200))));
+        scrollPane.setBackground(Color.WHITE);
         // Bottom Panel
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBackground(Color.WHITE);
@@ -128,6 +149,7 @@ public class ScheduleDisplayPanel extends JPanel {
         actionPanel.add(addButton);
         actionPanel.add(editButton);
         actionPanel.add(refreshButton);
+        actionPanel.add(deleteButton);
 
         // Status panel
         JPanel statusPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -140,7 +162,8 @@ public class ScheduleDisplayPanel extends JPanel {
         // Add all panels
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBackground(Color.WHITE);
-        topPanel.add(headerPanel, BorderLayout.NORTH);
+        topPanel.add(headerComponent, BorderLayout.NORTH);
+        topPanel.add(headerPanel, BorderLayout.CENTER);
         topPanel.add(filterPanel, BorderLayout.SOUTH);
 
         add(topPanel, BorderLayout.NORTH);
@@ -152,7 +175,9 @@ public class ScheduleDisplayPanel extends JPanel {
         // Table selection listener
         scheduleTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                editButton.setEnabled(scheduleTable.getSelectedRow() != -1);
+                boolean hasSelection = scheduleTable.getSelectedRow() != -1;
+                editButton.setEnabled(hasSelection);
+                deleteButton.setEnabled(hasSelection);
             }
         });
 
@@ -180,15 +205,26 @@ public class ScheduleDisplayPanel extends JPanel {
 
         // Action buttons
         addButton.addActionListener(e -> {
-            if (mainPanel != null) {
-//                mainPanel.add(new AddScheduleForm(mainPanel), "AddSchedule");
-//                mainPanel.show("AddSchedule");
+            // Lấy frame cha của panel hiện tại
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+            // Tạo dialog và hiển thị
+            AddScheduleDialog dialog = new AddScheduleDialog(frame);
+            dialog.setVisible(true); // <-- mở form modal (chặn cửa sổ chính tạm thời)
+
+            // Sau khi dialog đóng lại, kiểm tra kết quả
+            if (dialog.isSaved()) {
+                // Cập nhật lại bảng, load dữ liệu mới, v.v.
+                System.out.println("Lịch học mới đã được thêm!");
+                // ví dụ: refreshScheduleTable();
             }
         });
 
         editButton.addActionListener(e -> editSelectedSchedule());
 
         refreshButton.addActionListener(e -> loadAllSchedules());
+
+        deleteButton.addActionListener(e -> deleteSchedules());
     }
 
     private void loadSchedules(List<Schedule> schedules) {
@@ -200,15 +236,13 @@ public class ScheduleDisplayPanel extends JPanel {
         for (Schedule schedule : schedules) {
             Object[] rowData = {
                 schedule.getScheduleId(),
-//                schedule.getSubjectName(),
-//                schedule.getTeacherName(),
-//                schedule.getRoom(),
-//                schedule.getBuilding(),
-//                schedule.getScheduleDate().format(dateFormatter),
-//                schedule.getStartTime().format(timeFormatter),
-//                schedule.getEndTime().format(timeFormatter),
-//                schedule.getFormat(),
-//                schedule.getRepeatType()
+                schedule.getSubjectName(),
+                schedule.getClassroom(),
+                schedule.getStudyDate().format(dateFormatter),
+                schedule.getStartTime().format(timeFormatter),
+                schedule.getTotalSessions(),
+                schedule.getLearningMethod(),
+                schedule.getNote()
             };
             tableModel.addRow(rowData);
         }
@@ -292,18 +326,19 @@ public class ScheduleDisplayPanel extends JPanel {
             return;
         }
 
-        String scheduleId = (String) tableModel.getValueAt(selectedRow, 0);
-//        Schedule schedule = ScheduleService.getScheduleById(scheduleId);
+        String scheduleId =  String.valueOf( tableModel.getValueAt(selectedRow, 0));
+        Schedule schedule = ScheduleService.getScheduleById(Integer.parseInt(scheduleId));
 
-//        if (schedule != null && mainPanel != null) {
-////            mainPanel.add(new EditScheduleForm(mainPanel, schedule), "EditSchedule");
-//            mainPanel.show("EditSchedule");
-//        } else {
-//            JOptionPane.showMessageDialog(this,
-//                    "Không tìm thấy thông tin lịch học!",
-//                    "Lỗi",
-//                    JOptionPane.ERROR_MESSAGE);
-//        }
+        if (schedule != null && mainPanel != null) {
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ScheduleDisplayPanel.this);
+            EditScheduleDialog dialog = new EditScheduleDialog(frame, schedule);
+            dialog.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy thông tin lịch học!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void updateStatusLabel(int count) {
@@ -314,6 +349,29 @@ public class ScheduleDisplayPanel extends JPanel {
         resetButtonHighlight();
         button.setBackground(new Color(63, 81, 181));
         button.setForeground(Color.WHITE);
+    }
+
+    private void deleteSchedules() {
+        int selectedRow = scheduleTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng chọn lịch học cần sửa!",
+                    "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String scheduleId =  String.valueOf( tableModel.getValueAt(selectedRow, 0));
+        Schedule schedule = ScheduleService.getScheduleById(Integer.parseInt(scheduleId));
+
+        if (schedule != null) {
+            ScheduleDao.deleteSchedule(scheduleId);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy thông tin lịch học!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void resetButtonHighlight() {

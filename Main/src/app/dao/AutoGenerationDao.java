@@ -5,40 +5,26 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import app.dao.DatabaseConnection;
 
 
 public class AutoGenerationDao {
 
     public static String generateStudentId() {
-        int currentYear = LocalDate.now().getYear() % 100;
-        String prefix = "B" + String.format("%02d", currentYear) + "DCCN";
-
-        try (Connection conn = DatabaseConnection.getConnection()) {
-            if (conn == null) {
-                return generateStudentIdFallback();
+        String query = "SELECT MIN(t1.student_id + 1) AS missing_id FROM students t1 LEFT JOIN students t2 ON t1" +
+                ".student_id + 1 = t2.student_id WHERE t2.student_id IS NULL;";
+        List<HashMap<String, Object>> list = DatabaseConnection.readTable(query);
+        String studentId = "";
+        for (HashMap<String, Object> map : list) {
+            for (String key : map.keySet()) {
+                studentId = String.valueOf( (Long) map.get(key));
             }
-
-            String query = "SELECT student_id FROM students WHERE student_id LIKE ? ORDER BY student_id DESC LIMIT 1";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, prefix + "%");
-
-            ResultSet rs = stmt.executeQuery();
-
-            int nextCounter = 470;
-            if (rs.next()) {
-                String lastStudentId = rs.getString("student_id");
-                String counterStr = lastStudentId.substring(prefix.length());
-                int lastCounter = Integer.parseInt(counterStr);
-                nextCounter = lastCounter + 1;
-            }
-
-            return prefix + String.format("%03d", nextCounter);
-
-        } catch (SQLException e) {
-            System.err.println("Database error in generateStudentId: " + e.getMessage());
-            return generateStudentIdFallback();
         }
+        return String.format("STU%06d", Integer.parseInt(studentId));
     }
 
     public static String generateGroupId() {

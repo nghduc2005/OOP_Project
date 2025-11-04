@@ -31,9 +31,11 @@ public class AddStudentForm extends JDialog {
     private String generatedStudentId;
     private String generatedUsername;
     private final String DEFAULT_PASSWORD = "123456";
+    private int class_id;
 
     public AddStudentForm(JFrame parent) {
         super(parent, "Thêm học sinh mới", true);
+//        this.class_id = class_id;
         generateStudentInfo();
         initializeComponents();
         setupLayout();
@@ -236,11 +238,12 @@ public class AddStudentForm extends JDialog {
             String[] nameParts = fullName.split("\\s+", 2);
             String lastName = nameParts.length > 1 ? nameParts[0] : "";
             String firstName = nameParts.length > 1 ? nameParts[1] : fullName;
-
+            int id = Integer.parseInt(generatedStudentId.replaceAll("\\D+", ""));
             result = new Student(
-                    null,  // Let database auto-generate student_id
+                    id,  // Let database auto-generate student_id
                     lastName,
                     firstName,
+                    txtFullName.getText().trim(),
                     generatedUsername,
                     DEFAULT_PASSWORD,
                     phoneNumber,
@@ -252,7 +255,6 @@ public class AddStudentForm extends JDialog {
                     "Mã học sinh: " + generatedStudentId + "\n" +
                     "Tên đăng nhập: " + generatedUsername + "\n" +
                     "Mật khẩu mặc định: " + DEFAULT_PASSWORD);
-
             boolean success = app.dao.StudentDao.createStudent(result);
 
             if (success) {
@@ -260,6 +262,7 @@ public class AddStudentForm extends JDialog {
                         "Mã học sinh: (Tự động)\n" +
                         "Tên đăng nhập: " + generatedUsername + "\n" +
                         "Mật khẩu mặc định: " + DEFAULT_PASSWORD);
+
                 return true;
             } else {
                 showError("Không thể lưu sinh viên vào CSDL! \n(Có thể Tên đăng nhập đã tồn tại)");
@@ -300,7 +303,11 @@ public class AddStudentForm extends JDialog {
     public boolean isSaved() { return saved; }
     public Student getStudent() { return result; }
 
-    public static Student showAddStudentDialog(JFrame parent) {
+    public void setClass_id(int class_id) {
+        this.class_id = class_id;
+    }
+
+    public Student showAddStudentDialog(JFrame parent) {
         AddStudentForm dialog = new AddStudentForm(parent);
         dialog.setVisible(true);
         return dialog.isSaved() ? dialog.getStudent() : null;

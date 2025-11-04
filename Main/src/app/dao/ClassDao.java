@@ -10,18 +10,13 @@ public class ClassDao {
             return false;
         }
 
-        if (isClassIdExists(String.valueOf(cl.getClassId()))) {
-            System.out.println("Class ID đã tồn tại, không thể thêm mới!");
-            return false;
-        }
-
         String query = String.format(
-                "INSERT INTO classes (teacher_id, class_id, total_student, subject_name, maxnumberstudent) " +
+                "INSERT INTO classes (teacher_id, subject_name, maxnumberstudent, subject_id, credit) " +
                         "VALUES (1 ,'%s', '%s', '%s', '%s')",
-                escapeString(String.valueOf(cl.getClassId())),
-                escapeString(String.valueOf(cl.getTotalStudent())),
                 escapeString(String.valueOf(cl.getSubjectName())),
-                escapeString(String.valueOf(cl.getMaxNumberStudent()))
+                escapeString(String.valueOf(cl.getMaxNumberStudent())),
+                escapeString(String.valueOf(cl.getSubjectId())),
+                escapeString(String.valueOf(cl.getCredit()))
         );
 
         try {
@@ -44,6 +39,7 @@ public class ClassDao {
     public static boolean updateClass(Classes cl) {
         //  Kiểm tra dữ liệu đầu vào
         if (cl == null || cl.getClassId() == null) {
+            System.out.println(cl + " " + cl.getClassId());
             System.out.println("Dữ liệu lớp học không hợp lệ!");
             return false;
         }
@@ -56,11 +52,12 @@ public class ClassDao {
 
         //  Câu truy vấn SQL UPDATE
         String query = String.format(
-                "UPDATE classes SET total_student = '%s', subject_name = '%s', maxnumberstudent = '%s' " +
+                "UPDATE classes SET subject_name = '%s', maxnumberstudent = '%s', credit = '%s', subject_id ='%s'" +
                         "WHERE class_id = '%s'",
-                escapeString(String.valueOf(cl.getTotalStudent())),
                 escapeString(String.valueOf(cl.getSubjectName())),
                 escapeString(String.valueOf(cl.getMaxNumberStudent())),
+                escapeString(String.valueOf(cl.getCredit())),
+                escapeString(String.valueOf(cl.getSubjectId())),
                 escapeString(String.valueOf(cl.getClassId()))
         );
 
@@ -144,7 +141,27 @@ public class ClassDao {
             return false;
         }
     }
-
+    public static List<Classes> getAllClasses() {
+        String query = "SELECT class_id, subject_name, subject_id FROM classes ORDER BY class_id";
+        List<Classes> classes = new ArrayList<>();
+        try {
+            List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+            if (results != null) {
+                for (HashMap<String, Object> row : results) {
+                    Classes cl = new Classes();
+                    cl.setClassId((int) row.get("class_id"));
+                    cl.setSubjectName((String) row.get("subject_name"));
+                    cl.setSubjectId((int) row.get("subject_id"));
+                    classes.add(cl);
+                }
+            }
+            return classes;
+        } catch (Exception e) {
+            System.out.println("Lỗi khi lấy danh sách sinh viên: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
     // HÀM XỬ LÝ CHUỖI AN TOÀN
     private static String escapeString(String str) {
         if (str == null) return "";

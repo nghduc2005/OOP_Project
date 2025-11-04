@@ -2,6 +2,7 @@ package app.ui;
 
 import app.dao.ClassDao;
 import app.dao.DatabaseConnection;
+import app.dto.request.SubjectItem;
 import app.model.Classes;
 import app.ui.component.ButtonComponent;
 import app.ui.component.TextFieldComponent;
@@ -12,8 +13,8 @@ import java.util.List;
 import java.util.HashMap;
 
 public class AddClass extends JPanel {
-    private JTextField classIdInput, totalStudentInput, maxStudentInput, subjectNameInput;
-    private JComboBox<String> subjectCombox;
+    private JTextField classIdInput, totalStudentInput, maxStudentInput, creditInput;
+    private JComboBox<SubjectItem> subjectCombox;
 
     private JButton addButton;
     private MainPanel mainPanel;
@@ -35,10 +36,12 @@ public class AddClass extends JPanel {
         JLabel totalStudentLabel = new JLabel("Số học sinh hiện tại:");
         JLabel maxStudentLabel = new JLabel("Số học sinh tối đa:");
         JLabel subjectNameLabel = new JLabel("Tên môn học:");
+        JLabel creditLabel = new JLabel("Số tín chỉ:");
 
         classIdInput = new TextFieldComponent(15);
         totalStudentInput = new TextFieldComponent(15);
         maxStudentInput = new TextFieldComponent(15);
+        creditInput = new TextFieldComponent(15);
 
         classIdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         totalStudentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -53,7 +56,7 @@ public class AddClass extends JPanel {
         for (HashMap<String, Object> row : subjectData) {
             String name = row.get("name").toString();
             int id = Integer.parseInt(row.get("subject_id").toString());
-            subjectCombox.addItem(name);
+            subjectCombox.addItem(new SubjectItem(id, name));
         }
 
         // ===== NÚT =====
@@ -68,10 +71,10 @@ public class AddClass extends JPanel {
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
-        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(classIdLabel, gbc);
-        gbc.gridx = 1; formPanel.add(classIdInput, gbc);
-        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(totalStudentLabel, gbc);
-        gbc.gridx = 1; formPanel.add(totalStudentInput, gbc);
+//        gbc.gridx = 0; gbc.gridy = 0; formPanel.add(classIdLabel, gbc);
+//        gbc.gridx = 1; formPanel.add(classIdInput, gbc);
+        gbc.gridx = 0; gbc.gridy = 1; formPanel.add(creditLabel, gbc);
+        gbc.gridx = 1; formPanel.add(creditInput, gbc);
         gbc.gridx = 0; gbc.gridy = 2; formPanel.add(maxStudentLabel, gbc);
         gbc.gridx = 1; formPanel.add(maxStudentInput, gbc);
         gbc.gridx = 0; gbc.gridy = 3; formPanel.add(subjectNameLabel, gbc);
@@ -100,14 +103,18 @@ public class AddClass extends JPanel {
         String classId = classIdInput.getText().trim();
         String totalStudent = totalStudentInput.getText().trim();
         String maxStudent = maxStudentInput.getText().trim();
-        String subjectName = subjectNameInput.getText().trim();
-        System.out.println(classId + " " + totalStudent + " " + maxStudent + " " + subjectName);
-        if (classId.isEmpty() || totalStudent.isEmpty() || maxStudent.isEmpty() || subjectName.isEmpty()) {
+        String credit = creditInput.getText().trim();
+        SubjectItem subjectItem = (SubjectItem) subjectCombox.getSelectedItem();
+        String subjectId =Integer.toString(subjectItem.getId());
+        String subjectName =subjectItem.getName();
+        System.out.println(maxStudent + " "+ credit+" "+ subjectName +" "+ subjectId);
+        if (maxStudent.isEmpty() || subjectName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin lớp học!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
-            Classes cl = new Classes(Integer.parseInt(classId), Integer.parseInt(totalStudent), subjectName, Integer.parseInt(maxStudent));
+            Classes cl = new Classes(subjectName, Integer.parseInt(maxStudent), Integer.parseInt(subjectId),
+                    Integer.parseInt(credit));
             boolean success = ClassDao.CreateClass(cl);
             if(success) {
                 JOptionPane.showMessageDialog(this, "Thêm lớp thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -115,11 +122,13 @@ public class AddClass extends JPanel {
                 dialog.dispose(); // đóng popup
 
                 // Reload dashboard panel
-                mainPanel.show("Dashboard");
+                mainPanel.reloadDashboard();
+
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm lớp thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
+            System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }

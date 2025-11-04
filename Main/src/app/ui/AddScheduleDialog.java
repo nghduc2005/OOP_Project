@@ -1,5 +1,7 @@
 package app.ui;
 
+import app.dao.ClassDao;
+import app.model.Classes;
 import app.model.Schedule;
 import app.service.ScheduleService;
 
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class AddScheduleDialog extends JDialog {
     private JTextField classroomField;
@@ -19,9 +22,9 @@ public class AddScheduleDialog extends JDialog {
     private JComboBox<String> learningMethodComboBox;
     private JSpinner startTimeSpinner;
     private JTextArea noteArea;
-    private JSpinner subjectIdSpinner;
-    private JSpinner classIdSpinner;
-    
+//    private JSpinner subjectIdSpinner;
+//    private JSpinner classIdSpinner;
+    private JComboBox<Classes> subjectComboBox;
     private JButton saveButton;
     private JButton cancelButton;
     
@@ -40,8 +43,14 @@ public class AddScheduleDialog extends JDialog {
 
     private void initializeComponents() {
         // Classroom
-        classroomField = new JTextField(20);
-        
+        classroomField = new JTextField();
+        subjectComboBox = new JComboBox<Classes>();
+        List<Classes> classes = ClassDao.getAllClasses();
+        if(classes != null) {
+            for(Classes classroom : classes) {
+                subjectComboBox.addItem(classroom);
+            }
+        }
         // Study Shift
         String[] shifts = {"Sáng (7h-11h)", "Chiều (13h-17h)", "Tối (18h-21h)"};
         studyShiftComboBox = new JComboBox<>(shifts);
@@ -68,11 +77,11 @@ public class AddScheduleDialog extends JDialog {
         noteArea.setLineWrap(true);
         noteArea.setWrapStyleWord(true);
         
-        // Subject ID
-        subjectIdSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
-        
-        // Class ID
-        classIdSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
+//        // Subject ID
+//        subjectIdSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
+//
+//        // Class ID
+//        classIdSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
         
         // Buttons
         saveButton = new JButton("Lưu");
@@ -112,18 +121,18 @@ public class AddScheduleDialog extends JDialog {
         // Subject ID
         gbc.gridx = 0;
         gbc.gridy = row;
-        mainPanel.add(new JLabel("Mã môn học:"), gbc);
+        mainPanel.add(new JLabel("Môn học:"), gbc);
         gbc.gridx = 1;
-        mainPanel.add(subjectIdSpinner, gbc);
+        mainPanel.add(subjectComboBox, gbc);
         row++;
-        
-        // Class ID
-        gbc.gridx = 0;
-        gbc.gridy = row;
-        mainPanel.add(new JLabel("Mã lớp:"), gbc);
-        gbc.gridx = 1;
-        mainPanel.add(classIdSpinner, gbc);
-        row++;
+//
+//        // Class ID
+//        gbc.gridx = 0;
+//        gbc.gridy = row;
+//        mainPanel.add(new JLabel("Mã lớp:"), gbc);
+//        gbc.gridx = 1;
+//        mainPanel.add(classIdSpinner, gbc);
+//        row++;
         
         // Study Date
         gbc.gridx = 0;
@@ -210,21 +219,19 @@ public class AddScheduleDialog extends JDialog {
     private void saveSchedule() {
         try {
             // Validate inputs
-            if (classroomField.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập phòng học!", 
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
             // Get values
-            Integer subjectId = (Integer) subjectIdSpinner.getValue();
-            Integer classId = (Integer) classIdSpinner.getValue();
-            
+//            Integer subjectId = (Integer) subjectIdSpinner.getValue();
+//            Integer classId = (Integer) classIdSpinner.getValue();
+            Classes subjectItem = (Classes) subjectComboBox.getSelectedItem();
+            Integer subjectId = subjectItem.getSubjectId();
+            String subjectName = subjectItem.getSubjectName();
+            Integer classId = subjectItem.getClassId();
             Date dateValue = (Date) studyDateSpinner.getValue();
             LocalDate studyDate = dateValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             
             String studyShift = (String) studyShiftComboBox.getSelectedItem();
             Integer totalSessions = (Integer) totalSessionsSpinner.getValue();
+
             String classroom = classroomField.getText().trim();
             String learningMethod = (String) learningMethodComboBox.getSelectedItem();
             
@@ -234,8 +241,8 @@ public class AddScheduleDialog extends JDialog {
             String note = noteArea.getText().trim();
             
             // Create Schedule object (scheduleId will be auto-generated)
-            Schedule schedule = new Schedule(null, studyDate, studyShift, totalSessions,
-                learningMethod, classroom, note, subjectId, classId, startTime);
+            Schedule schedule = new Schedule(studyDate, studyShift, totalSessions,
+                learningMethod, classroom, note, subjectId, classId, startTime, subjectName);
             
             // Save to database
             boolean success = ScheduleService.createSchedule(schedule);

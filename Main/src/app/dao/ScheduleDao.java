@@ -48,7 +48,9 @@ public class ScheduleDao {
     }
 
     public static List<Schedule> getAllSchedules() {
-        return getSchedulesByQuery("SELECT * FROM schedules ORDER BY study_date, start_time");
+        return getSchedulesByQuery("SELECT * FROM schedules s join classes c on s.class_id = c.class_id  ORDER BY " +
+                "study_date, " +
+                "start_time");
     }
 
     public static boolean updateSchedule(Schedule schedule) {
@@ -76,7 +78,13 @@ public class ScheduleDao {
     }
 
     public static boolean deleteSchedule(String scheduleId) {
-        return false;
+        String query = "DELETE FROM schedules WHERE schedule_id = " + scheduleId;
+        try {
+            return DatabaseConnection.deleteRecord(query);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public static List<Schedule> searchSchedules(String searchTerm) {
@@ -237,6 +245,7 @@ public class ScheduleDao {
     }
 
     private static Schedule mapToSchedule(HashMap<String, Object> row) {
+
         try {
             Integer scheduleId = (Integer) row.get("schedule_id");
             Object dateObj = row.get("study_date");
@@ -249,6 +258,7 @@ public class ScheduleDao {
             String classroom = (String) row.get("classroom");
             String note = (String) row.get("note");
             Object subjectIdObj = row.get("subject_id");
+            String subjectName =  (String) row.get("subject_name");
             Integer subjectId = subjectIdObj instanceof Integer ? (Integer) subjectIdObj :
                     subjectIdObj instanceof Long ? ((Long) subjectIdObj).intValue() : null;
             Object classIdObj = row.get("class_id");
@@ -257,9 +267,8 @@ public class ScheduleDao {
             Object startTimeObj = row.get("start_time");
             LocalDateTime startTime = startTimeObj instanceof java.sql.Timestamp ?
                     ((java.sql.Timestamp) startTimeObj).toLocalDateTime() : LocalDateTime.now();
-
             return new Schedule(scheduleId, studyDate, studyShift, totalSessions,
-                    learningMethod, classroom, note, subjectId, classId, startTime);
+                    learningMethod, classroom, note, subjectId, classId, startTime, subjectName);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
