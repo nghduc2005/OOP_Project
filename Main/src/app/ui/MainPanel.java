@@ -10,6 +10,7 @@ import javax.swing.*;
 public class MainPanel extends JPanel {
     private CardLayout cardLayout;
     private DashboardPanel dashboardPanel;
+    private StudentDashboard studentDashboard;
     private ClassDetailPanel classDetailPanel;
     Set<String> unShowBackCard = Set.of("", "Role", "Log_t", "Log_s");
     Deque<String> deque = new ArrayDeque<>();
@@ -19,21 +20,24 @@ public class MainPanel extends JPanel {
         setLayout(cardLayout);
         // Test add panel
         dashboardPanel = new DashboardPanel(this);
+        studentDashboard = new StudentDashboard(this);
         add(new RoleSelectionPanel(this),"Role");
         add(new LoginPanelTeacher(this), "Log_t");
         add(new LoginPanelStudent(this), "Log_s");
-        add(dashboardPanel, "dashboard");
+        add(dashboardPanel, "teacher_dashboard");
+
         add(new ScheduleDisplayPanel(this), "Schedule");
         add(new ChangeProfilePanel(this), "ChangeProfile");
         add(new ChangePassword(this), "ChangePassword");
         add(new ScheduleDisplayPanel(this), "ScheduleDisplay");
+        add(new StudentSchedule(this), "StudentSchedule");
         add(new GradeManagementPanel(this), "GradeManagement");
     }
     public void reloadDashboard() {
         remove(dashboardPanel);
         DashboardPanel newPanel = new DashboardPanel(this);
-        add(newPanel, "dashboard");
-        cardLayout.show(this, "dashboard");
+        add(newPanel, "teacher_dashboard");
+        cardLayout.show(this, "teacher_dashboard");
     }
     public void reloaClassDetails(ClassDetailPanel classDetailPanel, int classId) {
         ClassDetailPanel newPanel = new ClassDetailPanel(this, classId);
@@ -54,7 +58,7 @@ public class MainPanel extends JPanel {
         if (deque.isEmpty()) return;
         String previous = deque.peek();
         if (unShowBackCard.contains(previous)) return;
-        if(previous=="dashboard"){
+        if(previous=="teacher_dashboard"){
             reloadDashboard();
         } else {
             cardLayout.show(this, previous);

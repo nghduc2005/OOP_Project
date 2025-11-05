@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RoleSelectionPanel extends JPanel {
-    boolean I_am_teacher=false, I_am_student=false;
+    static boolean I_am_teacher=false, I_am_student=false;
     JButton teacherButton, studentButton;
     MainPanel mainPanel;
     int W = Toolkit.getDefaultToolkit().getScreenSize().width;

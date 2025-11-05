@@ -97,7 +97,8 @@ public class LoginPanelStudent extends JPanel {
                 System.out.println(Session.getUsername());
                 Session.setRole("Student");
                 System.out.println(Session.getRole());
-                mainPanel.show("dashboard");
+                mainPanel.add(new StudentDashboard(mainPanel), "student_dashboard");
+                mainPanel.show("student_dashboard");
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

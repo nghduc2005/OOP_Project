@@ -1,11 +1,14 @@
 package app.ui;
 
 import app.dao.SubjectDao;
+import app.model.Classes;
 import app.model.Subject;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.*;
 import java.awt.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,10 +34,11 @@ public class SubjectPopup extends JDialog {
     private String studentId;  // Thêm studentId để lấy điểm
     private JTable gradesTable;
     private DefaultTableModel tableModel;
-
-    public SubjectPopup(JFrame parent, Subject subject, String studentId) {
+    private HashMap<String, Object> studentClassDetail;
+    public SubjectPopup(JFrame parent, HashMap<String, Object> studentClassDetail, String studentId) {
         super(parent, "Thông tin môn học", true);
-        this.subject = subject;
+        this.studentClassDetail = studentClassDetail;
+
         this.studentId = studentId;
         initializeComponents();
         setupLayout();
@@ -46,16 +50,22 @@ public class SubjectPopup extends JDialog {
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
+        BigDecimal cc = new BigDecimal(studentClassDetail.get("attendence").toString());
+        BigDecimal bt = new BigDecimal(studentClassDetail.get("assignment").toString());
+        BigDecimal gk = new BigDecimal(studentClassDetail.get("midterm").toString());
+        BigDecimal ck = new BigDecimal(studentClassDetail.get("final").toString());
 
-        for (int i = 0; i < GRADE_TYPES.length; i++) {
-            Object[] rowData = {
-                    i + 1,
-                    GRADE_TYPES[i],
-                    String.format("%.1f", subject.getGrade(i)),
-                    GRADE_WEIGHTS[i]
-            };
-            tableModel.addRow(rowData);
-        }
+        tableModel.addRow(new Object[]{1, "Chuyên cần", cc, "10%"});
+        tableModel.addRow(new Object[]{2, "Bài tập", bt, "10%"});
+        tableModel.addRow(new Object[]{3, "Giữa kỳ", gk, "20%"});
+        tableModel.addRow(new Object[]{4, "Cuối kỳ", ck, "60%"});
+
+        BigDecimal total =
+                cc.add(bt)
+                        .add(gk.multiply(new BigDecimal(2)))
+                        .add(ck.multiply(new BigDecimal(6)))
+                        .divide(new BigDecimal(10), RoundingMode.HALF_UP);
+        tableModel.addRow(new Object[]{5, "Tổng kết", String.format("%.2f", total), "-"});
 
         gradesTable = new JTable(tableModel);
         setupTable();
@@ -156,16 +166,15 @@ public class SubjectPopup extends JDialog {
 
         JLabel l1 = new JLabel("Tên môn học:");
         JLabel l2 = new JLabel("Số tín chỉ:");
-        JLabel l3 = new JLabel("Giảng viên:");
+        JLabel l3 = new JLabel("Nhóm:");
         for (JLabel l : new JLabel[]{l1, l2, l3}) {
             l.setFont(new Font("Arial", Font.BOLD, 13));
             l.setForeground(new Color(85, 85, 85));
         }
 
-        String teacher = subject.getTeacherName();
-        JLabel v1 = new JLabel(subject.getSubjectName());
-        JLabel v2 = new JLabel(String.valueOf(subject.getCredit()));
-        JLabel v3 = new JLabel((teacher == null || teacher.isEmpty()) ? "Chưa phân công" : teacher);
+        JLabel v1 = new JLabel(String.valueOf(studentClassDetail.get("subject_name")));
+        JLabel v2 = new JLabel(String.valueOf(studentClassDetail.get("credit")));
+        JLabel v3 = new JLabel(String.valueOf(studentClassDetail.get("class_id")));
         for (JLabel v : new JLabel[]{v1, v2, v3}) {
             v.setFont(new Font("Arial", Font.PLAIN, 13));
             v.setForeground(new Color(33, 37, 41));
@@ -296,9 +305,9 @@ public class SubjectPopup extends JDialog {
     }
 
 
-    public static void showSubjectDetails(JFrame parent, Subject subject, String studentId) {
-        SwingUtilities.invokeLater(() -> new SubjectPopup(parent, subject, studentId).setVisible(true));
-    }
+//    public static void showSubjectDetails(JFrame parent, Subject subject, String studentId) {
+//        SwingUtilities.invokeLater(() -> new SubjectPopup(parent, subject, studentId).setVisible(true));
+//    }
 
 
     public void updateSubject(Subject newSubject) {

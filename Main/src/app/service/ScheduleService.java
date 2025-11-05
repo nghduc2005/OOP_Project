@@ -23,6 +23,9 @@ public class ScheduleService {
         return ScheduleDao.getAllSchedules();
     }
 
+    public static  List<Schedule> getAllStudentSchedules() {
+        return ScheduleDao.getAllStudentSchedules();
+    }
     public static List<Schedule> getSchedulesByDateRange(LocalDate startDate, LocalDate endDate) {
         return ScheduleDao.getSchedulesByDateRange(startDate, endDate);
     }

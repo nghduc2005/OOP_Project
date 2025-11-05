@@ -45,6 +45,9 @@ public class HeaderComponent extends JPanel {
                         case "Chỉnh sửa lớp học":
                             mainPanel.show("Edit_class");
                             break;
+                        case "Lịch học học sinh":
+                            mainPanel.show("StudentSchedule");
+                            break;
                         case "Quay lại":
                             mainPanel.back();
                     }

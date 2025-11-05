@@ -1,6 +1,8 @@
 package app.dao;
 
 import app.model.Schedule;
+import app.session.Session;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,7 +54,11 @@ public class ScheduleDao {
                 "study_date, " +
                 "start_time");
     }
-
+    public static List<Schedule> getAllStudentSchedules() {
+        return getSchedulesByQuery("select * from schedules sche join classes cl on sche.class_id = cl.class_id join " +
+                "student_class sc on sc.class_id = cl.class_id join students s on s.username = sc.username where s" +
+                ".username = '" + Session.getUsername() +"'");
+    }
     public static boolean updateSchedule(Schedule schedule) {
         if (schedule == null || schedule.getScheduleId() == null || !validateSchedule(schedule)) {
             return false;
