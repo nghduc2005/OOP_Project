@@ -6,7 +6,9 @@ import app.dao.DatabaseConnection;
 import app.dto.request.LoginRequest;
 import app.dto.response.LoginResponse;
 import app.model.LoginInterface;
+import app.ui.LoginPanelStudent;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,7 +32,12 @@ public class StudentService implements LoginInterface {
     }
 
     @Override
-    public LoginResponse loginRequestValidate(LoginRequest req) { //Xác thực mặt cấu trúc
+    public LoginResponse loginRequestValidate(LoginRequest req) {
+        return null;
+    }
+
+
+    public LoginResponse loginRequestValidate(LoginRequest req, LoginPanelStudent loginPanelStudent) { //Xác thực mặt cấu trúc
         String userName = req.getUsername();
         String password = req.getPassword();
         if(userName.equals("")){
@@ -44,13 +51,13 @@ public class StudentService implements LoginInterface {
             throw new IllegalArgumentException("Tên đăng nhập không hợp lệ!");
         }
         // tối thiểu 6 ký tự, tối đa 20 ký tự, gồm chữ cái, chữ số, ít nhất 1 chữ in hoa
-        if(password.length()<6 ||  password.length()>20 || !password.matches(Constant.STU_PASSWORD_PATTERN)){
-            throw new IllegalArgumentException("Tên mật khẩu không hợp lệ!");
-        }
+//        if(password.length()<6 ||  password.length()>20 || !password.matches(Constant.STU_PASSWORD_PATTERN)){
+//            throw new IllegalArgumentException("Tên mật khẩu không hợp lệ!");
+//        }
         // Xác thực mặt dữ liệu
         LoginResponse response = login(new LoginRequest(userName, password));
-        if(response==null) {
-            throw new Error("Tài khoản hoặc mật khẩu không hợp lệ!");
+        if(response.status == false) {
+            JOptionPane.showMessageDialog(loginPanelStudent,response.message, "Lỗi!", JOptionPane.WARNING_MESSAGE);
         }
         return response;
     }

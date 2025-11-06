@@ -102,7 +102,7 @@ public class LoginPanelStudent extends JPanel {
         String password = new String(this.password.getPassword());
         StudentService  studentService = new StudentService();
         try {
-            LoginResponse response = studentService.loginRequestValidate(new LoginRequest(username, password));
+            LoginResponse response = studentService.loginRequestValidate(new LoginRequest(username, password), this);
             System.out.println(response.status);
             if(response.status) {
                 Session.setUsername(username);
