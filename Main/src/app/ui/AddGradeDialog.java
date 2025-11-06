@@ -57,11 +57,17 @@ public class AddGradeDialog extends JDialog {
         academicYearField = new JTextField("2024-2025", 20);
 
         saveButton = new JButton("Lưu");
-        saveButton.setBackground(new Color(46, 125, 50));
-        saveButton.setForeground(Color.WHITE);
+        saveButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        saveButton.setBackground(Color.WHITE);
+        saveButton.setForeground(new Color(0x2C3E50));
+        saveButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         saveButton.setFocusPainted(false);
 
         cancelButton = new JButton("Hủy");
+        cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        cancelButton.setBackground(Color.WHITE);
+        cancelButton.setForeground(new Color(0x2C3E50));
+        cancelButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         cancelButton.setFocusPainted(false);
     }
 
@@ -74,7 +80,8 @@ public class AddGradeDialog extends JDialog {
 
         // Title
         JLabel titleLabel = new JLabel("THÊM ĐIỂM MỚI");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(0x2C3E50));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;

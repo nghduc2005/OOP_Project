@@ -43,20 +43,33 @@ public class CreateGroupForm extends JDialog {
         cmbSubject = new JComboBox<>();
         loadSubjects();
         lblGeneratedGroupId = new JLabel(generatedGroupId);
-        lblGeneratedGroupId.setFont(new Font("Arial", Font.BOLD, 13));
-        lblGeneratedGroupId.setForeground(new Color(0, 123, 255));
-        btnCreate = new JButton("Tạo lớp");
-        btnCancel = new JButton("Hủy");
-        btnReset = new JButton("Reset");
-        btnCreate.setBackground(new Color(40, 167, 69));
-        btnCreate.setForeground(Color.WHITE);
+        lblGeneratedGroupId.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblGeneratedGroupId.setForeground(new Color(0x3498DB));
+        
+        // Buttons
+        btnCreate = new JButton("Tạo nhóm");
+        btnCreate.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnCreate.setBackground(Color.WHITE);
+        btnCreate.setForeground(new Color(0x2C3E50));
+        btnCreate.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         btnCreate.setFocusPainted(false);
-        btnCancel.setBackground(new Color(108, 117, 125));
-        btnCancel.setForeground(Color.WHITE);
+        btnCreate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        btnCancel = new JButton("Hủy");
+        btnCancel.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnCancel.setBackground(Color.WHITE);
+        btnCancel.setForeground(new Color(0x2C3E50));
+        btnCancel.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         btnCancel.setFocusPainted(false);
-        btnReset.setBackground(new Color(255, 193, 7));
-        btnReset.setForeground(Color.BLACK);
+        btnCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        btnReset = new JButton("Làm mới");
+        btnReset.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnReset.setBackground(Color.WHITE);
+        btnReset.setForeground(new Color(0x2C3E50));
+        btnReset.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         btnReset.setFocusPainted(false);
+        btnReset.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void loadSubjects() {
@@ -81,6 +94,7 @@ public class CreateGroupForm extends JDialog {
     private void setupLayout() {
         setLayout(new BorderLayout());
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(0xF5F7FA));
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel formPanel = createFormPanel();
         JPanel buttonPanel = createButtonPanel();
@@ -91,7 +105,11 @@ public class CreateGroupForm extends JDialog {
 
     private JPanel createFormPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(new TitledBorder("Thông tin lớp học"));
+        panel.setBackground(Color.WHITE);
+        TitledBorder border = new TitledBorder("Thông tin lớp học");
+        border.setTitleFont(new Font("Segoe UI", Font.BOLD, 13));
+        border.setTitleColor(new Color(0x2C3E50));
+        panel.setBorder(border);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 15, 8, 15);
         gbc.anchor = GridBagConstraints.WEST;
@@ -99,44 +117,50 @@ public class CreateGroupForm extends JDialog {
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblMaLop = new JLabel("Mã lớp:");
-        lblMaLop.setFont(new Font("Arial", Font.BOLD, 12));
+        lblMaLop.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblMaLop.setForeground(new Color(0x2C3E50));
         panel.add(lblMaLop, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
-        lblGeneratedGroupId.setFont(new Font("Arial", Font.BOLD, 14));
-        lblGeneratedGroupId.setForeground(new Color(0, 123, 255));
+        lblGeneratedGroupId.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblGeneratedGroupId.setForeground(new Color(0x3498DB));
         panel.add(lblGeneratedGroupId, gbc);
         row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblGiangVien = new JLabel("Giảng viên:");
-        lblGiangVien.setFont(new Font("Arial", Font.BOLD, 12));
+        lblGiangVien.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblGiangVien.setForeground(new Color(0x2C3E50));
         panel.add(lblGiangVien, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
         JLabel lblTeacher = new JLabel(DEFAULT_TEACHER);
-        lblTeacher.setFont(new Font("Arial", Font.ITALIC, 12));
-        lblTeacher.setForeground(new Color(108, 117, 125));
+        lblTeacher.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        lblTeacher.setForeground(new Color(0x7F8C8D));
         panel.add(lblTeacher, gbc);
         row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblMonHoc = new JLabel("Môn học *:");
-        lblMonHoc.setFont(new Font("Arial", Font.BOLD, 12));
+        lblMonHoc.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblMonHoc.setForeground(new Color(0x2C3E50));
         panel.add(lblMonHoc, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
-        cmbSubject.setFont(new Font("Arial", Font.PLAIN, 12));
+        cmbSubject.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         panel.add(cmbSubject, gbc);
         row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblSiSo = new JLabel("Sĩ số tối đa *:");
-        lblSiSo.setFont(new Font("Arial", Font.BOLD, 12));
+        lblSiSo.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblSiSo.setForeground(new Color(0x2C3E50));
         panel.add(lblSiSo, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
         JPanel spinnerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        spnMaxStudents.setFont(new Font("Arial", Font.PLAIN, 12));
+        spinnerPanel.setBackground(Color.WHITE);
+        spnMaxStudents.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         spinnerPanel.add(spnMaxStudents);
         JLabel lblHocSinh = new JLabel(" học sinh");
-        lblHocSinh.setFont(new Font("Arial", Font.PLAIN, 12));
+        lblHocSinh.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblHocSinh.setForeground(new Color(0x2C3E50));
         spinnerPanel.add(lblHocSinh);
         panel.add(spinnerPanel, gbc);
 
@@ -145,6 +169,7 @@ public class CreateGroupForm extends JDialog {
 
     private JPanel createButtonPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panel.setBackground(new Color(0xF5F7FA));
         panel.setBorder(new EmptyBorder(15, 0, 0, 0));
         panel.add(btnReset);
         panel.add(btnCancel);

@@ -13,10 +13,10 @@ public class CardSubjectStudent extends JPanel {
     public CardSubjectStudent(Subject subject) {
         // Size, Background
         setPreferredSize(new Dimension(300, 150));
-        setBackground(new Color(150, 150, 150));
+        setBackground(new Color(236, 240, 241)); // Màu xám sáng hiện đại
         setBorder(new CompoundBorder(
-                new LineBorder(new Color(130, 130, 130), 1, true),
-                new EmptyBorder(8, 10, 8, 10)
+                new LineBorder(new Color(52, 152, 219), 2, true), // Viền xanh đẹp
+                new EmptyBorder(10, 12, 10, 12)
         ));
 
         // Layout căn trái, cân giữa dọc
@@ -39,8 +39,8 @@ public class CardSubjectStudent extends JPanel {
 
     private JLabel createLabel(String text, int style, int size) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Arial", style, size));
-        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", style, size));
+        label.setForeground(new Color(44, 62, 80)); // Màu chữ xanh đậm
         return label;
     }
 }

@@ -11,6 +11,14 @@ public class AddSchedule extends JPanel {
     JButton MakeSchedule = new JButton("Tạo lịch");
     public AddSchedule() {
 
+        // Style button
+        MakeSchedule.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        MakeSchedule.setBackground(Color.WHITE);
+        MakeSchedule.setForeground(new Color(0x2C3E50));
+        MakeSchedule.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
+        MakeSchedule.setFocusPainted(false);
+        MakeSchedule.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         // Sử dụng GridBagLayout để có sự linh hoạt trong việc sắp xếp
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Thêm padding

@@ -25,9 +25,10 @@ public class MainPanel extends JPanel {
         add(new LoginPanelTeacher(this), "Log_t");
         add(new LoginPanelStudent(this), "Log_s");
         add(dashboardPanel, "teacher_dashboard");
-
+        add(studentDashboard, "student_dashboard");
         add(new ScheduleDisplayPanel(this), "Schedule");
         add(new ChangeProfilePanel(this), "ChangeProfile");
+        add(new ChangeProfileStudentPanel(this), "ChangeProfileStudent");
         add(new ChangePassword(this), "ChangePassword");
         add(new ScheduleDisplayPanel(this), "ScheduleDisplay");
         add(new StudentSchedule(this), "StudentSchedule");
@@ -38,6 +39,13 @@ public class MainPanel extends JPanel {
         DashboardPanel newPanel = new DashboardPanel(this);
         add(newPanel, "teacher_dashboard");
         cardLayout.show(this, "teacher_dashboard");
+    }
+
+    public void reloadStudentDashboard() {
+        remove(studentDashboard);
+        StudentDashboard newPanel = new StudentDashboard(this);
+        add(newPanel, "student_dashboard");
+        cardLayout.show(this, "student_dashboard");
     }
     public void reloaClassDetails(ClassDetailPanel classDetailPanel, int classId) {
         ClassDetailPanel newPanel = new ClassDetailPanel(this, classId);
@@ -60,7 +68,10 @@ public class MainPanel extends JPanel {
         if (unShowBackCard.contains(previous)) return;
         if(previous=="teacher_dashboard"){
             reloadDashboard();
-        } else {
+        } else if(previous=="student_dashboard"){
+            reloadStudentDashboard();
+        }
+        else {
             cardLayout.show(this, previous);
         }
     }

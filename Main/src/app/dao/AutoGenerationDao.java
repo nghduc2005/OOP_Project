@@ -11,22 +11,18 @@ import java.util.List;
 
 import app.dao.DatabaseConnection;
 
+import java.security.SecureRandom;
 
 public class AutoGenerationDao {
-
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
     public static String generateStudentId() {
-        String query = "SELECT MIN(t1.student_id + 1) AS missing_id FROM students t1 LEFT JOIN students t2 ON t1" +
-                ".student_id + 1 = t2.student_id WHERE t2.student_id IS NULL;";
-        List<HashMap<String, Object>> list = DatabaseConnection.readTable(query);
-        String studentId = "";
-        for (HashMap<String, Object> map : list) {
-            for (String key : map.keySet()) {
-                studentId = String.valueOf( (Long) map.get(key));
-            }
-        }
-        return String.format("STU%06d", Integer.parseInt(studentId));
-    }
 
+        return String.format("STU%06d", AutoGenerationDao.random6Digits());
+    }
+    public static int random6Digits() {
+        int value = SECURE_RANDOM.nextInt(1_000_000);        // 0..999999
+        return value;                 // luôn đủ 6 chữ số
+    }
     public static String generateGroupId() {
         String prefix = "INT";
 

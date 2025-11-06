@@ -1,5 +1,6 @@
 package app.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -153,24 +154,26 @@ public class StudentDao {
     /**
      * Cập nhật thông tin sinh viên dựa theo username (dùng cho EditStudent.java)
      */
-    public static boolean updateStudentByUsername(String username, String full_name, String birthday, String phone, String email) {
+    public static boolean updateStudentByUsername(String username, BigDecimal attendence, BigDecimal assignment,
+                                                  BigDecimal midterm, BigDecimal finalGrade, int classId) {
 
         if (username == null || username.trim().isEmpty()) {
             System.out.println("Username không được rỗng khi cập nhật!");
             return false;
         }
 
-        String sql = "UPDATE students SET fullname = ?, dateOfBirth = ?, email = ?, phone = ? WHERE username = ?";
+        String sql = "UPDATE student_class SET attendence = ?, assignment =?, midterm = ?, final = ? WHERE username =" +
+                " ? and class_id = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, full_name);
-            stmt.setString(2, birthday.isEmpty() ? null : birthday);
-            stmt.setString(3, email.isEmpty() ? null : email);
-            stmt.setString(4, phone.isEmpty() ? null : phone);
+            stmt.setBigDecimal(1, attendence);
+            stmt.setBigDecimal(2, assignment);
+            stmt.setBigDecimal(3, midterm);
+            stmt.setBigDecimal(4, finalGrade);
             stmt.setString(5, username);
-
+            stmt.setInt(6, classId);
             int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {

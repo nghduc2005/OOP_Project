@@ -28,19 +28,28 @@ public class ChangePassword extends JPanel {
 
         // ===== FORM =====
         JPanel formPanel = new JPanel(null);
-        formPanel.setBackground(new Color(245, 245, 245));
+        formPanel.setBackground(new Color(245, 247, 250)); // Màu nền sáng hiện đại
 
         int W = Toolkit.getDefaultToolkit().getScreenSize().width;
         int H = Toolkit.getDefaultToolkit().getScreenSize().height;
         int y = 10;
 
         changePasswordLabel = new JLabel("Đổi mật khẩu");
-        changePasswordLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        changePasswordLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        changePasswordLabel.setForeground(new Color(44, 62, 80));
         changePasswordLabel.setBounds(W / 2 - 100, H / 2 - 200 - y, 400, 50);
 
         oldPasswordLabel = new JLabel("Mật khẩu cũ");
         newPasswordLabel = new JLabel("Mật khẩu mới");
         reEnterPasswordLabel = new JLabel("Nhập lại mật khẩu");
+        
+        oldPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        newPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        reEnterPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        
+        oldPasswordLabel.setForeground(new Color(44, 62, 80));
+        newPasswordLabel.setForeground(new Color(44, 62, 80));
+        reEnterPasswordLabel.setForeground(new Color(44, 62, 80));
 
         oldPasswordField = new JPasswordField();
         newPasswordField = new JPasswordField();
@@ -55,8 +64,12 @@ public class ChangePassword extends JPanel {
         reEnterPasswordField.setBounds(W / 2 - 100, H / 2 - 20 - y, 230, 30);
 
         continueButton = new JButton("Tiếp tục");
+        continueButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         continueButton.setForeground(Color.WHITE);
-        continueButton.setBackground(new Color(66, 133, 244));
+        continueButton.setBackground(new Color(52, 152, 219)); // Màu xanh đẹp
+        continueButton.setBorderPainted(false);
+        continueButton.setFocusPainted(false);
+        continueButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         continueButton.setBounds(W / 2 + 30, H / 2 + 20 - y, 100, 35);
         continueButton.addActionListener(e -> Change());
 

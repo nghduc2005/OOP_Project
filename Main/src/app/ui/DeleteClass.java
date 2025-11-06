@@ -16,7 +16,7 @@ public class DeleteClass extends JPanel {
     public DeleteClass(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 247, 250)); // Màu nền sáng
 
         // ===== HEADER =====
         HeaderComponent headerComponent = new HeaderComponent(
@@ -27,13 +27,15 @@ public class DeleteClass extends JPanel {
 
         // ===== TIÊU ĐỀ =====
         JLabel titleLabel = new JLabel("Xóa lớp học");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titleLabel.setForeground(new Color(44, 62, 80));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 30, 10));
 
         // ===== NHÃN VÀ Ô NHẬP =====
         JLabel classIdLabel = new JLabel("Nhập mã lớp cần xóa:");
-        classIdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        classIdLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        classIdLabel.setForeground(new Color(44, 62, 80));
 
         classIdInput = new TextFieldComponent(15);
 
@@ -44,7 +46,11 @@ public class DeleteClass extends JPanel {
 
         // ===== FORM =====
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(Color.LIGHT_GRAY);
+        formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -58,14 +64,14 @@ public class DeleteClass extends JPanel {
         // ===== CONTAINER =====
         JPanel containerPanel = new JPanel();
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
-        containerPanel.setBackground(Color.WHITE);
+        containerPanel.setBackground(new Color(245, 247, 250));
         containerPanel.add(titleLabel);
         containerPanel.add(formPanel);
         containerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         containerPanel.add(deleteButton);
 
         JPanel outerPanel = new JPanel(new GridBagLayout());
-        outerPanel.setBackground(Color.WHITE);
+        outerPanel.setBackground(new Color(245, 247, 250));
         outerPanel.add(containerPanel);
 
         add(outerPanel, BorderLayout.CENTER);

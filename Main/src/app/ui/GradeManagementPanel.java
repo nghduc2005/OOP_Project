@@ -55,7 +55,12 @@ public class GradeManagementPanel extends JPanel {
         // Search components
         searchField = new JTextField(20);
         searchButton = new JButton("Tìm kiếm");
+        searchButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        searchButton.setBackground(Color.WHITE);
+        searchButton.setForeground(new Color(0x2C3E50));
+        searchButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         searchButton.setFocusPainted(false);
+        searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Filter
         String[] filterOptions = {"Tất cả", "Theo lớp", "Theo sinh viên", "Theo môn học"};
@@ -63,34 +68,49 @@ public class GradeManagementPanel extends JPanel {
 
         // Action buttons
         addButton = new JButton("Thêm điểm");
-        addButton.setBackground(new Color(46, 125, 50));
-        addButton.setForeground(Color.WHITE);
+        addButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        addButton.setBackground(Color.WHITE);
+        addButton.setForeground(new Color(0x2C3E50));
+        addButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         addButton.setFocusPainted(false);
+        addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         editButton = new JButton("Sửa điểm");
-        editButton.setBackground(new Color(25, 118, 210));
-        editButton.setForeground(Color.WHITE);
+        editButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        editButton.setBackground(Color.WHITE);
+        editButton.setForeground(new Color(0x2C3E50));
+        editButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         editButton.setFocusPainted(false);
         editButton.setEnabled(false);
+        editButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         deleteButton = new JButton("Xóa điểm");
-        deleteButton.setBackground(new Color(211, 47, 47));
-        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        deleteButton.setBackground(Color.WHITE);
+        deleteButton.setForeground(new Color(0x2C3E50));
+        deleteButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         deleteButton.setFocusPainted(false);
         deleteButton.setEnabled(false);
+        deleteButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         refreshButton = new JButton("Làm mới");
+        refreshButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        refreshButton.setBackground(Color.WHITE);
+        refreshButton.setForeground(new Color(0x2C3E50));
+        refreshButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         refreshButton.setFocusPainted(false);
+        refreshButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Status label
         statusLabel = new JLabel("Tổng số điểm: 0");
-        statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        statusLabel.setForeground(new Color(0x2C3E50));
     }
 
     private void layoutComponents() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 247, 250)); // Màu nền sáng
 
         // Header
         HeaderComponent headerComponent = new HeaderComponent(
@@ -101,14 +121,14 @@ public class GradeManagementPanel extends JPanel {
 
         // Title and search panel
         JPanel topPanel = new JPanel(new BorderLayout(10, 10));
-        topPanel.setBackground(Color.WHITE);
+        topPanel.setBackground(new Color(245, 247, 250));
 
         JLabel titleLabel = new JLabel("Quản Lý Điểm");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(33, 33, 33));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(new Color(44, 62, 80));
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        searchPanel.setBackground(Color.WHITE);
+        searchPanel.setBackground(new Color(245, 247, 250));
         searchPanel.add(new JLabel("Lọc:"));
         searchPanel.add(filterComboBox);
         searchPanel.add(new JLabel("Tìm kiếm:"));
@@ -120,7 +140,7 @@ public class GradeManagementPanel extends JPanel {
 
         // Button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.setBackground(new Color(245, 247, 250));
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
@@ -128,23 +148,23 @@ public class GradeManagementPanel extends JPanel {
 
         // Combine top panels
         JPanel northPanel = new JPanel(new BorderLayout());
-        northPanel.setBackground(Color.WHITE);
+        northPanel.setBackground(new Color(245, 247, 250));
         northPanel.add(topPanel, BorderLayout.NORTH);
         northPanel.add(buttonPanel, BorderLayout.CENTER);
 
         // Table
         JScrollPane scrollPane = new JScrollPane(gradeTable);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(189, 195, 199)));
 
         // Bottom panel with status
         JPanel bottomPanel = new JPanel(new BorderLayout());
-        bottomPanel.setBackground(Color.WHITE);
+        bottomPanel.setBackground(new Color(245, 247, 250));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
         // Add all to main panel
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
-        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setBackground(new Color(245, 247, 250));
         centerPanel.add(northPanel, BorderLayout.NORTH);
         centerPanel.add(scrollPane, BorderLayout.CENTER);
         centerPanel.add(bottomPanel, BorderLayout.SOUTH);

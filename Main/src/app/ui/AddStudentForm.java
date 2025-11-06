@@ -1,6 +1,8 @@
 package app.ui;
 
 import app.model.Student;
+import app.ui.component.ButtonComponent;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -44,7 +46,7 @@ public class AddStudentForm extends JDialog {
     }
 
     private void generateStudentInfo() {
-        generatedStudentId = app.dao.AutoGenerationDao.getUniqueStudentId();
+        generatedStudentId = app.dao.AutoGenerationDao.generateStudentId();
         generatedUsername = generatedStudentId;
         System.out.println("Generated Student ID from DB: " + generatedStudentId);
     }
@@ -62,32 +64,47 @@ public class AddStudentForm extends JDialog {
         lblGeneratedStudentId = new JLabel(generatedStudentId);
         lblGeneratedUsername = new JLabel(generatedUsername);
 
-        Font boldFont = new Font("Arial", Font.BOLD, 13);
+        Font boldFont = new Font("Segoe UI", Font.BOLD, 13);
         lblGeneratedStudentId.setFont(boldFont);
         lblGeneratedUsername.setFont(boldFont);
-        lblGeneratedStudentId.setForeground(new Color(0, 123, 255));
-        lblGeneratedUsername.setForeground(new Color(0, 123, 255));
+        lblGeneratedStudentId.setForeground(new Color(0x3498DB));
+        lblGeneratedUsername.setForeground(new Color(0x3498DB));
 
         btnSave = new JButton("Lưu");
+        btnSave.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnSave.setBackground(Color.WHITE);
+        btnSave.setForeground(new Color(0x2C3E50));
+        btnSave.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+//        btnSave.setFocusPainted(false);
+        btnSave.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         btnCancel = new JButton("Hủy");
-        btnReset = new JButton("Reset");
-
-        btnSave.setBackground(new Color(40, 167, 69));
-        btnSave.setForeground(Color.WHITE);
-        btnSave.setFocusPainted(false);
-
-        btnCancel.setBackground(new Color(108, 117, 125));
-        btnCancel.setForeground(Color.WHITE);
+        btnCancel.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnCancel.setBackground(Color.WHITE);
+        btnCancel.setForeground(new Color(0x2C3E50));
+        btnCancel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         btnCancel.setFocusPainted(false);
+        btnCancel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        btnReset.setBackground(new Color(255, 193, 7));
-        btnReset.setForeground(Color.BLACK);
+        btnReset = new JButton("Reset");
+        btnReset.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnReset.setBackground(Color.WHITE);
+        btnReset.setForeground(new Color(0x2C3E50));
+        btnReset.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         btnReset.setFocusPainted(false);
+        btnReset.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
         JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(0xF5F7FA));
         mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         JPanel formPanel = createFormPanel();
         JPanel buttonPanel = createButtonPanel();
@@ -98,7 +115,11 @@ public class AddStudentForm extends JDialog {
 
     private JPanel createFormPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBorder(new TitledBorder("Thông tin học sinh"));
+        panel.setBackground(Color.WHITE);
+        TitledBorder border = new TitledBorder("Thông tin học sinh");
+        border.setTitleFont(new Font("Segoe UI", Font.BOLD, 13));
+        border.setTitleColor(new Color(0x2C3E50));
+        panel.setBorder(border);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 15, 8, 15);
         gbc.anchor = GridBagConstraints.WEST;
@@ -106,41 +127,45 @@ public class AddStudentForm extends JDialog {
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblMaHS = new JLabel("Mã học sinh:");
-        lblMaHS.setFont(new Font("Arial", Font.BOLD, 12));
+        lblMaHS.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblMaHS.setForeground(new Color(0x2C3E50));
         panel.add(lblMaHS, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
-        lblGeneratedStudentId.setFont(new Font("Arial", Font.BOLD, 14));
-        lblGeneratedStudentId.setForeground(new Color(0, 123, 255));
+        lblGeneratedStudentId.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblGeneratedStudentId.setForeground(new Color(0x3498DB));
         panel.add(lblGeneratedStudentId, gbc);
         row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblTenDN = new JLabel("Tên đăng nhập:");
-        lblTenDN.setFont(new Font("Arial", Font.BOLD, 12));
+        lblTenDN.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblTenDN.setForeground(new Color(0x2C3E50));
         panel.add(lblTenDN, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
-        lblGeneratedUsername.setFont(new Font("Arial", Font.BOLD, 14));
-        lblGeneratedUsername.setForeground(new Color(0, 123, 255));
+        lblGeneratedUsername.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblGeneratedUsername.setForeground(new Color(0x3498DB));
         panel.add(lblGeneratedUsername, gbc);
         row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblMatKhau = new JLabel("Mật khẩu mặc định:");
-        lblMatKhau.setFont(new Font("Arial", Font.BOLD, 12));
+        lblMatKhau.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblMatKhau.setForeground(new Color(0x2C3E50));
         panel.add(lblMatKhau, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
         JLabel lblPassword = new JLabel(DEFAULT_PASSWORD);
-        lblPassword.setFont(new Font("Arial", Font.ITALIC, 12));
-        lblPassword.setForeground(new Color(108, 117, 125));
+        lblPassword.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        lblPassword.setForeground(new Color(0x7F8C8D));
         panel.add(lblPassword, gbc);
         row++;
 
         gbc.gridx = 0; gbc.gridy = row; gbc.fill = GridBagConstraints.NONE; gbc.weightx = 0;
         JLabel lblHoTen = new JLabel("Họ tên *:");
-        lblHoTen.setFont(new Font("Arial", Font.BOLD, 12));
+        lblHoTen.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblHoTen.setForeground(new Color(0x2C3E50));
         panel.add(lblHoTen, gbc);
         gbc.gridx = 1; gbc.fill = GridBagConstraints.HORIZONTAL; gbc.weightx = 1.0;
-        txtFullName.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtFullName.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         panel.add(txtFullName, gbc);
         row++;
 

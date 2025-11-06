@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+import java.util.List;
 
 public class ChangeProfilePanel extends JPanel {
     MainPanel mainPanel;
@@ -23,8 +25,11 @@ public class ChangeProfilePanel extends JPanel {
     public ChangeProfilePanel(MainPanel mainPanel) {
         setLayout(new BorderLayout());
         this.mainPanel = mainPanel;
+        setBackground(new Color(245, 247, 250)); // Màu nền sáng
+        
         titleLabel = new JLabel("Change Profile");
-        titleLabel.setFont(new Font(titleLabel.getFont().getFontName(), Font.BOLD, 32));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        titleLabel.setForeground(new Color(44, 62, 80));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -33,18 +38,53 @@ public class ChangeProfilePanel extends JPanel {
         dateOfBirthLabel = new JLabel("Date of Birth:");
         emailLabel = new JLabel("Email:");
         phoneNumberLabel = new JLabel("Phone Number:");
+        
+        lastNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        firstNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        dateOfBirthLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        phoneNumberLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        
+        lastNameLabel.setForeground(new Color(44, 62, 80));
+        firstNameLabel.setForeground(new Color(44, 62, 80));
+        dateOfBirthLabel.setForeground(new Color(44, 62, 80));
+        emailLabel.setForeground(new Color(44, 62, 80));
+        phoneNumberLabel.setForeground(new Color(44, 62, 80));
 
         exampleLastNameLabel = new JLabel("Ví dụ: Nguyễn Văn");
         exampleFirstNameLabel = new JLabel("Ví dụ: A");
         exampleDateOfBirthLabel = new JLabel("Ví dụ: 1999-12-20");
         exampleEmailLabel = new JLabel("Ví dụ: abc@gmail.com");
         examplePhoneNumberLabel = new JLabel("Ví dụ: 0987654321");
+        
+        exampleLastNameLabel.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        exampleFirstNameLabel.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        exampleDateOfBirthLabel.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        exampleEmailLabel.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        examplePhoneNumberLabel.setFont(new Font("Segoe UI", Font.ITALIC, 12));
+        
+        exampleLastNameLabel.setForeground(new Color(127, 140, 141));
+        exampleFirstNameLabel.setForeground(new Color(127, 140, 141));
+        exampleDateOfBirthLabel.setForeground(new Color(127, 140, 141));
+        exampleEmailLabel.setForeground(new Color(127, 140, 141));
+        examplePhoneNumberLabel.setForeground(new Color(127, 140, 141));
 
         lastNameInput = new TextFieldComponent(15);
         firstNameInput = new TextFieldComponent(15);
         dateOfBirthInput = new TextFieldComponent(15);
         emailInput = new TextFieldComponent(15);
         phoneNumberInput = new TextFieldComponent(15);
+
+        String query = "select * from teachers";
+        List<HashMap<String,Object>> list = DatabaseConnection.readTable(query);
+        for(HashMap<String,Object> map : list){
+            lastNameInput.setText(map.get("last_name").toString());
+            firstNameInput.setText(map.get("first_name").toString());
+            dateOfBirthInput.setText(map.get("dateOfBirth").toString());
+            emailInput.setText(map.get("email").toString());
+            phoneNumberInput.setText(map.get("phone").toString());
+        }
+
 
         changeProfileButton = new ButtonComponent("Change Profile");
         changeProfileButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -55,7 +95,11 @@ public class ChangeProfilePanel extends JPanel {
         saveProfileButton.setBorder(BorderFactory.createEmptyBorder(10, 38, 10, 38));
 
         JPanel containerFormPanel = new JPanel();
-        containerFormPanel.setBackground(Color.lightGray);
+        containerFormPanel.setBackground(Color.WHITE);
+        containerFormPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
         containerFormPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbMain = new GridBagConstraints();
         gbMain.anchor = GridBagConstraints.NORTHWEST;
@@ -67,7 +111,7 @@ public class ChangeProfilePanel extends JPanel {
 //        LeftForm
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new GridBagLayout());
-        leftPanel.setBackground(Color.lightGray);
+        leftPanel.setBackground(Color.WHITE);
         GridBagConstraints gbLeft = new GridBagConstraints();
         gbLeft.insets = new Insets(10, 10, 10, 10);
         gbLeft.gridx = 0; gbLeft.gridy = 0; leftPanel.add(lastNameLabel, gbLeft);
@@ -79,7 +123,7 @@ public class ChangeProfilePanel extends JPanel {
 
 //        RightForm
         JPanel rightPanel = new JPanel();
-        rightPanel.setBackground(Color.lightGray);
+        rightPanel.setBackground(Color.WHITE);
         rightPanel.setLayout(new GridBagLayout());
         GridBagConstraints gbRight = new GridBagConstraints();
         gbRight.insets = new Insets(10, 10, 10, 10);
@@ -93,13 +137,14 @@ public class ChangeProfilePanel extends JPanel {
         containerFormPanel.add(rightPanel, gbMain);
 
         JPanel containerPanel = new JPanel();
+        containerPanel.setBackground(new Color(245, 247, 250));
         BoxLayout boxLayout = new BoxLayout(containerPanel, BoxLayout.Y_AXIS);
         containerPanel.setLayout(boxLayout);
         containerPanel.add(titleLabel);
         containerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         containerPanel.add(containerFormPanel);
-        containerPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        containerPanel.add(saveProfileButton);
+//        containerPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+//        containerPanel.add(saveProfileButton);
         containerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         containerPanel.add(changeProfileButton);
         containerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);

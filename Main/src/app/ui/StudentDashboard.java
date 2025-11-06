@@ -39,7 +39,9 @@ public class StudentDashboard extends JPanel {
         public StudentDashboard(MainPanel mainPanel) {
             this.mainPanel = mainPanel;
             setLayout(new BorderLayout());
-            headerComponent = new HeaderComponent(new String[]{ "Trang chủ", "Lịch học học sinh", "Thông tin cá nhân",
+            headerComponent = new HeaderComponent(new String[]{ "Trang chủ học sinh", "Lịch học học sinh", "Thông tin" +
+                    " cá " +
+                    "nhân học sinh",
                     "Đổi mật khẩu","Đăng xuất","Quay lại"},
                     mainPanel);
             add(headerComponent, BorderLayout.NORTH);

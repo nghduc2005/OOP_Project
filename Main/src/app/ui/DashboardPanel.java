@@ -1,12 +1,16 @@
 package app.ui;
 
+import app.model.Schedule;
 import app.model.Student;
 import app.model.Subject;
+import app.service.ScheduleService;
+import app.ui.component.ButtonComponent;
 import app.ui.component.HeaderComponent;
 import app.ui.component.LabelComponent;
 import app.ui.component.TableComponent;
 import app.dao.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +25,8 @@ public class DashboardPanel extends JPanel {
     CardSubjectTeacher cardSubjectTeachers;
     LabelComponent titleLabel;
     MainPanel mainPanel;
-    JButton addStudent, deleteStudent;
+    ButtonComponent addStudent, deleteStudent;
+    TableComponent table;
     //Trang chủ
     public DashboardPanel(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
@@ -37,11 +42,20 @@ public class DashboardPanel extends JPanel {
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+        centerPanel.setBackground(new Color(245, 247, 250)); // Màu nền hiện đại
         // TitleLabel
         titleLabel = new LabelComponent("Trang chủ", 50);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(titleLabel);
-        addStudent = new JButton("Thêm học sinh");
+        addStudent = new ButtonComponent("Thêm học sinh");
+        addStudent.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        addStudent.setBackground(new Color(52, 152, 219));
+        addStudent.setForeground(Color.white);
+        addStudent.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+//        addStudent.setFocusPainted(false);
+        addStudent.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         addStudent.setAlignmentX(Component.CENTER_ALIGNMENT);
         addStudent.addMouseListener(new MouseAdapter() {
             @Override
@@ -55,16 +69,25 @@ public class DashboardPanel extends JPanel {
                     // reload bảng hoặc addRow như bạn đang làmg
                     mainPanel.reloadDashboard();
                 }
-//                dialog.setContentPane(ec);
-//                dialog.pack();
-//                dialog.setSize(500, 450);
-//                dialog.setLocationRelativeTo(ClassDetailPanel.this);
-//                dialog.setVisible(true);
             }
         });
-        deleteStudent = new JButton("Xóa học sinh");
-
-        centerPanel.add(addStudent);
+        deleteStudent = new ButtonComponent("Xóa học sinh");
+        deleteStudent.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        deleteStudent.setBackground(new Color(52, 152, 219));
+        deleteStudent.setForeground(Color.white);
+        deleteStudent.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+//        addStudent.setFocusPainted(false);
+        deleteStudent.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        deleteStudent.setAlignmentX(Component.CENTER_ALIGNMENT);
+        deleteStudent.addActionListener(e -> deleteStudent());
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+        buttonPanel.add(addStudent);
+        buttonPanel.add(deleteStudent);
+        centerPanel.add(buttonPanel);
+//        centerPanel.add(deleteStudent);
         centerPanel.add(combinePanel());
 
         return centerPanel;
@@ -75,7 +98,7 @@ public class DashboardPanel extends JPanel {
         JScrollPane scrollPanel = new JScrollPane(cardListPanel(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         combinePanel.add(scrollPanel, BorderLayout.CENTER);
-//        combinePanel.add(tableStudent(), BorderLayout.CENTER);
+        combinePanel.add(tableStudent(), BorderLayout.SOUTH);
         return combinePanel;
     }
     public JPanel cardListPanel() {
@@ -114,10 +137,13 @@ public class DashboardPanel extends JPanel {
             cardListPanel.add(card);
         }
         JButton addclass = new JButton("+");
-        addclass.setFont(new Font("Arial", Font.BOLD, 50));
-        addclass.setBackground(new Color(150,150,150));
+        addclass.setFont(new Font("Segoe UI", Font.BOLD, 50));
+        addclass.setBackground(Color.WHITE);
+        addclass.setForeground(new Color(0x7F8C8D));
+        addclass.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 2));
         addclass.setPreferredSize(new Dimension(100, 100));
-        addclass.setForeground(Color.WHITE);
+        addclass.setFocusPainted(false);
+        addclass.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
             cardListPanel.add(addclass);
         addclass.addMouseListener(new MouseAdapter() {
@@ -143,12 +169,46 @@ public class DashboardPanel extends JPanel {
         cardListPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         return cardListPanel;
     }
+    private void deleteStudent() {
+        int selectedRow = table.getTable().getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng chọn lịch học cần sửa!",
+                    "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String username =  String.valueOf( table.getTable().getModel().getValueAt(selectedRow, 1));
+        System.out.println("username = " + username);
+        if (username != null) {
+            StudentDao.deleteStudent(username);
+            mainPanel.reloadDashboard();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy thông tin học sinh!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
     public TableComponent tableStudent() {
-        TableComponent table = new TableComponent(
-                new String[]{"STT", "Mã sinh viên", "Họ và tên", "Điểm CC", "Điểm BT", "Điểm GK", "Điểm CK"},
+         table = new TableComponent(
+                new String[]{"STT", "Tên đăng nhập","Họ và tên", "Email", "Số điện thoại"},
                 new int[]{50, 200, 200, 200, 100, 100, 100}
         );
-//        tablePanel.add(table);
+        String query = "SELECT * from students";
+        int i = 1;
+        List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
+        for (HashMap<String, Object> row : results) {
+            table.addRow(new Object[]{i++, row.get("username"), row.get("fullname"), row.get("email"),
+                    row.get("phone")});
+        }
+        table.getTable().getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                boolean hasSelection = table.getTable().getSelectedRow() != -1;
+                deleteStudent.setEnabled(hasSelection);
+            }
+        });
         return table;
     }
 }

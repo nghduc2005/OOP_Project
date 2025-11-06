@@ -3,6 +3,7 @@ package app.dao;
 import app.model.Schedule;
 import app.session.Session;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -241,6 +242,19 @@ public class ScheduleDao {
             if (results != null) {
                 for (HashMap<String, Object> row : results) {
                     Schedule schedule = mapToSchedule(row);
+                    java.sql.Date sqlDate = (java.sql.Date) row.get("study_date");
+                    schedule.setStudyDate(sqlDate.toLocalDate());
+                    Object startObj = row.get("start_time");
+                    LocalDateTime startTime = null;
+
+                    if (startObj instanceof java.sql.Timestamp ts) {
+                        startTime = ts.toLocalDateTime();
+                    } else if (startObj instanceof java.time.LocalDateTime ldt) {
+                        startTime = ldt;
+                    }
+
+                    schedule.setStartTime(startTime != null ? startTime : LocalDateTime.now());
+                    System.out.println(schedule.getStudyDate() + " " + schedule.getStartTime());
                     if (schedule != null) schedules.add(schedule);
                 }
             }
@@ -255,7 +269,11 @@ public class ScheduleDao {
         try {
             Integer scheduleId = (Integer) row.get("schedule_id");
             Object dateObj = row.get("study_date");
-            LocalDate studyDate = dateObj instanceof java.sql.Date ? ((java.sql.Date) dateObj).toLocalDate() : LocalDate.now();
+            LocalDate studyDate = (dateObj instanceof java.sql.Date)
+                    ? ((java.sql.Date) dateObj).toLocalDate()
+                    : (dateObj instanceof java.time.LocalDateTime)
+                    ? ((java.time.LocalDateTime) dateObj).toLocalDate()
+                    : LocalDate.now();
             String studyShift = (String) row.get("study_shift");
             Object sessionsObj = row.get("total_sessions");
             Integer totalSessions = sessionsObj instanceof Integer ? (Integer) sessionsObj :

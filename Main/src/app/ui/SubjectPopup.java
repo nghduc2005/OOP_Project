@@ -145,18 +145,18 @@ public class SubjectPopup extends JDialog {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(new EmptyBorder(16, 20, 8, 20));
-        panel.setBackground(new Color(248, 249, 250));
+        panel.setBackground(new Color(0xF5F7FA));
 
 
         JLabel titleLabel = new JLabel("THÔNG TIN CHI TIẾT MÔN HỌC");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setForeground(new Color(33, 37, 41));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(0x2C3E50));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         titleLabel.setBorder(new EmptyBorder(0, 0, 8, 0));
 
 
         JPanel details = new JPanel(new GridBagLayout());
-        details.setBackground(new Color(248, 249, 250));
+        details.setBackground(new Color(0xF5F7FA));
         details.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         GridBagConstraints c = new GridBagConstraints();
@@ -168,16 +168,16 @@ public class SubjectPopup extends JDialog {
         JLabel l2 = new JLabel("Số tín chỉ:");
         JLabel l3 = new JLabel("Nhóm:");
         for (JLabel l : new JLabel[]{l1, l2, l3}) {
-            l.setFont(new Font("Arial", Font.BOLD, 13));
-            l.setForeground(new Color(85, 85, 85));
+            l.setFont(new Font("Segoe UI", Font.BOLD, 13));
+            l.setForeground(new Color(0x2C3E50));
         }
 
         JLabel v1 = new JLabel(String.valueOf(studentClassDetail.get("subject_name")));
         JLabel v2 = new JLabel(String.valueOf(studentClassDetail.get("credit")));
         JLabel v3 = new JLabel(String.valueOf(studentClassDetail.get("class_id")));
         for (JLabel v : new JLabel[]{v1, v2, v3}) {
-            v.setFont(new Font("Arial", Font.PLAIN, 13));
-            v.setForeground(new Color(33, 37, 41));
+            v.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+            v.setForeground(new Color(0x34495E));
         }
 
         details.add(l1, c);
@@ -218,12 +218,12 @@ public class SubjectPopup extends JDialog {
         panel.setBackground(Color.WHITE);
 
         JLabel tableTitle = new JLabel("Kết quả học tập");
-        tableTitle.setFont(new Font("Arial", Font.BOLD, 14));
-        tableTitle.setForeground(new Color(51, 51, 51));
+        tableTitle.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        tableTitle.setForeground(new Color(0x2C3E50));
         tableTitle.setBorder(new EmptyBorder(0, 0, 8, 0));
 
         JScrollPane scrollPane = new JScrollPane(gradesTable);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7)));
         scrollPane.getViewport().setBackground(Color.WHITE);
 
         panel.add(tableTitle, BorderLayout.NORTH);

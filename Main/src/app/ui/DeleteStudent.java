@@ -15,11 +15,12 @@ public class DeleteStudent extends JPanel {
     public DeleteStudent(MainPanel mainPanel) {
         this.mainPanel = mainPanel;
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(0xF5F7FA));
 
         // Label + ô nhập
         JLabel studentIdLabel = new JLabel("Nhập mã học sinh (username) cần xóa:");
-        studentIdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        studentIdLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        studentIdLabel.setForeground(new Color(0x2C3E50));
 
         studentIdInput = new TextFieldComponent(15);
 

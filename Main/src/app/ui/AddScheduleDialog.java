@@ -83,19 +83,26 @@ public class AddScheduleDialog extends JDialog {
 //        // Class ID
 //        classIdSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
         
+        
         // Buttons
         saveButton = new JButton("Lưu");
-        saveButton.setBackground(new Color(76, 175, 80));
-        saveButton.setForeground(Color.WHITE);
+        saveButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        saveButton.setBackground(Color.WHITE);
+        saveButton.setForeground(new Color(0x2C3E50));
+        saveButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         saveButton.setFocusPainted(false);
-        
-        cancelButton = new JButton("Hủy");
-        cancelButton.setBackground(new Color(244, 67, 54));
-        cancelButton.setForeground(Color.WHITE);
-        cancelButton.setFocusPainted(false);
-    }
 
-    private void layoutComponents() {
+        cancelButton = new JButton("Hủy");
+        cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        cancelButton.setBackground(Color.WHITE);
+        cancelButton.setForeground(new Color(0x2C3E50));
+        cancelButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+        cancelButton.setFocusPainted(false);
+    }    private void layoutComponents() {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
@@ -107,8 +114,8 @@ public class AddScheduleDialog extends JDialog {
         
         // Title
         JLabel titleLabel = new JLabel("THÊM LỊCH HỌC MỚI");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setForeground(new Color(25, 118, 210));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(0x3498DB));
         gbc.gridx = 0;
         gbc.gridy = row++;
         gbc.gridwidth = 2;

@@ -1,6 +1,7 @@
 package app.ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -70,25 +71,36 @@ public class EditGradeDialog extends JDialog {
         academicYearField = new JTextField("2024-2025", 20);
 
         totalScoreLabel = new JLabel("0.00");
-        totalScoreLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        totalScoreLabel.setForeground(new Color(0, 150, 0));
+        totalScoreLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        totalScoreLabel.setForeground(new Color(0x27AE60));
 
         letterGradeLabel = new JLabel("F");
-        letterGradeLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        letterGradeLabel.setForeground(new Color(0, 100, 200));
+        letterGradeLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        letterGradeLabel.setForeground(new Color(0x3498DB));
 
         calculateButton = new JButton("Tính điểm");
-        calculateButton.setBackground(new Color(255, 152, 0));
-        calculateButton.setForeground(Color.WHITE);
+        calculateButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        calculateButton.setBackground(Color.WHITE);
+        calculateButton.setForeground(new Color(0x2C3E50));
+        calculateButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         calculateButton.setFocusPainted(false);
+        calculateButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         saveButton = new JButton("Lưu");
-        saveButton.setBackground(new Color(46, 125, 50));
-        saveButton.setForeground(Color.WHITE);
+        saveButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        saveButton.setBackground(Color.WHITE);
+        saveButton.setForeground(new Color(0x2C3E50));
+        saveButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         saveButton.setFocusPainted(false);
+        saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         cancelButton = new JButton("Hủy");
+        cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        cancelButton.setBackground(Color.WHITE);
+        cancelButton.setForeground(new Color(0x2C3E50));
+        cancelButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         cancelButton.setFocusPainted(false);
+        cancelButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void layoutComponents() {
@@ -100,7 +112,8 @@ public class EditGradeDialog extends JDialog {
 
         // Title
         JLabel titleLabel = new JLabel("SỬA ĐIỂM");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(0x2C3E50));
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -187,7 +200,8 @@ public class EditGradeDialog extends JDialog {
         gbc.gridy++;
         gbc.gridx = 0;
         JLabel totalLabel = new JLabel("Điểm tổng kết:");
-        totalLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        totalLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        totalLabel.setForeground(new Color(0x2C3E50));
         mainPanel.add(totalLabel, gbc);
         gbc.gridx = 1;
         mainPanel.add(totalScoreLabel, gbc);
@@ -196,7 +210,8 @@ public class EditGradeDialog extends JDialog {
         gbc.gridy++;
         gbc.gridx = 0;
         JLabel letterLabel = new JLabel("Xếp loại:");
-        letterLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        letterLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        letterLabel.setForeground(new Color(0x2C3E50));
         mainPanel.add(letterLabel, gbc);
         gbc.gridx = 1;
         mainPanel.add(letterGradeLabel, gbc);

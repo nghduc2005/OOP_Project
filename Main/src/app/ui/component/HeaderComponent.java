@@ -1,6 +1,7 @@
 package app.ui.component;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
@@ -16,7 +17,7 @@ public class HeaderComponent extends JPanel {
     public HeaderComponent(String[] navItem, MainPanel mainPanel) {
         this.mainPanel = mainPanel;
         setLayout(new FlowLayout(FlowLayout.LEFT, 20, 10));
-        setBackground(new Color(150, 150, 150)); // nền xám
+        setBackground(new Color(41, 128, 185)); // Màu xanh dương chuyên nghiệp
 
         for(int i = 0; i< navItem.length; i++) {
             JLabel label = createLabel(navItem[i]);
@@ -48,13 +49,19 @@ public class HeaderComponent extends JPanel {
                         case "Lịch học học sinh":
                             mainPanel.show("StudentSchedule");
                             break;
+                        case "Thông tin cá nhân học sinh":
+                            mainPanel.show("ChangeProfileStudent");
+                            break;
+                        case "Trang chủ học sinh":
+                            mainPanel.show("student_dashboard");
+                            break;
                         case "Quay lại":
                             mainPanel.back();
                     }
                 }
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    label.setForeground(Color.ORANGE);
+                    label.setForeground(new Color(241, 196, 15)); // Màu vàng đẹp khi hover
                 }
 
                 @Override
@@ -67,8 +74,9 @@ public class HeaderComponent extends JPanel {
     }
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
+        label.setFont(new Font("Segoe UI", Font.BOLD, 16));
         label.setForeground(Color.WHITE);
+        label.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return label;
     }
 }

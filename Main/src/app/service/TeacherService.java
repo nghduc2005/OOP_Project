@@ -38,19 +38,19 @@ public class TeacherService implements LoginInterface {
         if(password.equals("")){
             throw new IllegalArgumentException("Mật khẩu là bắt buộc!");
         }
-        // TC****** với * thuộc [0-9]
-        if(userName.length()!=8 || !userName.matches(Constant.TC_USERNAME_PATTERN)){
-            throw new IllegalArgumentException("Tên đăng nhập không hợp lệ!");
-        }
-        // tối thiểu 6 ký tự, tối đa 20 ký tự, gồm chữ cái, chữ số, ít nhất 1 chữ in hoa
-        if(password.length()<6 ||  password.length()>20 || !password.matches(Constant.TC_PASSWORD_PATTERN)){
-            throw new IllegalArgumentException("Tên mật khẩu không hợp lệ!");
-        }
-        // Xác thực mặt dữ liệu
+//        // TC****** với * thuộc [0-9]
+//        if(userName.length()!=8 || !userName.matches(Constant.TC_USERNAME_PATTERN)){
+//            throw new IllegalArgumentException("Tên đăng nhập không hợp lệ!");
+//        }
+//        // tối thiểu 6 ký tự, tối đa 20 ký tự, gồm chữ cái, chữ số, ít nhất 1 chữ in hoa
+//        if(password.length()<6 ||  password.length()>20 || !password.matches(Constant.TC_PASSWORD_PATTERN)){
+//            throw new IllegalArgumentException("Tên mật khẩu không hợp lệ!");
+//        }
+//        // Xác thực mặt dữ liệu
         LoginResponse response = login(new LoginRequest(userName, password));
-        if(response==null) {
-            throw new Error("Tài khoản hoặc mật khẩu không hợp lệ!");
-        }
+//        if(response==null) {
+//            throw new Error("Tài khoản hoặc mật khẩu không hợp lệ!");
+//        }
         return response;
     }
 }

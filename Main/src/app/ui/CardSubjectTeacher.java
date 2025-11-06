@@ -13,10 +13,10 @@ public class CardSubjectTeacher extends JPanel {
 
     public CardSubjectTeacher(Subject subject, String groupName) {
         setPreferredSize(new Dimension(200, 100));
-        setBackground(new Color(150, 150, 150));
+        setBackground(new Color(236, 240, 241)); // Màu xám sáng hiện đại
         setBorder(new CompoundBorder(
-                new LineBorder(new Color(130, 130, 130), 1, true),
-                new EmptyBorder(8, 10, 8, 10)
+                new LineBorder(new Color(189, 195, 199), 1, true),
+                new EmptyBorder(10, 12, 10, 12)
         ));
 
         setLayout(new BorderLayout()); // đổi sang border layout
@@ -24,12 +24,13 @@ public class CardSubjectTeacher extends JPanel {
         // --- Nút X ---
         JButton btnClose = new JButton("×");
         btnClose.setPreferredSize(new Dimension(20, 20));
-        btnClose.setFont(new Font("Arial", Font.BOLD, 14));
+        btnClose.setFont(new Font("Segoe UI", Font.BOLD, 16));
         btnClose.setFocusable(false);
         btnClose.setMargin(new Insets(0,0,0,0));
-        btnClose.setForeground(Color.WHITE);
-        btnClose.setBackground(new Color(150,150,150));
+        btnClose.setForeground(new Color(231, 76, 60)); // Màu đỏ đẹp
+        btnClose.setBackground(new Color(236, 240, 241));
         btnClose.setBorder(null);
+        btnClose.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btnClose.addActionListener(e -> {
             Container parent = this.getParent();
@@ -68,8 +69,8 @@ public class CardSubjectTeacher extends JPanel {
 
     private JLabel createLabel(String text, int style, int size) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Arial", style, size));
-        label.setForeground(Color.WHITE);
+        label.setFont(new Font("Segoe UI", style, size));
+        label.setForeground(new Color(44, 62, 80)); // Màu chữ xanh đậm
         return label;
     }
 }

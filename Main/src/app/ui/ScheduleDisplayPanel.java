@@ -56,46 +56,115 @@ public class ScheduleDisplayPanel extends JPanel {
 
         // Search components
         searchField = new JTextField(20);
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.BLACK,
+                        1), BorderFactory.createEmptyBorder(5, 0, 5, 0)));
         searchButton = new JButton("Tìm kiếm");
+        searchButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        searchButton.setBackground(Color.WHITE);
+        searchButton.setForeground(new Color(0x2C3E50));
+        searchButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         searchButton.setFocusPainted(false);
+        searchButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Filter buttons
         todayButton = new JButton("Hôm nay");
+        todayButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        todayButton.setBackground(Color.WHITE);
+        todayButton.setForeground(new Color(0x2C3E50));
+        todayButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+        todayButton.setFocusPainted(false);
+        todayButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
         weekButton = new JButton("Tuần này");
+        weekButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        weekButton.setBackground(Color.WHITE);
+        weekButton.setForeground(new Color(0x2C3E50));
+        weekButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+        weekButton.setFocusPainted(false);
+        weekButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
         monthButton = new JButton("Tháng này");
+        monthButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        monthButton.setBackground(Color.WHITE);
+        monthButton.setForeground(new Color(0x2C3E50));
+        monthButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+        monthButton.setFocusPainted(false);
+        monthButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        
         allButton = new JButton("Tất cả");
+        allButton.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        allButton.setBackground(Color.WHITE);
+        allButton.setForeground(new Color(0x2C3E50));
+        allButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
+        allButton.setFocusPainted(false);
+        allButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Action buttons
         addButton = new JButton("Thêm lịch");
-        addButton.setBackground(new Color(46, 125, 50));
-        addButton.setForeground(Color.WHITE);
+        addButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        addButton.setBackground(Color.WHITE);
+        addButton.setForeground(new Color(0x2C3E50));
+        addButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         addButton.setFocusPainted(false);
+        addButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         editButton = new JButton("Sửa lịch");
-        editButton.setBackground(new Color(25, 118, 210));
-        editButton.setForeground(Color.WHITE);
+        editButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        editButton.setBackground(Color.WHITE);
+        editButton.setForeground(new Color(0x2C3E50));
+        editButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         editButton.setFocusPainted(false);
         editButton.setEnabled(false);
+        editButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         deleteButton = new JButton("Xóa lịch");
-        deleteButton.setBackground(Color.RED);
-        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        deleteButton.setBackground(Color.WHITE);
+        deleteButton.setForeground(new Color(0x2C3E50));
+        deleteButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         deleteButton.setFocusPainted(false);
         deleteButton.setEnabled(false);
+        deleteButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         refreshButton = new JButton("Làm mới");
+        refreshButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        refreshButton.setBackground(Color.WHITE);
+        refreshButton.setForeground(new Color(0x2C3E50));
+        refreshButton.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xBDC3C7),
+                        1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
         refreshButton.setFocusPainted(false);
+        refreshButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Status label
         statusLabel = new JLabel("Tổng số lịch: 0");
-        statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        statusLabel.setForeground(new Color(0x2C3E50));
     }
 
     private void layoutComponents() {
         setLayout(new BorderLayout(10, 10));
 //        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
-        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học","Thông tin cá nhân",
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học học sinh","Thông " +
+                "tin cá nhân học sinh",
                 "Đổi " +
                 "mật" +
                 " khẩu",
@@ -110,15 +179,15 @@ public class ScheduleDisplayPanel extends JPanel {
         headerPanel.setBackground(Color.WHITE);
 
         JLabel titleLabel = new JLabel("Quản Lý Lịch Học");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(33, 33, 33));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(new Color(0x2C3E50));
 
         // Search panel
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         searchPanel.setBackground(Color.WHITE);
-        searchPanel.add(new JLabel("Tìm kiếm:"));
-        searchPanel.add(searchField);
-        searchPanel.add(searchButton);
+//        searchPanel.add(new JLabel("Tìm kiếm:"));
+//        searchPanel.add(searchField);
+//        searchPanel.add(searchButton);
 
         headerPanel.add(titleLabel, BorderLayout.WEST);
         headerPanel.add(searchPanel, BorderLayout.EAST);
@@ -126,11 +195,11 @@ public class ScheduleDisplayPanel extends JPanel {
         // Filter Panel
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         filterPanel.setBackground(Color.WHITE);
-        filterPanel.add(new JLabel("Lọc theo:"));
-        filterPanel.add(todayButton);
-        filterPanel.add(weekButton);
-        filterPanel.add(monthButton);
-        filterPanel.add(allButton);
+//        filterPanel.add(new JLabel("Lọc theo:"));
+//        filterPanel.add(todayButton);
+//        filterPanel.add(weekButton);
+//        filterPanel.add(monthButton);
+//        filterPanel.add(allButton);
 
         // Table Panel
         JScrollPane scrollPane = new JScrollPane(scheduleTable);
@@ -256,6 +325,7 @@ public class ScheduleDisplayPanel extends JPanel {
             loadSchedules(schedules);
             highlightButton(allButton);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             JOptionPane.showMessageDialog(this,
                     "Không thể tải danh sách lịch học: " + e.getMessage(),
                     "Lỗi",

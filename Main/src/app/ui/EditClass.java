@@ -13,7 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class EditClass extends JPanel {
-    private JTextField classIdInput, totalStudentInput, maxStudentInput, creditInput;
+    private JTextField classIdInput, totalStudentInput, maxStudentInput, creditInput, attendenceInput,
+    assignmentInput, midtermInput, finalInput;
+    ;
     private JComboBox<SubjectItem> subjectCombox;
     private JTextField   studentCountField, maxStudentField;
     private JButton updateButton;
@@ -28,18 +30,23 @@ public class EditClass extends JPanel {
         this.dialog = dialog;
         this.classDetailPanel = classDetailPanel;
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 247, 250)); // Màu nền sáng
         // ====== PANEL CHÍNH ======
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridBagLayout());
         formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // ====== TIÊU ĐỀ ======
         JLabel titleLabel = new JLabel("Chỉnh sửa thông tin lớp học");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setForeground(new Color(44, 62, 80));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         gbc.gridx = 0;
@@ -53,6 +60,9 @@ public class EditClass extends JPanel {
         // ====== NHÃN + Ô NHẬP ======
 
         JLabel nameLabel = new JLabel("Tên môn học:");
+        nameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        nameLabel.setForeground(new Color(44, 62, 80));
+        
         subjectCombox = new JComboBox<>();
 
         String subjectQuery = "SELECT subject_id, name FROM subjects";
@@ -65,9 +75,13 @@ public class EditClass extends JPanel {
 
 
         JLabel creditLabel = new JLabel("Số tín chỉ:");
+        creditLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        creditLabel.setForeground(new Color(44, 62, 80));
         creditInput = new JTextField(20);
 
         JLabel maxStudentLabel = new JLabel("Số học sinh tối đa:");
+        maxStudentLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        maxStudentLabel.setForeground(new Color(44, 62, 80));
         maxStudentField = new JTextField(20);
 
         gbc.gridy = 2; gbc.gridx = 0; formPanel.add(nameLabel, gbc);
@@ -81,9 +95,10 @@ public class EditClass extends JPanel {
 
         // ====== NÚT CẬP NHẬT ======
         updateButton = new JButton("Cập nhật");
-        updateButton.setFont(new Font("Arial", Font.BOLD, 16));
-        updateButton.setBackground(new Color(66, 133, 244));
+        updateButton.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        updateButton.setBackground(new Color(52, 152, 219)); // Xanh đẹp
         updateButton.setForeground(Color.WHITE);
+        updateButton.setBorderPainted(false);
         updateButton.setFocusPainted(false);
         updateButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 

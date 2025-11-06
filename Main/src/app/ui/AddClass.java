@@ -23,11 +23,12 @@ public class AddClass extends JPanel {
         this.mainPanel = mainPanel;
         this.dialog =dialog;
         setLayout(new BorderLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(245, 247, 250)); // Màu nền xanh nhạt hiện đại
 
         // ===== TIÊU ĐỀ =====
         JLabel titleLabel = new JLabel("Thêm lớp học mới");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        titleLabel.setForeground(new Color(44, 62, 80));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 10, 30, 10));
 
@@ -43,10 +44,15 @@ public class AddClass extends JPanel {
         maxStudentInput = new TextFieldComponent(15);
         creditInput = new TextFieldComponent(15);
 
-        classIdLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        totalStudentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        maxStudentLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        subjectNameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        classIdLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        totalStudentLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        maxStudentLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        subjectNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        
+        classIdLabel.setForeground(new Color(44, 62, 80));
+        totalStudentLabel.setForeground(new Color(44, 62, 80));
+        maxStudentLabel.setForeground(new Color(44, 62, 80));
+        subjectNameLabel.setForeground(new Color(44, 62, 80));
 
         // Query subjects from DB
         subjectCombox = new JComboBox<>();
@@ -66,7 +72,11 @@ public class AddClass extends JPanel {
 
         // ===== PANEL FORM =====
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(Color.LIGHT_GRAY);
+        formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -83,14 +93,14 @@ public class AddClass extends JPanel {
         // ===== GỘP TẤT CẢ VÀO MỘT CONTAINER =====
         JPanel containerPanel = new JPanel();
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.Y_AXIS));
-        containerPanel.setBackground(Color.WHITE);
+        containerPanel.setBackground(new Color(245, 247, 250));
         containerPanel.add(titleLabel);
         containerPanel.add(formPanel);
         containerPanel.add(Box.createRigidArea(new Dimension(0, 20)));
         containerPanel.add(addButton);
 
         JPanel outerPanel = new JPanel(new GridBagLayout());
-        outerPanel.setBackground(Color.WHITE);
+        outerPanel.setBackground(new Color(245, 247, 250));
         outerPanel.add(containerPanel);
 
         add(outerPanel, BorderLayout.CENTER);

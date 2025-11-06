@@ -49,8 +49,8 @@ public class EditScheduleDialog extends JDialog {
     private void initializeComponents() {
         // Schedule ID (read-only)
         scheduleIdLabel = new JLabel();
-        scheduleIdLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        scheduleIdLabel.setForeground(new Color(25, 118, 210));
+        scheduleIdLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        scheduleIdLabel.setForeground(new Color(0x3498DB));
         
         // Classroom
         classroomField = new JTextField(20);
@@ -87,24 +87,29 @@ public class EditScheduleDialog extends JDialog {
         // Class ID
         classIdSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 999, 1));
         
+        
         // Buttons
         updateButton = new JButton("Cập nhật");
-        updateButton.setBackground(new Color(76, 175, 80));
-        updateButton.setForeground(Color.WHITE);
+        updateButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        updateButton.setBackground(Color.WHITE);
+        updateButton.setForeground(new Color(0x2C3E50));
+        updateButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
         updateButton.setFocusPainted(false);
-        
-        deleteButton = new JButton("Xóa");
-        deleteButton.setBackground(new Color(244, 67, 54));
-        deleteButton.setForeground(Color.WHITE);
-        deleteButton.setFocusPainted(false);
-        
-        cancelButton = new JButton("Hủy");
-        cancelButton.setBackground(new Color(158, 158, 158));
-        cancelButton.setForeground(Color.WHITE);
-        cancelButton.setFocusPainted(false);
-    }
 
-    private void layoutComponents() {
+        deleteButton = new JButton("Xóa");
+        deleteButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        deleteButton.setBackground(Color.WHITE);
+        deleteButton.setForeground(new Color(0x2C3E50));
+        deleteButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
+        deleteButton.setFocusPainted(false);
+
+        cancelButton = new JButton("Hủy");
+        cancelButton.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        cancelButton.setBackground(Color.WHITE);
+        cancelButton.setForeground(new Color(0x2C3E50));
+        cancelButton.setBorder(BorderFactory.createLineBorder(new Color(0xBDC3C7), 1));
+        cancelButton.setFocusPainted(false);
+    }    private void layoutComponents() {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         
@@ -114,10 +119,10 @@ public class EditScheduleDialog extends JDialog {
         
         int row = 0;
         
-        // Title
-        JLabel titleLabel = new JLabel("CHỈNH SỬA LỊCH HỌC");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        titleLabel.setForeground(new Color(25, 118, 210));
+                // Header
+        JLabel titleLabel = new JLabel("Chỉnh sửa lịch học");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        titleLabel.setForeground(new Color(0x2C3E50));
         gbc.gridx = 0;
         gbc.gridy = row++;
         gbc.gridwidth = 2;
