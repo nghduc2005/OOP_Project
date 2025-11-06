@@ -97,6 +97,7 @@ public class DashboardPanel extends JPanel {
         combinePanel.setLayout(new BorderLayout());
         JScrollPane scrollPanel = new JScrollPane(cardListPanel(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPanel.getVerticalScrollBar().setUnitIncrement(22);
         combinePanel.add(scrollPanel, BorderLayout.CENTER);
         combinePanel.add(tableStudent(), BorderLayout.SOUTH);
         return combinePanel;

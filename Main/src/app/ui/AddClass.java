@@ -48,11 +48,13 @@ public class AddClass extends JPanel {
         totalStudentLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         maxStudentLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         subjectNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        creditLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         
         classIdLabel.setForeground(new Color(44, 62, 80));
         totalStudentLabel.setForeground(new Color(44, 62, 80));
         maxStudentLabel.setForeground(new Color(44, 62, 80));
         subjectNameLabel.setForeground(new Color(44, 62, 80));
+        creditLabel.setForeground(new Color(44, 62, 80));
 
         // Query subjects from DB
         subjectCombox = new JComboBox<>();
