@@ -112,6 +112,7 @@ public class LoginPanelStudent extends JPanel {
                 this.username.setText("");
                 this.password.setText("");
                 mainPanel.add(new StudentDashboard(mainPanel), "student_dashboard");
+                mainPanel.add(new ChangePassword(mainPanel), "ChangePassword");
                 mainPanel.show("student_dashboard");
             }
         } catch (Exception e) {

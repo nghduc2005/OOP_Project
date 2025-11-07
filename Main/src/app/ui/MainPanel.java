@@ -29,7 +29,7 @@ public class MainPanel extends JPanel {
         add(new ScheduleDisplayPanel(this), "Schedule");
         add(new ChangeProfilePanel(this), "ChangeProfile");
         add(new ChangeProfileStudentPanel(this), "ChangeProfileStudent");
-        add(new ChangePassword(this), "ChangePassword");
+//        add(new ChangePassword(this), "ChangePassword");
         add(new ScheduleDisplayPanel(this), "ScheduleDisplay");
         add(new StudentSchedule(this), "StudentSchedule");
         add(new GradeManagementPanel(this), "GradeManagement");

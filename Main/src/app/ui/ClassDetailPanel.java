@@ -36,7 +36,10 @@ public class ClassDetailPanel extends JPanel {
             maxStudent = (int) row.get("maxnumberstudent");
             this.maximumStudent = maxStudent;
         }
-        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Thông tin cá nhân", "Đổi mật" +
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học","Thông tin cá nhân",
+                "Đổi" +
+                " " +
+                "mật" +
                 " khẩu", "Đăng xuất",
                 "Quay lại"},
                 mainPanel);

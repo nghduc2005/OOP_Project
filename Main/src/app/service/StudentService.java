@@ -44,9 +44,9 @@ public class StudentService implements LoginInterface {
             throw new IllegalArgumentException("Tên đăng nhập không hợp lệ!");
         }
         // tối thiểu 6 ký tự, tối đa 20 ký tự, gồm chữ cái, chữ số, ít nhất 1 chữ in hoa
-        if(password.length()<6 ||  password.length()>20 || !password.matches(Constant.STU_PASSWORD_PATTERN)){
-            throw new IllegalArgumentException("Tên mật khẩu không hợp lệ!");
-        }
+//        if(password.length()<6 ||  password.length()>20 || !password.matches(Constant.STU_PASSWORD_PATTERN)){
+//            throw new IllegalArgumentException("Tên mật khẩu không hợp lệ!");
+//        }
         // Xác thực mặt dữ liệu
         LoginResponse response = login(new LoginRequest(userName, password));
         if(response==null) {

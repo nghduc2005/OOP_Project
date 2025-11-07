@@ -2,7 +2,7 @@ package app.session;
 
 public class Session {
     private static String userId;
-    private static String role;
+    private static String role = "";
     private static String username;
     public static void setUserId(String id) {
         userId = id;
