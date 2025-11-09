@@ -26,7 +26,7 @@ public class LoginPanelTeacher extends JPanel {
         setBackground(new Color(245, 247, 250)); // Màu nền sáng
         
         titleLabel = new JLabel("Teacher Login");
-        usernameLabel = new JLabel("ID or email");
+        usernameLabel = new JLabel("ID");
         passwordLabel = new JLabel("Password");
         username = new JTextField();
         password = new JPasswordField();

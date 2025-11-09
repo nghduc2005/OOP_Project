@@ -27,7 +27,7 @@ public class LoginPanelStudent extends JPanel {
         setBackground(new Color(245, 247, 250)); // Màu nền sáng
         
         titleLabel = new JLabel("Student Login");
-        usernameLabel = new JLabel("ID or email");
+        usernameLabel = new JLabel("ID");
         passwordLabel = new JLabel("Password");
         username = new JTextField();
         password = new JPasswordField();
@@ -102,7 +102,7 @@ public class LoginPanelStudent extends JPanel {
         String password = new String(this.password.getPassword());
         StudentService  studentService = new StudentService();
         try {
-            LoginResponse response = studentService.loginRequestValidate(new LoginRequest(username, password));
+            LoginResponse response = studentService.loginRequestValidate(new LoginRequest(username, password), this);
             System.out.println(response.status);
             if(response.status) {
                 Session.setUsername(username);
