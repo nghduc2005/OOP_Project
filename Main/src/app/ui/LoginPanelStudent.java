@@ -97,28 +97,61 @@ public class LoginPanelStudent extends JPanel {
         //Set các thiết lập cho panel
 
     }
-    public void loginSubmit(){
-        String username = this.username.getText();
-        String password = new String(this.password.getPassword());
-        StudentService  studentService = new StudentService();
-        try {
-            LoginResponse response = studentService.loginRequestValidate(new LoginRequest(username, password), this);
-            System.out.println(response.status);
-            if(response.status) {
-                Session.setUsername(username);
-                System.out.println(Session.getUsername());
-                Session.setRole("Student");
-                System.out.println(Session.getRole());
-                this.username.setText("");
-                this.password.setText("");
-                mainPanel.add(new StudentDashboard(mainPanel), "student_dashboard");
-                mainPanel.show("student_dashboard");
+    public void loginSubmit() {
+        String usernameStr = this.username.getText();
+        String passwordStr = new String(this.password.getPassword());
+        StudentService studentService = new StudentService();
+
+        // Vô hiệu hóa nút đăng nhập và đổi con trỏ để báo cho người dùng biết đang xử lý
+        loginButton.setEnabled(false);
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        // Tạo một SwingWorker:
+        SwingWorker<LoginResponse, Void> worker = new SwingWorker<LoginResponse, Void>() {
+
+            // Không cập nhật UI Panel gì nhé
+            @Override
+            protected LoginResponse doInBackground() throws Exception {
+                // Go CSDL
+                return studentService.loginRequestValidate(new LoginRequest(usernameStr, passwordStr), LoginPanelStudent.this);
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(mainPanel, e.getMessage());
-            System.out.println(e.getMessage());
-            System.exit(0);
-        }
+
+            //Có thể cập nhật UI ở đây
+            @Override
+            protected void done() {
+                try {
+                    // 5. Lấy kết quả trả về từ doInBackground()
+                    LoginResponse response = get();
+
+                    System.out.println(response.status);
+                    if (response.status) {
+                        Session.setUsername(usernameStr);
+                        System.out.println(Session.getUsername());
+                        Session.setRole("Student");
+                        System.out.println(Session.getRole());
+
+                        LoginPanelStudent.this.username.setText("");
+                        LoginPanelStudent.this.password.setText("");
+
+                        mainPanel.add(new StudentDashboard(mainPanel), "student_dashboard");
+                        mainPanel.show("student_dashboard");
+                    }
+                    // Nếu đăng nhập thất bại thì throw Exception
+
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(mainPanel, e.getMessage());
+                    System.out.println(e.getMessage());
+
+                } finally {
+                    // Bật lại nút và trả lại con trỏ
+                    loginButton.setEnabled(true);
+                    setCursor(Cursor.getDefaultCursor());
+                }
+            }
+        };
+
+        // bắt đầu chạy doInBackground
+        worker.execute();
     }
     public void updateLater(){
 
