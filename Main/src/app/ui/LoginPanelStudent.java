@@ -132,7 +132,7 @@ public class LoginPanelStudent extends JPanel {
                         mainPanel.add(new StudentDashboard(mainPanel), "student_dashboard");
                         mainPanel.add(new StudentSchedule(mainPanel), "StudentSchedule");
                         mainPanel.add(new ChangeProfileStudentPanel(mainPanel), "ChangeProfileStudent");
-
+                        mainPanel.add(new ChangePassword(mainPanel), "ChangePassword");
                         mainPanel.show("student_dashboard");
                     }
 
