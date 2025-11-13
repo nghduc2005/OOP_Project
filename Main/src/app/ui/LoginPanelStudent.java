@@ -10,6 +10,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+
+import app.ui.StudentSchedule;
+import app.ui.ChangeProfileStudentPanel;
+
 public class LoginPanelStudent extends JPanel {
     JLabel usernameLabel, passwordLabel, titleLabel,forgotPasswordLabel, registerLabel;
     JTextField username;
@@ -21,11 +25,10 @@ public class LoginPanelStudent extends JPanel {
     int H = Toolkit.getDefaultToolkit().getScreenSize().height;
 
     public LoginPanelStudent(MainPanel mainPanel) {
-        //Khởi tạo
         this.mainPanel = mainPanel;
         setLayout(null);
         setBackground(new Color(245, 247, 250)); // Màu nền sáng
-        
+
         titleLabel = new JLabel("Student Login");
         usernameLabel = new JLabel("ID");
         passwordLabel = new JLabel("Password");
@@ -48,8 +51,6 @@ public class LoginPanelStudent extends JPanel {
         defaultEchoChar = password.getEchoChar();
         ButtonComponent returnButton = new ButtonComponent("Quay lại");
 
-
-        //Set các size
         int y=10;
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
         titleLabel.setForeground(new Color(44, 62, 80));
@@ -67,7 +68,6 @@ public class LoginPanelStudent extends JPanel {
         forgotPasswordLabel.setBounds(W/2-100+160-90,H/2+10-y,100,30);
         registerLabel.setBounds(W/2-100,H/2+10-y,150,30);
 
-        //Add các action
         loginButton.addActionListener(e->loginSubmit()); //dùng lambda rồi truyền logic theo từng component
         forgotPasswordLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -83,7 +83,7 @@ public class LoginPanelStudent extends JPanel {
         });
         ShowPassword.addActionListener(e -> show_Password());
         returnButton.addActionListener(e-> mainPanel.show("Role"));
-        //Add vào panel
+
         add(titleLabel);
         add(usernameLabel);
         add(passwordLabel);
@@ -94,7 +94,6 @@ public class LoginPanelStudent extends JPanel {
         add(ShowPassword);
         add(returnButton);
 //        add(registerLabel);
-        //Set các thiết lập cho panel
 
     }
     public void loginSubmit() {
@@ -106,21 +105,18 @@ public class LoginPanelStudent extends JPanel {
         loginButton.setEnabled(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-        // Tạo một SwingWorker:
         SwingWorker<LoginResponse, Void> worker = new SwingWorker<LoginResponse, Void>() {
 
-            // Không cập nhật UI Panel gì nhé
             @Override
             protected LoginResponse doInBackground() throws Exception {
                 // Go CSDL
                 return studentService.loginRequestValidate(new LoginRequest(usernameStr, passwordStr), LoginPanelStudent.this);
             }
 
-            //Có thể cập nhật UI ở đây
             @Override
             protected void done() {
                 try {
-                    // 5. Lấy kết quả trả về từ doInBackground()
+                    // Lấy kết quả trả về từ doInBackground()
                     LoginResponse response = get();
 
                     System.out.println(response.status);
@@ -134,16 +130,17 @@ public class LoginPanelStudent extends JPanel {
                         LoginPanelStudent.this.password.setText("");
 
                         mainPanel.add(new StudentDashboard(mainPanel), "student_dashboard");
+                        mainPanel.add(new StudentSchedule(mainPanel), "StudentSchedule");
+                        mainPanel.add(new ChangeProfileStudentPanel(mainPanel), "ChangeProfileStudent");
+
                         mainPanel.show("student_dashboard");
                     }
-                    // Nếu đăng nhập thất bại thì throw Exception
 
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(mainPanel, e.getMessage());
                     System.out.println(e.getMessage());
 
                 } finally {
-                    // Bật lại nút và trả lại con trỏ
                     loginButton.setEnabled(true);
                     setCursor(Cursor.getDefaultCursor());
                 }

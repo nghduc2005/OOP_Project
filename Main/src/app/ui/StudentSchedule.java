@@ -127,16 +127,12 @@ public class StudentSchedule extends JPanel {
             setLayout(new BorderLayout(10, 10));
 //        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
             setBackground(Color.WHITE);
-            HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ học sinh", "Lịch học học " +
-                    "sinh",
-                    "Th" +
-                    "ông tin" +
-                    " cá nhân học sinh",
-                    "Đổi " +
-                            "mật" +
-                            " khẩu",
-                    "Đăng " +
-                            "xuất",
+            HeaderComponent headerComponent = new HeaderComponent(new String[]{
+                    "Trang chủ",
+                    "Lịch học",
+                    "Thông tin cá nhân",
+                    "Đổi mật khẩu",
+                    "Đăng xuất",
                     "Quay lại"},
                     mainPanel);
 
@@ -231,7 +227,7 @@ public class StudentSchedule extends JPanel {
             refreshButton.addActionListener(e -> loadAllSchedules());
         }
 
-        public void loadSchedules(java.util.List<Schedule> schedules) {
+        private void loadSchedules(java.util.List<Schedule> schedules) {
             tableModel.setRowCount(0);
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -331,7 +327,7 @@ public class StudentSchedule extends JPanel {
             button.setForeground(Color.WHITE);
         }
 
-        public void deleteSchedules() {
+        private void deleteSchedules() {
             int selectedRow = scheduleTable.getSelectedRow();
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this,

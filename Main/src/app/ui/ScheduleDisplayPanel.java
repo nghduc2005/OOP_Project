@@ -163,13 +163,12 @@ public class ScheduleDisplayPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
 //        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
-        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học","Thông " +
-                "tin cá nhân",
-                "Đổi " +
-                "mật" +
-                " khẩu",
-                "Đăng " +
-                "xuất",
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{
+                "Trang chủ",
+                "Lịch học",
+                "Thông tin cá nhân",
+                "Đổi mật khẩu",
+                "Đăng xuất",
                 "Quay lại"},
                 mainPanel);
 
@@ -277,9 +276,8 @@ public class ScheduleDisplayPanel extends JPanel {
             // Lấy frame cha của panel hiện tại
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
-            // Tạo dialog và hiển thị
             AddScheduleDialog dialog = new AddScheduleDialog(frame);
-            dialog.setVisible(true); // <-- mở form modal (chặn cửa sổ chính tạm thời)
+            dialog.setVisible(true);
 
             // Sau khi dialog đóng lại, kiểm tra kết quả
             if (dialog.isSaved()) {
