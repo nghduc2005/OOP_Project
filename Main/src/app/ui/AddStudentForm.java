@@ -229,7 +229,11 @@ public class AddStudentForm extends JDialog {
                 txtFullName.requestFocus();
                 return false;
             }
-
+            if(!fullName.matches("^\\p{L}+(?:\\s+\\p{L}+)*$")) {
+                showError("Tên chỉ chứa chữ cái!");
+                txtFullName.requestFocus();
+                return false;
+            }
             if (!phoneNumber.isEmpty() && !phoneNumber.matches("\\d{9,11}")) {
                 showError("Số điện thoại không hợp lệ! Vui lòng nhập 9-11 chữ số.");
                 txtPhoneNumber.requestFocus();

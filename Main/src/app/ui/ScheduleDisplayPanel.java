@@ -163,8 +163,8 @@ public class ScheduleDisplayPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
 //        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         setBackground(Color.WHITE);
-        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học học sinh","Thông " +
-                "tin cá nhân học sinh",
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học","Thông " +
+                "tin cá nhân",
                 "Đổi " +
                 "mật" +
                 " khẩu",

@@ -131,7 +131,7 @@ public class StudentSchedule extends JPanel {
                     "sinh",
                     "Th" +
                     "ông tin" +
-                    " cá nhân",
+                    " cá nhân học sinh",
                     "Đổi " +
                             "mật" +
                             " khẩu",
@@ -231,7 +231,7 @@ public class StudentSchedule extends JPanel {
             refreshButton.addActionListener(e -> loadAllSchedules());
         }
 
-        private void loadSchedules(java.util.List<Schedule> schedules) {
+        public void loadSchedules(java.util.List<Schedule> schedules) {
             tableModel.setRowCount(0);
 
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -331,7 +331,7 @@ public class StudentSchedule extends JPanel {
             button.setForeground(Color.WHITE);
         }
 
-        private void deleteSchedules() {
+        public void deleteSchedules() {
             int selectedRow = scheduleTable.getSelectedRow();
             if (selectedRow == -1) {
                 JOptionPane.showMessageDialog(this,

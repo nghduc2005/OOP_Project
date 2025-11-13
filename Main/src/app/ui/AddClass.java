@@ -124,6 +124,15 @@ public class AddClass extends JPanel {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin lớp học!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        if(!credit.matches("^[0-9]+$")) {//kiểm tra nguyên dương
+            JOptionPane.showMessageDialog(this, "Số tín chỉ phải là số!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if(!maxStudent.matches("^[0-9]+$")) {//kiểm tra nguyên dương
+            JOptionPane.showMessageDialog(this, "Số học sinh tối đa phải là số!", "Cảnh báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         try {
             Classes cl = new Classes(subjectName, Integer.parseInt(maxStudent), Integer.parseInt(subjectId),
                     Integer.parseInt(credit));

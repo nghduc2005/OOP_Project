@@ -20,9 +20,16 @@ public class ChangePassword extends JPanel {
         setLayout(new BorderLayout());
 
         // ===== HEADER =====
-        String[] navItems = {"Trang chủ", "Lịch học", "Thông tin cá " +
-                "nhân", "Đổi mật khẩu",
-                "Đăng xuất", "Quay lại"};
+        String[] navItems = new String[]{"Trang chủ", "Lịch học", "Thông tin cá " +
+                "nhân"
+                , "Đổi mật khẩu",
+                "Đăng xuất", "Quay lại"};;
+        if(Session.getRole().equals("Student"))  {
+
+            navItems = new String[]{"Trang chủ học sinh", "Lịch học học sinh", "Thông tin cá " +
+                    "nhân học " +
+                    "sinh", "Đổi mật khẩu", "Đăng xuất", "Quay lại"};
+        }
         HeaderComponent header = new HeaderComponent(navItems, mainPanel);
         add(header, BorderLayout.NORTH);
 
@@ -132,7 +139,7 @@ public class ChangePassword extends JPanel {
         } else{
             JOptionPane.showMessageDialog(
                     ChangePassword.this,
-                    "Bạn đã nhập sai mật khẩu",
+                    "Bạn đã nhập sai mật khẩu cũ",
                     "Chú ý",
                     JOptionPane.WARNING_MESSAGE
             );

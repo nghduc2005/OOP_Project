@@ -11,6 +11,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -170,10 +173,10 @@ public class ChangeProfilePanel extends JPanel {
         });
     }
     public void Change_profile(){
-        String fullname = firstNameInput.getText() +" "+ lastNameInput.getText();
-        String birthday = dateOfBirthInput.getText();
-        String phone = phoneNumberInput.getText();
-        String email = emailInput.getText();
+        String fullname = firstNameInput.getText().trim() +" "+ lastNameInput.getText().trim();
+        String birthday = dateOfBirthInput.getText().trim();
+        String phone = phoneNumberInput.getText().trim();
+        String email = emailInput.getText().trim();
         if (fullname.isBlank() || birthday.isBlank() || phone.isBlank() || email.isBlank()){
             JOptionPane.showMessageDialog(
                     ChangeProfilePanel.this,
@@ -182,6 +185,35 @@ public class ChangeProfilePanel extends JPanel {
                     JOptionPane.INFORMATION_MESSAGE
             );
         }else{
+            if(!fullname.matches("^\\p{L}+(?:\\s+\\p{L}+)*$")) {
+                JOptionPane.showMessageDialog(this, "Tên chỉ chứa chữ cái!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (!phone.isEmpty() && !phone.matches("\\d{9,11}")) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ! Vui lòng nhập 9-11 chữ số.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!email.isEmpty() && !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                JOptionPane.showMessageDialog(this, "Email không hợp lệ! Vui lòng nhập đúng định dạng email.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            LocalDate dateOfBirth = null;
+            if (!birthday.isEmpty()) {
+                try {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    dateOfBirth = LocalDate.parse(birthday, formatter);
+                    if (dateOfBirth.isAfter(LocalDate.now())) {
+                        JOptionPane.showMessageDialog(this, "Ngày sinh không thể là ngày trong tương lai!", "Thông báo",
+                            JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                } catch (DateTimeParseException ex) {
+                    JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ! Sử dụng yyyy-MM-dd", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+            }
             boolean result;
             if(Session.getRole().equals("Teacher")){
                 result = TeacherDao.updateTeacher(fullname,birthday,phone,email);

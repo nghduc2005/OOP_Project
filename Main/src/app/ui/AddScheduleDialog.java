@@ -55,13 +55,13 @@ public class AddScheduleDialog extends JDialog {
         String[] shifts = {"Sáng (7h-11h)", "Chiều (13h-17h)", "Tối (18h-21h)"};
         studyShiftComboBox = new JComboBox<>(shifts);
         
-        // Study Date
+        // Study Date (trả về giá trị hợp lệ gần nhất)
         studyDateSpinner = new JSpinner(new SpinnerDateModel());
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(studyDateSpinner, "dd/MM/yyyy");
         studyDateSpinner.setEditor(dateEditor);
         
         // Total Sessions
-        totalSessionsSpinner = new JSpinner(new SpinnerNumberModel(15, 1, 100, 1));
+        totalSessionsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 10, 1));
         
         // Learning Method
         String[] methods = {"Offline", "Online", "Hybrid"};
@@ -168,7 +168,7 @@ public class AddScheduleDialog extends JDialog {
         // Total Sessions
         gbc.gridx = 0;
         gbc.gridy = row;
-        mainPanel.add(new JLabel("Tổng số buổi:"), gbc);
+        mainPanel.add(new JLabel("Tổng số tiết:"), gbc);
         gbc.gridx = 1;
         mainPanel.add(totalSessionsSpinner, gbc);
         row++;
@@ -243,14 +243,38 @@ public class AddScheduleDialog extends JDialog {
             String learningMethod = (String) learningMethodComboBox.getSelectedItem();
             
             Date startTimeValue = (Date) startTimeSpinner.getValue();
+            LocalDate startTimeLocalDate = startTimeValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
             LocalDateTime startTime = startTimeValue.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
             
             String note = noteArea.getText().trim();
-            
+
+            if(!startTimeLocalDate.equals(studyDate)) {
+                JOptionPane.showMessageDialog(this, "Ngày bắt đầu và ngày học phải trùng nhau", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            String[] shifts = {"Sáng (7h-11h)", "Chiều (13h-17h)", "Tối (18h-21h)"};
+
+            int h = startTime.getHour();
+
+            if (studyShift.equals(shifts[0]) && (h < 7 || h > 11)) {
+                JOptionPane.showMessageDialog(this, "Thời gian bắt đầu không khớp với ca học!", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            } else if (studyShift.equals(shifts[1]) && (h < 13 || h > 17)) {
+                JOptionPane.showMessageDialog(this, "Thời gian bắt đầu không khớp với ca học!", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            } else if (studyShift.equals(shifts[2]) && (h < 18 || h > 21)) {
+                JOptionPane.showMessageDialog(this, "Thời gian bắt đầu không khớp với ca học!", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             // Create Schedule object (scheduleId will be auto-generated)
             Schedule schedule = new Schedule(studyDate, studyShift, totalSessions,
                 learningMethod, classroom, note, subjectId, classId, startTime, subjectName);
-            
+
             // Save to database
             boolean success = ScheduleService.createSchedule(schedule);
             

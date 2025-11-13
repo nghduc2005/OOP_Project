@@ -32,7 +32,7 @@ public class HeaderComponent extends JPanel {
                             mainPanel.show("ChangeProfile");
                             break;
                         case "Trang chủ":
-                            mainPanel.show("dashboard");
+                            mainPanel.show("teacher_dashboard");
                             break;
                         case "Lịch học":
                             mainPanel.show("ScheduleDisplay");

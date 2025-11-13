@@ -1,5 +1,6 @@
 package app.ui;
 
+import app.Constant;
 import app.dao.DatabaseConnection;
 import app.dao.StudentDao;
 import app.model.Classes;
@@ -36,7 +37,10 @@ public class ClassDetailPanel extends JPanel {
             maxStudent = (int) row.get("maxnumberstudent");
             this.maximumStudent = maxStudent;
         }
-        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Thông tin cá nhân", "Đổi mật" +
+        HeaderComponent headerComponent = new HeaderComponent(new String[]{"Trang chủ", "Lịch học","Thông tin cá nhân",
+                "Đổi" +
+                " " +
+                "mật" +
                 " khẩu", "Đăng xuất",
                 "Quay lại"},
                 mainPanel);
@@ -121,6 +125,10 @@ public class ClassDetailPanel extends JPanel {
                             "Thông báo",
                             JOptionPane.WARNING_MESSAGE);
                     return;
+                }
+                if(!studentUsername.matches(Constant.STU_USERNAME_PATTERN)) {
+                    JOptionPane.showMessageDialog(ClassDetailPanel.this, "Vui lòng nhập tên đăng nhập với định dạng " +
+                            "STUxxxxxx", "Thông báo",JOptionPane.WARNING_MESSAGE);
                 }
                 System.out.println(maximumStudent + " " + table.getTable().getRowCount());
                 String username = addStudentInput.getText().trim();
@@ -245,8 +253,13 @@ public class ClassDetailPanel extends JPanel {
         }
 
         String username =  String.valueOf( table.getTable().getModel().getValueAt(selectedRow, 0));
+        String attendence =  String.valueOf( table.getTable().getModel().getValueAt(selectedRow, 2));
+        String assignment = String.valueOf( table.getTable().getModel().getValueAt(selectedRow, 3));
+        String midterm = String.valueOf( table.getTable().getModel().getValueAt(selectedRow, 4));
+        String finalGrade =  String.valueOf( table.getTable().getModel().getValueAt(selectedRow, 5));
         if (username != null) {
-            EditStudent editStudent = new EditStudent(mainPanel, username, classid, ClassDetailPanel.this);
+            EditStudent editStudent = new EditStudent(mainPanel, username, classid, ClassDetailPanel.this, attendence
+                    , assignment, midterm, finalGrade);
                 // Tạo dialog chứa panel
                 JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(ClassDetailPanel.this),
                         "Sửa thông tin học sinh", // tiêu đề

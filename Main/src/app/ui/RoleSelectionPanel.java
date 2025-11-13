@@ -18,7 +18,7 @@ public class RoleSelectionPanel extends JPanel {
         JLabel title = new JLabel("Chọn hình thức đăng nhập : ");
         title.setFont(new Font("Segoe UI", Font.BOLD, 20));
         title.setBounds(W/2-125, H/2-200, 300, 50);
-        title.setForeground(new Color(44, 62, 80)); // Màu chữ đẹp thay vì đỏ
+        title.setForeground(new Color(44, 62, 80));
 
         teacherButton = new JButton("Giáo viên");
         studentButton = new JButton("Học sinh");

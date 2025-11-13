@@ -20,7 +20,6 @@ public class GradeService {
         if (!validateGrade(grade)) {
             return false;
         }
-
         // Tính toán điểm tổng
         grade.calculateTotalScore();
 
