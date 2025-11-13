@@ -139,7 +139,7 @@ public class ChangePassword extends JPanel {
         } else{
             JOptionPane.showMessageDialog(
                     ChangePassword.this,
-                    "Bạn đã nhập sai mật khẩu",
+                    "Bạn đã nhập sai mật khẩu cũ",
                     "Chú ý",
                     JOptionPane.WARNING_MESSAGE
             );

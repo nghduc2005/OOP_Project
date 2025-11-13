@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DashboardPanel extends JPanel {
-    JPanel header;
+    JPanel header, centerPanel;
     HeaderComponent headerComponent;
     CardSubjectTeacher cardSubjectTeachers;
     LabelComponent titleLabel;
@@ -34,10 +34,10 @@ public class DashboardPanel extends JPanel {
         headerComponent = new HeaderComponent(new String[]{ "Trang chủ", "Lịch học", "Thông tin cá nhân", "Đổi mật khẩu","Đăng xuất","Quay lại"},
                 mainPanel);
         add(headerComponent, BorderLayout.NORTH);
-        JPanel centerPanel = centerPanel();
-
+        centerPanel = centerPanel();
         add(centerPanel, BorderLayout.CENTER);
     }
+
     public JPanel centerPanel() {
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
@@ -47,6 +47,7 @@ public class DashboardPanel extends JPanel {
         titleLabel = new LabelComponent("Trang chủ", 50);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(titleLabel);
+        //Set up thêm học sinh
         addStudent = new ButtonComponent("Thêm học sinh");
         addStudent.setFont(new Font("Segoe UI", Font.BOLD, 14));
         addStudent.setBackground(new Color(52, 152, 219));
@@ -54,7 +55,6 @@ public class DashboardPanel extends JPanel {
         addStudent.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(0xBDC3C7),
                 1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
-//        addStudent.setFocusPainted(false);
         addStudent.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         addStudent.setAlignmentX(Component.CENTER_ALIGNMENT);
         addStudent.addMouseListener(new MouseAdapter() {
@@ -62,15 +62,15 @@ public class DashboardPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 // Tạo popup dialog chứa AddClass JPanel
                 java.awt.Window w = SwingUtilities.getWindowAncestor(DashboardPanel.this);
-                JFrame owner = (w instanceof JFrame) ? (JFrame) w : null; // an toàn nếu không phải JFrame
+                JFrame owner = (w instanceof JFrame) ? (JFrame) w : null;
                 AddStudentForm addStudentForm = new AddStudentForm(owner);
                 Student s= addStudentForm.showAddStudentDialog(owner);
-                if (s != null) {
-                    // reload bảng hoặc addRow như bạn đang làmg
+                if (s != null) { //Reload nếu có dữ liệu trả về
                     mainPanel.reloadDashboard();
                 }
             }
         });
+        //Xóa học sinh
         deleteStudent = new ButtonComponent("Xóa học sinh");
         deleteStudent.setFont(new Font("Segoe UI", Font.BOLD, 14));
         deleteStudent.setBackground(new Color(52, 152, 219));
@@ -78,23 +78,24 @@ public class DashboardPanel extends JPanel {
         deleteStudent.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(0xBDC3C7),
                         1), BorderFactory.createEmptyBorder(10, 20, 10, 20)));
-//        addStudent.setFocusPainted(false);
         deleteStudent.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         deleteStudent.setAlignmentX(Component.CENTER_ALIGNMENT);
         deleteStudent.addActionListener(e -> deleteStudent());
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.add(addStudent);
         buttonPanel.add(deleteStudent);
         centerPanel.add(buttonPanel);
-//        centerPanel.add(deleteStudent);
         centerPanel.add(combinePanel());
 
         return centerPanel;
     }
+
     public JPanel combinePanel() {
         JPanel combinePanel = new JPanel();
         combinePanel.setLayout(new BorderLayout());
+        //Hiển thị dạng scroll bar dựa trên kích thươc
         JScrollPane scrollPanel = new JScrollPane(cardListPanel(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPanel.getVerticalScrollBar().setUnitIncrement(22);
@@ -174,7 +175,7 @@ public class DashboardPanel extends JPanel {
         int selectedRow = table.getTable().getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this,
-                    "Vui lòng chọn lịch học cần sửa!",
+                    "Vui lòng chọn học sinh cần xóa!",
                     "Thông báo",
                     JOptionPane.WARNING_MESSAGE);
             return;

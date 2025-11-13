@@ -29,7 +29,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.List;
 public class StudentDashboard extends JPanel {
-        JPanel header;
+        JPanel header, centerPanel;
         HeaderComponent headerComponent;
         CardSubjectTeacher cardSubjectTeachers;
         LabelComponent titleLabel;
@@ -39,14 +39,14 @@ public class StudentDashboard extends JPanel {
         public StudentDashboard(MainPanel mainPanel) {
             this.mainPanel = mainPanel;
             setLayout(new BorderLayout());
+            //Set up headComponent
             headerComponent = new HeaderComponent(new String[]{ "Trang chủ học sinh", "Lịch học học sinh", "Thông tin" +
-                    " cá " +
-                    "nhân học sinh",
+                    " cá nhân học sinh",
                     "Đổi mật khẩu","Đăng xuất","Quay lại"},
                     mainPanel);
-            add(headerComponent, BorderLayout.NORTH);
-            JPanel centerPanel = centerPanel();
+            centerPanel = centerPanel();
 
+            add(headerComponent, BorderLayout.NORTH);
             add(centerPanel, BorderLayout.CENTER);
         }
         public JPanel centerPanel() {
@@ -67,34 +67,34 @@ public class StudentDashboard extends JPanel {
             JScrollPane scrollPanel = new JScrollPane(cardListPanel(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             combinePanel.add(scrollPanel, BorderLayout.CENTER);
-//        combinePanel.add(tableStudent(), BorderLayout.CENTER);
             return combinePanel;
         }
         public JPanel cardListPanel() {
             JPanel cardListPanel = new JPanel();
             cardListPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20)); // căn giữa + spacing
             cardListPanel.setOpaque(false);
+            //Tìm tất cả lớp mà học sinh học
             String query = "select * from classes c join student_class cl on c.class_id = cl.class_id join students s" +
                     " on s.username = cl.username where s.username = '" + Session.getUsername() +"'";
             List<HashMap<String, Object>> results = DatabaseConnection.readTable(query);
             for (HashMap<String, Object> row : results) {
+                //Mapping dữ liệu
                 int classId = Integer.parseInt(row.get("class_id").toString());
                 int subjectId = (int) row.get("subject_id");
                 String subjectName = row.get("subject_name").toString();
                 int credit =(int) row.get("credit"); // có thể NULL
                 int maxStudent = (int) row.get("maxnumberstudent");
+                //Set up card
                 CardSubjectTeacher card = new CardSubjectTeacher(new Subject(subjectId , subjectName, (int) row.get(
                         "credit")), Integer.toString(classId));
                 card.setName(String.format("%s", classId));
                 card.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
+                        //Hiển thị Subject Popup dạng dialog
                         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(StudentDashboard.this);
                         SwingUtilities.invokeLater(() -> {
-                            SubjectPopup dialog = new SubjectPopup(parentFrame, row, Session.getUsername()); // Passing the parent
-                            // JFrame
-                            // to the
-                            // dialog
+                            SubjectPopup dialog = new SubjectPopup(parentFrame, row, Session.getUsername());
                             dialog.setVisible(true); // Show the dialog
                         });
                     }

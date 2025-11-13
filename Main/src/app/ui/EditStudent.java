@@ -15,7 +15,9 @@ public class EditStudent extends JPanel {
     private String useranme;
     private int classid;
     private ClassDetailPanel classDetailPanel;
-    public EditStudent(MainPanel mainPanel, String username, int classid, ClassDetailPanel classDetailPanel) {
+    public EditStudent(MainPanel mainPanel, String username, int classid, ClassDetailPanel classDetailPanel,
+                       String attendence
+            , String assignment,String midterm,String finalGrade) {
         this.mainPanel = mainPanel;
         this.useranme = username;
         this.classid = classid;
@@ -72,6 +74,10 @@ public class EditStudent extends JPanel {
         phoneLabel.setForeground(new Color(44, 62, 80));
         finalInput = new JTextField(20);
 
+        attendenceInput.setText(attendence);
+        assignmentInput.setText(assignment);
+        midtermInput.setText(midterm);
+        finalInput.setText(finalGrade);
 //        JLabel emailLabel = new JLabel("Email:");
 //        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 //        emailLabel.setForeground(new Color(44, 62, 80));
@@ -114,26 +120,40 @@ public class EditStudent extends JPanel {
     }
 
     private void updateStudent() {
-        BigDecimal attendence =  new BigDecimal(attendenceInput.getText().trim());
-        BigDecimal assignment =  new BigDecimal(assignmentInput.getText().trim());
-        BigDecimal midterm =  new BigDecimal(midtermInput.getText().trim());
-        BigDecimal finalGrade =  new BigDecimal(finalInput.getText().trim());
+        try {
+            BigDecimal attendence =  new BigDecimal(attendenceInput.getText().trim());
+            BigDecimal assignment =  new BigDecimal(assignmentInput.getText().trim());
+            BigDecimal midterm =  new BigDecimal(midtermInput.getText().trim());
+            BigDecimal finalGrade =  new BigDecimal(finalInput.getText().trim());
 
-        if (attendenceInput.getText().trim().isEmpty() || assignmentInput.getText().trim().isEmpty() || midtermInput.getText().trim().isEmpty() || finalInput.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
+            if (attendenceInput.getText().trim().isEmpty() || assignmentInput.getText().trim().isEmpty() || midtermInput.getText().trim().isEmpty() || finalInput.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo",
+                        JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            Boolean cmpAttendence = attendence.compareTo(BigDecimal.ZERO) >= 0 && attendence.compareTo(new BigDecimal(10)) <= 0;
+            Boolean cmpAssignment =
+                    assignment.compareTo(BigDecimal.ZERO) >= 0 && assignment.compareTo(new BigDecimal(10)) <= 0;
+            Boolean cmpMidterm = midterm.compareTo(BigDecimal.ZERO) >= 0 && midterm.compareTo(new BigDecimal(10)) <= 0;
+            Boolean cmpFinalGrade =
+                    finalGrade.compareTo(BigDecimal.ZERO) >= 0 && finalGrade.compareTo(new BigDecimal(10)) <= 0;
+            if(!cmpAttendence || !cmpAssignment || !cmpMidterm || !cmpFinalGrade) {
+                JOptionPane.showMessageDialog(this, "Mọi đầu điểm phải nằm trong khoảng từ [0; 10]");
+                return;
+            }
+            // Gọi hàm
+            boolean success = StudentDao.updateStudentByUsername(useranme, attendence, assignment, midterm,
+                    finalGrade, classid);
+
+            if(success) {
+                JOptionPane.showMessageDialog(this, "Sửa thông tin học sinh thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                mainPanel.reloaClassDetails(classDetailPanel, classid);
+            }
+            else
+                JOptionPane.showMessageDialog(this, "Có lỗi khi sửa, hoặc mã học sinh không tồn tại!", "Thông báo", JOptionPane.ERROR_MESSAGE);
         }
-
-        // Gọi hàm
-        boolean success = StudentDao.updateStudentByUsername(useranme, attendence, assignment, midterm,
-                finalGrade, classid);
-
-        if(success) {
-            JOptionPane.showMessageDialog(this, "Sửa thông tin học sinh thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            mainPanel.reloaClassDetails(classDetailPanel, classid);
+        catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Điểm phải là một số thực!", "Thông báo", JOptionPane.ERROR_MESSAGE);
         }
-        else
-            JOptionPane.showMessageDialog(this, "Có lỗi khi sửa, hoặc mã học sinh không tồn tại!", "Thông báo", JOptionPane.ERROR_MESSAGE);
     }
 }
