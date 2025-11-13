@@ -67,7 +67,7 @@ public class MainPanel extends JPanel {
         if (unShowBackCard.contains(previous)) return;
         if(previous=="teacher_dashboard"){
             reloadDashboard();
-        } else if(previous=="student_dashboard"){
+        } else if("student_dashboard".equals(previous)){
             reloadStudentDashboard();
         }
         else {
